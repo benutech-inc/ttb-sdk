@@ -1,0 +1,45 @@
+{
+  "name": "ttb-sdk",
+  "description": "SDK to consume web-services of TitleToolBox for 3rd parties.",
+  "main": "dist/ttbsdk.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "dependencies": {
+    "express": "^4.11.0"
+  },
+  "devDependencies": {
+    "del": "^3.0.0",
+    "gulp": "^3.9.1",
+    "gulp-jsdoc3": "^1.0.1",
+    "gulp-load-plugins": "^1.5.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^3.0.0",
+    "jsdoc": "^3.5.5"
+  },
+  "scripts": {
+    "serve": "node index.js",
+    "serve-dev": "supervisor -w index.js index.js",
+    "doc": "rm -R docs & jsdoc -c jsdoc.json",
+    "doc2": "rm -R docs & jsdoc lib/ttbsdk.js -r -c jsdoc.json -d docs",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benutech-inc/ttb-sdk.git"
+  },
+  "keywords": [
+    "ttb",
+    "sdk",
+    "docs",
+    "3rd-parties",
+    "module",
+    "component"
+  ],
+  "author": "Benutech Inc.",
+  "license": "-",
+  "bugs": {
+    "url": "https://github.com/benutech-inc/ttb-sdk/issues"
+  },
+  "homepage": "https://github.com/benutech-inc/ttb-sdk#readme"
+}

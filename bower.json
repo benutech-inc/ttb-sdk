@@ -1,0 +1,35 @@
+{
+  "name": "ttb-sdk",
+  "description": "SDK to consume web-services of TitleToolBox for 3rd parties.",
+  "main": "dist/ttbsdk.js",
+  "authors": [
+    "Benutech Inc."
+  ],
+  "license": "-",
+  "keywords": [
+    "ttb",
+    "sdk",
+    "docs",
+    "3rd-parties",
+    "module",
+    "component"
+  ],
+  "homepage": "https://github.com/benutech-inc/ttb-sdk",
+  "dependencies": {
+    "jquery": ">=3.2.1"
+  },
+  "ignore": [
+    "docs",
+    "jaguarjs-jsdoc",
+    "src",
+    ".gitignore",
+    "bower.json",
+    "gulpfile.js",
+    "index.js",
+    "jsdoc.json",
+    "package.json",
+    "README.md",
+    "node_modules",
+    "bower_components"
+  ]
+}

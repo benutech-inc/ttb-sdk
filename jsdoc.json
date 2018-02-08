@@ -1,0 +1,29 @@
+{
+  "tags": {
+    "allowUnknownTags": true
+  },
+  "source": {
+    "include": ["src/ttbsdk.js"]
+  },
+  "plugins": [],
+  "templates": {
+    "applicationName": "TitleToolBox SDK",
+    "cleverLinks": false,
+    "monospaceLinks": false,
+    "default": {
+      "outputSourceFiles": true
+    }
+  },
+  "customOptions": {
+    "rootDir": "ttbsandbox",
+    "stylesheet": "/main.css",
+    "footer": "Copyright © 2018 <a href=\"http://www.benutech.com/\" target=\"_blank\" title=\"Benutech official website\">Benutech Inc.</a> All rights reserved."
+  },
+  "opts": {
+    "template": "jaguarjs-jsdoc",
+    "template1": "templates/default",
+    "encoding": "utf8",
+    "destination": "./docs/",
+    "recurse": true
+  }
+}
