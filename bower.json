@@ -15,9 +15,7 @@
     "component"
   ],
   "homepage": "https://github.com/benutech-inc/ttb-sdk",
-  "dependencies": {
-    "jquery": ">=3.2.1"
-  },
+  "dependencies": {},
   "ignore": [
     "docs",
     "jaguarjs-jsdoc",
