@@ -7,8 +7,8 @@
 // -- App specific - Fill this one and all good --
 var CONFIG = {
   PORT: 8000,
-  SERVE_DIR: '/doc',
-  HOME_PAGE_REDIRECT: '/TTB.html',
+  SERVE_DIR: '/docs',
+  HOME_PAGE: 'TTB.html',
   APP_NAME: 'TTBSandbox'
 };
 // --- App specific --- //
@@ -21,16 +21,19 @@ var port = process.env.PORT || CONFIG.PORT;
 app.set('port', port);
 
 // needs only when homepage is not index.html - the static server of express handle the '/' with the 'index.html' by default.
-if (CONFIG.HOME_PAGE_REDIRECT && CONFIG.HOME_PAGE_REDIRECT !== '/index.html') {
+if (CONFIG.HOME_PAGE && CONFIG.HOME_PAGE !== '/index.html') {
   app.get('/', function(req, res) {
     //console.log('/ get request - ');
-    res.redirect(CONFIG.HOME_PAGE_REDIRECT);
+    res.redirect('/' + CONFIG.HOME_PAGE);
     //res.sendFile( __dirname + CONFIG.SERVE_DIR + CONFIG.HOME_PAGE);
   });
 }
 
 // setup serving static files
 app.use(express.static(__dirname + CONFIG.SERVE_DIR));
+//app.use(express.static(__dirname + CONFIG.SERVE_DIR, {
+//  index: CONFIG.HOME_PAGE
+//}));
 
 // Allowing CORS
 app.use(function(req, res, next) {
