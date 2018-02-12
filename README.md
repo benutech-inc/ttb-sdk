@@ -27,5 +27,6 @@ Please feel free to file any defect you find, on [issue page](https://github.com
 ##### Contribution
 
 (Private only) This package follows Company's needs and plans, and being developed by the internal development only.
+Check out private contribution guideline [over here](https://github.com/benutech-inc/ttb-sdk/blob/master/CONTRIBUTION.md).
 
 ###### Happy coding !

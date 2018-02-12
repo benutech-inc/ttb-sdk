@@ -23,6 +23,7 @@
     ".bower.json",
     ".gitignore",
     "bower.json",
+    "CONTRIBUTION.md",
     "gulpfile.js",
     "index.js",
     "jsdoc.json",
