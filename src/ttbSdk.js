@@ -72,7 +72,7 @@
    *
    * <p>
    * <strong>TitleToolBox SDK </strong> script file itself, it can be pulled via our public repo link:<br>
-   * <code> &lt;script src="https://github.com/benutech-inc/ttb-sdk/blob/master/dist/ttbsdk.min.js​">&lt;/script> </code>
+   * <code> &lt;script src="https://github.com/benutech-inc/ttb-sdk/blob/master/dist/ttbSdk.min.js​">&lt;/script> </code>
    * <br><br>OR via<strong> Bower</strong> using <code>bower install ttb-sdk --save</code>
    * <br><br>
    *
