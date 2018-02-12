@@ -1,7 +1,7 @@
 {
   "name": "ttb-sdk",
   "description": "SDK to consume web-services of TitleToolBox for 3rd parties.",
-  "main": "dist/ttbsdk.js",
+  "main": "dist/ttbSdk.js",
   "directories": {
     "doc": "docs"
   },

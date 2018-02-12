@@ -30,11 +30,11 @@ gulp.task('docs', ['copy-docs-assets'], function () {
 
 gulp.task('build', ['del'], function () {
   //console.log('task: build');
-  return gulp.src(['src/ttbsdk.js'])
+  return gulp.src(['src/ttbSdk.js'])
     .pipe(gulp.dest(settings.PATH_BUILD))
     .pipe($.uglify())
     //.on('error', function (err) { console.log(err.toString());})
-    .pipe($.rename('ttbsdk.min.js'))
+    .pipe($.rename('ttbSdk.min.js'))
     .pipe(gulp.dest(settings.PATH_BUILD));
 });
 
