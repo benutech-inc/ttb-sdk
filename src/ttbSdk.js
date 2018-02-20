@@ -71,12 +71,12 @@
    * </p>
    *
    * <p>
-   * <strong>TitleToolBox SDK </strong> script file itself, it can be pulled via our public repo link:<br>
-   * <code> &lt;script src="https://github.com/benutech-inc/ttb-sdk/blob/master/dist/ttbSdk.min.js​">&lt;/script> </code>
+   * <strong>TitleToolBox SDK </strong> script file itself, it can be pulled via our public repo link: <i>(keep the version updated)</i><br>
+   * <code> &lt;script src="https://raw.githubusercontent.com/benutech-inc/ttb-sdk/0.3.0/dist/ttbSdk.min.js​">&lt;/script> </code>
    * <br><br>OR via<strong> Bower</strong> using <code>bower install ttb-sdk --save</code>
    * <br><br>
    *
-   * <i style="font-size: 13px;">SDK npm module will be released soon...</i>
+   * <i style="font-size: 13px;">SDK's <strong>NPM</strong> package will be released soon...</i>
    * </p>
    *
    * @param {Object} config - The configuration info required
