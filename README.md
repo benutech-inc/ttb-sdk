@@ -1,8 +1,11 @@
 # TTB SDK (Software Development Kit)
 
-SDK to consume web-services of [TitleToolBox](https://www.demottb.com/).
+SDK to consume web-services of [Title ToolBox](https://www.demottb.com/).
 
-## Install
+### Installation
+
+#### Include script file from a CDN 
+`<script src="https://raw.githubusercontent.com/benutech-inc/ttb-sdk/0.3.0/dist/ttbSdk.min.js"></script>`
 
 #### Bower
 ```sh
@@ -11,6 +14,42 @@ $ bower install ttb-sdk --save
 
 #### NPM
 Coming soon...
+
+#### Usage
+
+```
+// instantiate the TTB SDK class with minimum info required
+var ttb = new TTB({
+  partnerKey: '{your partner key}',
+});
+
+// build up your payload
+var payload = {
+  TbUser: {
+    username: "awesomeuser99@domain.com",
+    password: "secret_Password0"
+  }
+};
+
+// call one of the SDK ready methods "login" to get user logged in
+ttb.login(payload)
+.done(function(res) {
+  if (res.response.status === 'OK') {
+    // user is successfully logged-in !!
+    // your success code here to consume res.response.data for logged-in user info
+    console.log(res.response.data);
+  } else {
+    // your failure code here to consume res.response.data for validation errors info
+    console.log(res.response.data);
+  }
+})
+.fail(function(err) {
+  // your failure code here
+})
+.always(function() {
+ // your on-complete code here as common for both success and failure
+});
+```
 
 ### Documentation
 
