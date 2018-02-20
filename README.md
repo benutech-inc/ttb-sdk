@@ -17,7 +17,7 @@ Coming soon...
 
 #### Usage
 
-```
+```js
 // instantiate the TTB SDK class with minimum info required
 var ttb = new TTB({
   partnerKey: '{your partner key}',
