@@ -253,7 +253,7 @@
       data: JSON.stringify(payload)
     };
 
-    return ttb._ajax(request, 'webservices/get_sponsors.json');
+    return ttb._ajax(request, methodsMapping.GET_SPONSORS);
   };
 
 
