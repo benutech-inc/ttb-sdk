@@ -338,7 +338,9 @@
           for (var i = 0; i < sponsors.length; i++) {
             sponsorsList.push([
               '<tr>',
-              '<td><img src="{{logoUrl}}" class="img-responsive" alt="Sponsor Logo" style="background-color: rgb(61, 156, 226)"></td>',
+              '<td>' +
+              '<img src="{{logoUrl}}" class="img-responsive" alt="Sponsor Logo" style="background-color: rgb(61, 156, 226)">' +
+              '</td>',
               '<td>{{name}}</td>',
               '<td><a href="{{website}}" target="_blank">{{website}}</a></td>',
               '<td><button class="btn btn-primary pull-right" data-sponsor="{{sponsor}}">Select</button></td>',
