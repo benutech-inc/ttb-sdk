@@ -343,7 +343,7 @@
               '<td><a href="{{website}}" target="_blank">{{website}}</a></td>',
               '<td><button class="btn btn-primary pull-right" data-sponsor="{{sponsor}}">Select</button></td>',
               '</tr>'].join('')
-              .replace('{{logoUrl}}', sponsors[i].site_url + '/' + sponsors[i].company_info.logo_url)
+              .replace('{{logoUrl}}', sponsors[i].company_info.logo_url)
               .replace('{{name}}', sponsors[i].company_info.company_name)
               .replace(/(\{\{website}})/g, sponsors[i].company_info.company_website)
               .replace('{{sponsor}}', sponsors[i].vertical_name)
