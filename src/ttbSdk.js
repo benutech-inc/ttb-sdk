@@ -322,72 +322,94 @@
     TTB.getSponsors(payload)
       //.fail(function (res) {
       .done(function (res) {
-        var bodyContent, sponsors, sponsorsList;
+        var bodyContent, sponsors, sponsorsList, resultsMessage;
 
-        //if (res) {
-        if (res.response.status === 'OK') {
+        if (res.response.status !== 'OK') {
 
-          //sponsors = [
-          //  { name: 'Offical TTB', vertical_name: 'demo', county: 'Orange'},
-          //  { name: 'Chicao Title', vertical_name: 'chicagotitle', county: 'Foo'}
-          //];
-          sponsors = res.response.data;
-          sponsorsList = [];
-
-          // iterate over the list and generate the available options
-          for (var i = 0; i < sponsors.length; i++) {
-            sponsorsList.push([
-              '<tr>',
-              '<td>' +
-              '<img src="{{logoUrl}}" class="img-responsive" alt="Sponsor Logo" style="background-color: rgb(61, 156, 226)">' +
-              '</td>',
-              '<td>{{name}}</td>',
-              '<td><a href="{{website}}" target="_blank">{{website}}</a></td>',
-              '<td><button class="btn btn-primary pull-right" data-sponsor="{{sponsor}}">Select</button></td>',
-              '</tr>'].join('')
-              .replace('{{logoUrl}}', sponsors[i].company_info.logo_url)
-              .replace('{{name}}', sponsors[i].company_info.company_name)
-              .replace(/(\{\{website}})/g, sponsors[i].company_info.company_website)
-              .replace('{{sponsor}}', sponsors[i].vertical_name)
-            );
-          }
-
-          bodyContent = [
-            '<p>Please select sponsor from the following list.</p>',
-            '<div class="table-responsive">',
-            '<table class="table table-striped">',
-            '<thead>',
-            '<tr>',
-            '<th>LOGO</th>',
-            '<th>NAME</th>',
-            '<th>WEBSITE</th>',
-            '<th></th>',
-            '</tr>',
-            '<thead>',
-            '<tbody>{{sponsorsList}}</tbody>',
-            '<table>',
-            '</div>'
-          ].join('');
-
-          // append the sponsors choices and add the final markup to DOM.
-          bodyContent = bodyContent.replace('{{sponsorsList}}', sponsorsList.join(''));
-          $modal.find('.modal-body').html(bodyContent);
-
-          // register the click handler for sponsor selection
-          $('#' + modalId + ' tbody').on('click', 'button', function (e) {
-            var selectedSponsor = $(this).attr('data-sponsor');
-
-            // pass the selectedSponsor to on-select callback if provided.
-            options.onSelect && options.onSelect(selectedSponsor);
-
-            // auto close/hide the modal
-            $modal.modal('hide');
-          });
-
-        } else {
           // pass the error response to error callback if provided.
           options.onError && options.onError(res);
+          return;
         }
+
+        //sponsors = [
+        //  { name: 'Offical TTB', vertical_name: 'demo', county: 'Orange'},
+        //  { name: 'Chicao Title', vertical_name: 'chicagotitle', county: 'Foo'}
+        //];
+        sponsors = res.response.data;
+        sponsorsList = [];
+
+        // iterate over the list and generate the available options
+        for (var i = 0; i < sponsors.length; i++) {
+          sponsorsList.push([
+            '<tr>',
+            ' <td>{{count}}</td>',
+            ' <td><img src="{{logoUrl}}" class="img-responsive" alt="Sponsor Logo"></td>',
+            ' <td>{{name}}</td>',
+            ' <td><a href="{{website}}" target="_blank">{{website}}</a></td>',
+            ' <td><button class="btn btn-primary pull-right" data-sponsor="{{sponsor}}">Select</button></td>',
+            '</tr>'].join('')
+            .replace('{{count}}', i + 1)
+            .replace('{{logoUrl}}', sponsors[i].company_info.logo_url)
+            .replace('{{name}}', sponsors[i].company_info.company_name)
+            .replace(/(\{\{website}})/g, sponsors[i].company_info.company_website)
+            .replace('{{sponsor}}', sponsors[i].vertical_name)
+          );
+        }
+
+        /* build up the sponsors result message. */
+        // check if there is only one result returned.
+        if (sponsors.length === 1) {
+
+          // check if it is the "Benutech"
+          if (sponsors[0].vertical_name === 'leads') {
+            resultsMessage = 'There is no title company is available in your area. The data will be proudly sponsored by Benutech Inc.'
+          } else {
+            //resultsMessage = '1 sponsor available. <br/> Please select it to proceed.'
+            resultsMessage = '1 sponsor available. <br/> Please select a sponsor from the following list.'
+          }
+        } else {
+          resultsMessage = '{{totalSponsors}} sponsors available. <br/> Please select a sponsor from the following list.'
+            .replace('{{totalSponsors}}', sponsors.length);
+        }
+
+        bodyContent = [
+          '<p>{{resultsMessage}}</p>',
+          '<div class="table-responsive">',
+          '<table class="table table-striped">',
+          '<thead>',
+          '<tr>',
+          '<th>#</th>',
+          '<th>LOGO</th>',
+          '<th>NAME</th>',
+          '<th>WEBSITE</th>',
+          '<th></th>',
+          '</tr>',
+          '<thead>',
+          '<tbody>{{sponsorsList}}</tbody>',
+          '<table>',
+          '</div>'
+        ].join('');
+
+        // append the sponsors choices and add the final markup to DOM.
+        bodyContent = bodyContent
+          .replace('{{resultsMessage}}', resultsMessage)
+          .replace('{{sponsorsList}}', sponsorsList.join(''));
+
+        $modal
+          .find('.modal-dialog').css({width: '760px'})
+          .find('.modal-body').html(bodyContent);
+
+        // register the click handler for sponsor selection
+        $('#' + modalId + ' tbody').on('click', 'button', function (e) {
+          var selectedSponsor = $(this).attr('data-sponsor');
+
+          // pass the selectedSponsor to on-select callback if provided.
+          options.onSelect && options.onSelect(selectedSponsor);
+
+          // auto close/hide the modal
+          $modal.modal('hide');
+        });
+
       })
       .fail(function (err) {
         $modal.find('.modal-body').html('Failed in retrieving list.');
