@@ -1,7 +1,7 @@
 /**
  * Copyright © 2018 Benutech Inc. All rights reserved.
  * http://www.benutech.com - help@benutech.com
- * version: 0.3.0
+ * version: 0.4.0
  * */
 
 (function () {
@@ -72,7 +72,7 @@
    *
    * <p>
    * <strong>TitleToolBox SDK </strong> script file itself, it can be pulled via our public repo link: <i>(keep the version updated)</i><br>
-   * <code> &lt;script src="https://raw.githubusercontent.com/benutech-inc/ttb-sdk/0.3.0/dist/ttbSdk.min.js​">&lt;/script> </code>
+   * <code> &lt;script src="https://raw.githubusercontent.com/benutech-inc/ttb-sdk/0.4.0/dist/ttbSdk.min.js​">&lt;/script> </code>
    * <br><br>OR via<strong> Bower</strong> using <code>bower install ttb-sdk --save</code>
    * <br><br>
    *
