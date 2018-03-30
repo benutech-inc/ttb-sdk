@@ -4,8 +4,8 @@ SDK to consume web-services of [Title ToolBox](https://www.demottb.com/).
 
 ### Installation
 
-#### Include script file from a CDN 
-`<script src="https://raw.githubusercontent.com/benutech-inc/ttb-sdk/0.3.0/dist/ttbSdk.min.js"></script>`
+#### Include script file from a CDN (minified file ~9kbs)
+`<script src="https://raw.githubusercontent.com/benutech-inc/ttb-sdk/0.4.0/dist/ttbSdk.min.js"></script>`
 
 #### Bower
 ```sh
@@ -53,11 +53,11 @@ ttb.login(payload)
 
 ### Documentation
 
-For a detailed documentation on available methods, their parameters, and examples. Check out the live documentation [over here.](http://sdk.titletoolbox.com/TTB.html) 
+For a detailed documentation on available methods, their parameters, and examples. Check out the live documentation [over here.](http://sdk.titletoolbox.com/) 
 
 ### Sandbox (Playground)
 
-For a detailed and working examples 3rd-party site consumption, please check out the Sandbox site [over here.](http://sdk.titletoolbox.com/ttbsandbox.html)
+For a detailed and working examples 3rd-party site consumption, please check out the Sandbox site [over here.](http://sandbox.titletoolbox.com/)
 
 ### Issues
 
@@ -65,7 +65,8 @@ Please feel free to file any defect you find, on [issue page](https://github.com
 
 ##### Contribution
 
-(Private only) This package follows Company's needs and plans, and being developed by the internal development only.
-Check out private contribution guideline [over here](https://github.com/benutech-inc/ttb-sdk/blob/master/CONTRIBUTION.md).
+(Private only) This package follows Company's needs and plans, and being developed by the internal development team only.
+For Contribution, Please Check out private contribution guideline [over here](https://github.com/benutech-inc/ttb-sdk/blob/master/CONTRIBUTION.md).
 
 ###### Happy coding !
+Thanks for trying Title Toolbox !
