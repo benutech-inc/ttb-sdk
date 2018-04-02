@@ -46,7 +46,7 @@
     PROPERTY_COMPS: {methodName: 'propertyComps', endpoint: 'webservices/property_comps.json'},
     PROPERTY_DETAILS: {methodName: 'propertyDetails', endpoint: 'webservices/property_details.json'},
     GLOBAL_SEARCH: {methodName: 'globalSearch', endpoint: 'webservices/global_search.json'},
-    GLOBAL_SEARCH_COUNT: {methodName: 'globalSearchCount', endpoint: 'webservices/get_search_count.json'},
+    GLOBAL_SEARCH_COUNT: {methodName: 'globalSearchCount', endpoint: 'webservices/global_search_count.json'},
     GET_TYPES_REPORT: {methodName: 'getTypesReport', endpoint: 'webservices/types_report.json'},
     GET_SEARCH_FIELDS: {methodName: 'getSearchFields', endpoint: 'webservices/get_search_fields.json'}
   };
