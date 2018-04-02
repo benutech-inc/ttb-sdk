@@ -1,7 +1,9 @@
 /**
  * Copyright © 2018 Benutech Inc. All rights reserved.
  * http://www.benutech.com - help@benutech.com
- * version: 0.4.0
+ * version: 0.5.0
+ * https://github.com/benutech-inc/ttb-sdk
+ * For latest release, please check - https://github.com/benutech-inc/ttb-sdk/releases
  * */
 
 (function () {
@@ -72,7 +74,7 @@
    *
    * <p>
    * <strong>TitleToolBox SDK </strong> script file itself, it can be pulled via our public repo link: <i>(keep the version updated)</i><br>
-   * <code> &lt;script src="https://raw.githubusercontent.com/benutech-inc/ttb-sdk/0.4.0/dist/ttbSdk.min.js​">&lt;/script> </code>
+   * <code> &lt;script src="https://raw.githubusercontent.com/benutech-inc/ttb-sdk/0.5.0/dist/ttbSdk.min.js​">&lt;/script> </code>
    * <br><br>OR via<strong> Bower</strong> using <code>bower install ttb-sdk --save</code>
    * <br><br>
    *
@@ -1166,6 +1168,86 @@
       };
 
       return this._ajax(request, methodsMapping.GLOBAL_SEARCH_COUNT);
+    },
+
+    /**
+     * This method is to get all the properties nearby the given geolocation against the given radius.<br>
+     * Note - for payloadExtension, It accepts the same search criteria format input as for [global_search]{@link TTB#globalSearch} API.
+     *
+     * @param {Object} payload - The payload object containing required info.
+     * @param {Object} [payloadExtension] - An optional payload to be merge into the auto-generated one. It can be utilized to
+     * add custom filters like "Empty Nester" and/or other useful fields.
+     *
+     * @example
+     * var ttb = new TTB({ ... }); // skip if already instantiated.
+     *
+     * var payload = {
+     *  mm_fips_state_code: "",  // State FIPS
+     *  mm_fips_muni_code: "",// County FIPS
+     *  center_lat: "", // sa_y_coord // to be used in a geometry of type "circle" for radius.
+     *  center_lng: "", // sa_x_coord // required for same above reason.
+     *  radius: "", // required for same above reason.
+     *  limit: "" // Optional.
+     * };
+     *
+     * ttb.nearbySearch(payload, params)
+     * .done(function(res) {
+     *   if (res.response.status === 'OK') {
+     *     // your success code here to consume res.response.data
+     *     console.log(res.response.data);
+     *   } else {
+     *     // your failure code here to consume res.response.data
+     *     console.log(res.response.data);
+     *   }
+     * })
+     * .fail(function(err) {
+     *   // your failure code here
+     * })
+     * .always(function() {
+     *  // your on-complete code here as common for both success and failure
+     * });
+     *
+     * @return {Object} promise - Jquery AJAX deferred promise is returned which on-success returns the required info.
+     *
+     * */
+    nearbySearch: function (payload, payloadExtension) {
+
+      var queryParams = {limit: payload.limit || 1000, page: 1};
+      var finalPayload = {
+        "mm_fips_state_code": payload.mm_fips_state_code, // State FIPS
+        "mm_fips_muni_code": payload.mm_fips_muni_code, // County FIPS
+
+        // default - with type Single Family Residence, and Condonium
+        "use_code_std": ["RSFR", "RCON"],
+
+        // default - no filters
+        customFilters: {},
+
+        // default - no searchOptions
+        searchOptions: {
+          "max_limit": payload.limit || undefined
+        },
+
+        // nearby search is processed by using radius geometry with the main globalSearchMethod
+        "geometry": {
+          "match": "circle",
+          "value": {
+            "center_lat": payload.center_lat, // sa_y_coord
+            "center_lng": payload.center_lng, // sa_x_coord
+            "radius": payload.radius
+          }
+        }
+      };
+
+      // Include any other extension to payload if provided. e.g. customFilters or other fields criteria.
+      finalPayload = $.extend(finalPayload, payloadExtension);
+
+      var request = {
+        method: 'POST',
+        data: JSON.stringify(finalPayload)
+      };
+
+      return this._ajax(request, methodsMapping.GLOBAL_SEARCH, queryParams);
     },
 
 
