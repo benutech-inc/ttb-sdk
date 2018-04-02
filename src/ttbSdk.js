@@ -1,7 +1,7 @@
 /**
  * Copyright © 2018 Benutech Inc. All rights reserved.
  * http://www.benutech.com - help@benutech.com
- * version: 0.5.0
+ * version: 0.5.1
  * https://github.com/benutech-inc/ttb-sdk
  * For latest release, please check - https://github.com/benutech-inc/ttb-sdk/releases
  * */
@@ -74,7 +74,7 @@
    *
    * <p>
    * <strong>TitleToolBox SDK </strong> script file itself, it can be pulled via our public repo link: <i>(keep the version updated)</i><br>
-   * <code> &lt;script src="https://raw.githubusercontent.com/benutech-inc/ttb-sdk/0.5.0/dist/ttbSdk.min.js​">&lt;/script> </code>
+   * <code> &lt;script src="https://raw.githubusercontent.com/benutech-inc/ttb-sdk/0.5.1/dist/ttbSdk.min.js​">&lt;/script> </code>
    * <br><br>OR via<strong> Bower</strong> using <code>bower install ttb-sdk --save</code>
    * <br><br>
    *
@@ -1183,7 +1183,6 @@
      *
      * var payload = {
      *  mm_fips_state_code: "06",  // State FIPS
-     *  mm_fips_muni_code: "071",// County FIPS
      *  center_lat: "33.97652", // sa_y_coord // to be used in a geometry of type "circle" for radius.
      *  center_lng: "-117.726299", // sa_x_coord // required for same above reason.
      *  radius: "1", // required for same above reason.
@@ -1215,7 +1214,6 @@
       var queryParams = {limit: payload.limit || 1000, page: 1};
       var finalPayload = {
         "mm_fips_state_code": payload.mm_fips_state_code, // State FIPS
-        "mm_fips_muni_code": payload.mm_fips_muni_code, // County FIPS
 
         // default - with type Single Family Residence, and Condonium
         "use_code_std": ["RSFR", "RCON"],
