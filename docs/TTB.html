@@ -76,6 +76,8 @@
             
                 <li data-name="TTB#logout"><a href="TTB.html#logout">logout</a></li>
             
+                <li data-name="TTB#nearbySearch"><a href="TTB.html#nearbySearch">nearbySearch</a></li>
+            
                 <li data-name="TTB#orderReport"><a href="TTB.html#orderReport">orderReport</a></li>
             
                 <li data-name="TTB#propertyComps"><a href="TTB.html#propertyComps">propertyComps</a></li>
@@ -127,7 +129,7 @@
 
 <p>
 <strong>TitleToolBox SDK </strong> script file itself, it can be pulled via our public repo link: <i>(keep the version updated)</i><br>
-<code> &lt;script src="https://raw.githubusercontent.com/benutech-inc/ttb-sdk/0.4.0/dist/ttbSdk.min.js​">&lt;/script> </code>
+<code> &lt;script src="https://raw.githubusercontent.com/benutech-inc/ttb-sdk/0.5.0/dist/ttbSdk.min.js​">&lt;/script> </code>
 <br><br>OR via<strong> Bower</strong> using <code>bower install ttb-sdk --save</code>
 <br><br>
 
@@ -151,7 +153,7 @@
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line138">line 138</a>
+            <a href="s.html">s</a>, <a href="s.html#line140">line 140</a>
         </div>
         
     </div>
@@ -844,7 +846,7 @@ or &lt;input type="text" <code>data-ttb-field="GeneralInfo['Year Built']"</code>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line244">line 244</a>
+            <a href="s.html">s</a>, <a href="s.html#line246">line 246</a>
         </div>
         
     </div>
@@ -1098,7 +1100,7 @@ TTB.getSponsors(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line304">line 304</a>
+            <a href="s.html">s</a>, <a href="s.html#line306">line 306</a>
         </div>
         
     </div>
@@ -1377,7 +1379,7 @@ TTB.showSponsorSelector(payload, {
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1239">line 1239</a>
+            <a href="s.html">s</a>, <a href="s.html#line1321">line 1321</a>
         </div>
         
     </div>
@@ -1507,7 +1509,7 @@ ttb.getSearchFields()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1199">line 1199</a>
+            <a href="s.html">s</a>, <a href="s.html#line1281">line 1281</a>
         </div>
         
     </div>
@@ -1632,7 +1634,7 @@ ttb.getTypesReport()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1101">line 1101</a>
+            <a href="s.html">s</a>, <a href="s.html#line1103">line 1103</a>
         </div>
         
     </div>
@@ -2283,7 +2285,7 @@ ttb.globalSearch(payload, queryParams)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1162">line 1162</a>
+            <a href="s.html">s</a>, <a href="s.html#line1164">line 1164</a>
         </div>
         
     </div>
@@ -2476,7 +2478,7 @@ ttb.globalSearchCount(payload, params)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1317">line 1317</a>
+            <a href="s.html">s</a>, <a href="s.html#line1399">line 1399</a>
         </div>
         
     </div>
@@ -2866,7 +2868,7 @@ autocomplete.addListener('place_changed', function () {
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line657">line 657</a>
+            <a href="s.html">s</a>, <a href="s.html#line659">line 659</a>
         </div>
         
     </div>
@@ -3112,7 +3114,7 @@ ttb.login(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line610">line 610</a>
+            <a href="s.html">s</a>, <a href="s.html#line612">line 612</a>
         </div>
         
     </div>
@@ -3332,7 +3334,7 @@ ttb.remoteLogin(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line694">line 694</a>
+            <a href="s.html">s</a>, <a href="s.html#line696">line 696</a>
         </div>
         
     </div>
@@ -3452,6 +3454,222 @@ ttb.logout()
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="nearbySearch">
+            
+            nearbySearch<span class="signature">(payload, <span class="optional">payloadExtension</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="s.html">s</a>, <a href="s.html#line1213">line 1213</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        This method is to get all the properties nearby the given geolocation against the given radius.<br>
+Note - for payloadExtension, It accepts the same search criteria format input as for <a href="TTB.html#globalSearch">global_search</a> API.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>payload</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                    
+                        
+                    
+                
+                The payload object containing required info.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>payloadExtension</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                An optional payload to be merge into the auto-generated one. It can be utilized to
+add custom filters like "Empty Nester" and/or other useful fields.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        Object
+                        
+                    
+            </td>
+            <td class="description last">promise - Jquery AJAX deferred promise is returned which on-success returns the required info.</td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code>var ttb = new TTB({ ... }); // skip if already instantiated.
+
+var payload = {
+ mm_fips_state_code: "",  // State FIPS
+ mm_fips_muni_code: "",// County FIPS
+ center_lat: "", // sa_y_coord // to be used in a geometry of type "circle" for radius.
+ center_lng: "", // sa_x_coord // required for same above reason.
+ radius: "", // required for same above reason.
+ limit: "" // Optional.
+};
+
+ttb.nearbySearch(payload, params)
+.done(function(res) {
+  if (res.response.status === 'OK') {
+    // your success code here to consume res.response.data
+    console.log(res.response.data);
+  } else {
+    // your failure code here to consume res.response.data
+    console.log(res.response.data);
+  }
+})
+.fail(function(err) {
+  // your failure code here
+})
+.always(function() {
+ // your on-complete code here as common for both success and failure
+});</code></pre>
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="orderReport">
             
             orderReport<span class="signature">(payload)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
@@ -3459,7 +3677,7 @@ ttb.logout()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line884">line 884</a>
+            <a href="s.html">s</a>, <a href="s.html#line886">line 886</a>
         </div>
         
     </div>
@@ -3796,7 +4014,7 @@ ttb.orderReport(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line945">line 945</a>
+            <a href="s.html">s</a>, <a href="s.html#line947">line 947</a>
         </div>
         
     </div>
@@ -4235,7 +4453,7 @@ ttb.propertyComps(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line997">line 997</a>
+            <a href="s.html">s</a>, <a href="s.html#line999">line 999</a>
         </div>
         
     </div>
@@ -4570,7 +4788,7 @@ ttb.propertyDetails(payload, options)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line836">line 836</a>
+            <a href="s.html">s</a>, <a href="s.html#line838">line 838</a>
         </div>
         
     </div>
@@ -4858,7 +5076,7 @@ ttb.searchByOwnerName(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line737">line 737</a>
+            <a href="s.html">s</a>, <a href="s.html#line739">line 739</a>
         </div>
         
     </div>
@@ -5101,7 +5319,7 @@ ttb.searchByParcelNumber(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line790">line 790</a>
+            <a href="s.html">s</a>, <a href="s.html#line792">line 792</a>
         </div>
         
     </div>
@@ -5483,7 +5701,7 @@ ttb.searchBySiteAddress(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line572">line 572</a>
+            <a href="s.html">s</a>, <a href="s.html#line574">line 574</a>
         </div>
         
     </div>
@@ -5647,7 +5865,7 @@ ttb.setSponsor('xyz');</code></pre>
 
         <footer>
             Copyright © 2018 <a target="_blank" href="http://www.benutech.com/" target="_blank" title="Benutech official website">Benutech Inc.</a> All rights reserved.</a>
-           <!-- Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Apr 02 2018 20:50:07 GMT+0500 (PKT) -->
+           <!-- Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Apr 03 2018 04:03:54 GMT+0500 (PKT) -->
         </footer>
     </div>
 </div>
