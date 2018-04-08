@@ -324,8 +324,19 @@
     TTB.getSponsors(payload)
       //.fail(function (res) {
       .done(function (res) {
-        var bodyContent, sponsors, sponsorsList, resultsMessage;
-
+        var o;
+        
+        o = {
+          sponsorsData: undefined,
+          bodyTemplate: undefined,
+          bodyMarkup: undefined,
+          sponsorTemplate: undefined,
+          sponsorMarkup: undefined,
+          sponsorsEmailMarkup: undefined,
+          sponsorsZipMarkup: undefined,
+          resultsMessage: undefined
+        };
+        
         if (res.response.status !== 'OK') {
 
           // pass the error response to error callback if provided.
@@ -333,48 +344,23 @@
           return;
         }
 
-        //sponsors = [
-        //  { name: 'Offical TTB', vertical_name: 'demo', county: 'Orange'},
-        //  { name: 'Chicao Title', vertical_name: 'chicagotitle', county: 'Foo'}
-        //];
-        sponsors = res.response.data;
-        sponsorsList = [];
+        o.sponsorsData = res.response.data;
 
-        // iterate over the list and generate the available options
-        for (var i = 0; i < sponsors.length; i++) {
-          sponsorsList.push([
-            '<tr>',
-            ' <td>{{count}}</td>',
-            ' <td><img src="{{logoUrl}}" class="img-responsive" alt="Sponsor Logo"></td>',
-            ' <td>{{name}}</td>',
-            ' <td><a href="{{website}}" target="_blank">{{website}}</a></td>',
-            ' <td><button class="btn btn-primary pull-right" data-sponsor="{{sponsor}}">Select</button></td>',
-            '</tr>'].join('')
-            .replace('{{count}}', i + 1)
-            .replace('{{logoUrl}}', sponsors[i].company_info.logo_url)
-            .replace('{{name}}', sponsors[i].company_info.company_name)
-            .replace(/(\{\{website}})/g, sponsors[i].company_info.company_website)
-            .replace('{{sponsor}}', sponsors[i].vertical_name)
-          );
-        }
+        o.bodyMarkup = [];
+        o.sponsorsEmailMarkup = [];
+        o.sponsorsZipMarkup = [];
 
-        /* build up the sponsors result message. */
-        // check if there is only one result returned.
-        if (sponsors.length === 1) {
+        o.sponsorTemplate = [
+          '<tr>',
+          ' <td>{{count}}</td>',
+          ' <td><img src="{{logoUrl}}" class="img-responsive" alt="Sponsor Logo"></td>',
+          ' <td>{{name}}</td>',
+          ' <td><a href="{{website}}" target="_blank">{{website}}</a></td>',
+          ' <td><button class="btn btn-primary pull-right" data-sponsor="{{sponsor}}">Select</button></td>',
+          '</tr>'
+        ].join('');
 
-          // check if it is the "Benutech"
-          if (sponsors[0].vertical_name === 'leads') {
-            resultsMessage = 'There is no title company is available in your area. The data will be proudly sponsored by Benutech Inc.'
-          } else {
-            //resultsMessage = '1 sponsor available. <br/> Please select it to proceed.'
-            resultsMessage = '1 sponsor available. <br/> Please select a sponsor from the following list.'
-          }
-        } else {
-          resultsMessage = '{{totalSponsors}} sponsors available. <br/> Please select a sponsor from the following list.'
-            .replace('{{totalSponsors}}', sponsors.length);
-        }
-
-        bodyContent = [
+        o.bodyTemplate = [
           '<p>{{resultsMessage}}</p>',
           '<div class="table-responsive">',
           '<table class="table table-striped">',
@@ -387,19 +373,76 @@
           '<th></th>',
           '</tr>',
           '<thead>',
-          '<tbody>{{sponsorsList}}</tbody>',
+          '<tbody>{{sponsorsMarkup}}</tbody>',
           '<table>',
           '</div>'
         ].join('');
 
-        // append the sponsors choices and add the final markup to DOM.
-        bodyContent = bodyContent
-          .replace('{{resultsMessage}}', resultsMessage)
-          .replace('{{sponsorsList}}', sponsorsList.join(''));
+        // iterate over the list and generate the available options
+        $.each(o.sponsorsData, function (i, sponsor) {
 
+          // generate sponsor info markup
+          o.sponsorMarkup = o.sponsorTemplate
+            .replace('{{count}}', i + 1)
+            .replace('{{logoUrl}}', sponsor.company_info.logo_url)
+            .replace('{{name}}', sponsor.company_info.company_name)
+            .replace(/(\{\{website}})/g, sponsor.company_info.company_website)
+            .replace('{{sponsor}}', sponsor.vertical_name);
+
+          // add to relevant list
+          switch (sponsor.match.type) {
+            case 'email':
+              o.sponsorsEmailMarkup.push(o.sponsorMarkup);
+              break;
+
+            case 'zip':
+              o.sponsorsZipMarkup.push(o.sponsorMarkup);
+              break;
+
+            default:
+              console.log('showSelectSponsor: unknown match.type: ', sponsor.match.type);
+          }
+        });
+
+        // add match type "email" results.
+        if (o.sponsorsEmailMarkup.length) {
+
+          // check if there is only one result returned AND that it is the "Benutech"
+          if (o.sponsorsData.length === 1 && o.sponsorsData[0].vertical_name === 'leads') {
+            o.resultsMessage = 'There is no title company is available in your area. The data will be proudly sponsored by Benutech Inc.';
+          } else {
+            o.resultsMessage = 'It looks like you already have an account with the following {{totalSponsors}} sponsor(s).'
+              .replace('{{totalSponsors}}', o.sponsorsEmailMarkup.length);
+          }
+
+          o.bodyMarkup.push(o.bodyTemplate
+            .replace('{{resultsMessage}}', o.resultsMessage)
+            .replace('{{sponsorsMarkup}}', o.sponsorsEmailMarkup.join(''))
+          );
+        }
+
+        // add match type "zip" results.
+        if (o.sponsorsZipMarkup.length) {
+
+          // add a separator if match type "email" results were added too.
+          if (o.sponsorsEmailMarkup.length) {
+            o.bodyMarkup.push('<hr>');
+          }
+
+          o.resultsMessage = '{{totalSponsors}} sponsors available serving your zipcode of <strong>{{zipCode}}</strong>.'
+            .replace('{{totalSponsors}}', o.sponsorsZipMarkup.length)
+            .replace('{{zipCode}}', payload.zipCode);
+
+          o.bodyMarkup.push(o.bodyTemplate
+            .replace('{{resultsMessage}}', o.resultsMessage)
+            .replace('{{sponsorsMarkup}}', o.sponsorsZipMarkup.join(''))
+          );
+        }
+
+        // add the final markup to DOM.
         $modal
           .find('.modal-dialog').css({width: '760px'})
-          .find('.modal-body').html(bodyContent);
+          .find('.modal-body').html(o.bodyMarkup.join(''));
 
         // register the click handler for sponsor selection
         $('#' + modalId + ' tbody').on('click', 'button', function (e) {
