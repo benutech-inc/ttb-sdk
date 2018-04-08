@@ -111,7 +111,7 @@
             <pre class="prettyprint source "><code>/**
  * Copyright © 2018 Benutech Inc. All rights reserved.
  * http://www.benutech.com - help@benutech.com
- * version: 0.5.1
+ * version: 0.6.0
  * https://github.com/benutech-inc/ttb-sdk
  * For latest release, please check - https://github.com/benutech-inc/ttb-sdk/releases
  * */
@@ -183,8 +183,9 @@
    * &lt;/p>
    *
    * &lt;p>
-   * &lt;strong>TitleToolBox SDK &lt;/strong> script file itself, it can be pulled via our public repo link: &lt;i>(keep the version updated)&lt;/i>&lt;br>
-   * &lt;code> &amp;lt;script src="https://raw.githubusercontent.com/benutech-inc/ttb-sdk/0.5.1/dist/ttbSdk.min.js​">&amp;lt;/script> &lt;/code>
+   * &lt;strong>TitleToolBox SDK &lt;/strong> script file itself, it can be pulled via our public repo link:
+   * &lt;i>(keep the [latest version]{@link https://github.com/benutech-inc/ttb-sdk/releases})&lt;/i>&lt;br>
+   * &lt;code> &amp;lt;script src="https://raw.githubusercontent.com/benutech-inc/ttb-sdk/0.6.0/dist/ttbSdk.min.js​">&amp;lt;/script> &lt;/code>
    * &lt;br>&lt;br>OR via&lt;strong> Bower&lt;/strong> using &lt;code>bower install ttb-sdk --save&lt;/code>
    * &lt;br>&lt;br>
    *
@@ -434,8 +435,19 @@
     TTB.getSponsors(payload)
       //.fail(function (res) {
       .done(function (res) {
-        var bodyContent, sponsors, sponsorsList, resultsMessage;
-
+        var o;
+        
+        o = {
+          sponsorsData: undefined,
+          bodyTemplate: undefined,
+          bodyMarkup: undefined,
+          sponsorTemplate: undefined,
+          sponsorMarkup: undefined,
+          sponsorsEmailMarkup: undefined,
+          sponsorsZipMarkup: undefined,
+          resultsMessage: undefined
+        };
+        
         if (res.response.status !== 'OK') {
 
           // pass the error response to error callback if provided.
@@ -443,48 +455,23 @@
           return;
         }
 
-        //sponsors = [
-        //  { name: 'Offical TTB', vertical_name: 'demo', county: 'Orange'},
-        //  { name: 'Chicao Title', vertical_name: 'chicagotitle', county: 'Foo'}
-        //];
-        sponsors = res.response.data;
-        sponsorsList = [];
+        o.sponsorsData = res.response.data;
 
-        // iterate over the list and generate the available options
-        for (var i = 0; i &lt; sponsors.length; i++) {
-          sponsorsList.push([
-            '&lt;tr>',
-            ' &lt;td>{{count}}&lt;/td>',
-            ' &lt;td>&lt;img src="{{logoUrl}}" class="img-responsive" alt="Sponsor Logo">&lt;/td>',
-            ' &lt;td>{{name}}&lt;/td>',
-            ' &lt;td>&lt;a href="{{website}}" target="_blank">{{website}}&lt;/a>&lt;/td>',
-            ' &lt;td>&lt;button class="btn btn-primary pull-right" data-sponsor="{{sponsor}}">Select&lt;/button>&lt;/td>',
-            '&lt;/tr>'].join('')
-            .replace('{{count}}', i + 1)
-            .replace('{{logoUrl}}', sponsors[i].company_info.logo_url)
-            .replace('{{name}}', sponsors[i].company_info.company_name)
-            .replace(/(\{\{website}})/g, sponsors[i].company_info.company_website)
-            .replace('{{sponsor}}', sponsors[i].vertical_name)
-          );
-        }
+        o.bodyMarkup = [];
+        o.sponsorsEmailMarkup = [];
+        o.sponsorsZipMarkup = [];
 
-        /* build up the sponsors result message. */
-        // check if there is only one result returned.
-        if (sponsors.length === 1) {
+        o.sponsorTemplate = [
+          '&lt;tr>',
+          ' &lt;td>{{count}}&lt;/td>',
+          ' &lt;td>&lt;img src="{{logoUrl}}" class="img-responsive" alt="Sponsor Logo">&lt;/td>',
+          ' &lt;td>{{name}}&lt;/td>',
+          ' &lt;td>&lt;a href="{{website}}" target="_blank">{{website}}&lt;/a>&lt;/td>',
+          ' &lt;td>&lt;button class="btn btn-primary pull-right" data-sponsor="{{sponsor}}">Select&lt;/button>&lt;/td>',
+          '&lt;/tr>'
+        ].join('');
 
-          // check if it is the "Benutech"
-          if (sponsors[0].vertical_name === 'leads') {
-            resultsMessage = 'There is no title company is available in your area. The data will be proudly sponsored by Benutech Inc.'
-          } else {
-            //resultsMessage = '1 sponsor available. &lt;br/> Please select it to proceed.'
-            resultsMessage = '1 sponsor available. &lt;br/> Please select a sponsor from the following list.'
-          }
-        } else {
-          resultsMessage = '{{totalSponsors}} sponsors available. &lt;br/> Please select a sponsor from the following list.'
-            .replace('{{totalSponsors}}', sponsors.length);
-        }
-
-        bodyContent = [
+        o.bodyTemplate = [
           '&lt;p>{{resultsMessage}}&lt;/p>',
           '&lt;div class="table-responsive">',
           '&lt;table class="table table-striped">',
@@ -497,19 +484,76 @@
           '&lt;th>&lt;/th>',
           '&lt;/tr>',
           '&lt;thead>',
-          '&lt;tbody>{{sponsorsList}}&lt;/tbody>',
+          '&lt;tbody>{{sponsorsMarkup}}&lt;/tbody>',
           '&lt;table>',
           '&lt;/div>'
         ].join('');
 
-        // append the sponsors choices and add the final markup to DOM.
-        bodyContent = bodyContent
-          .replace('{{resultsMessage}}', resultsMessage)
-          .replace('{{sponsorsList}}', sponsorsList.join(''));
+        // iterate over the list and generate the available options
+        $.each(o.sponsorsData, function (i, sponsor) {
 
+          // generate sponsor info markup
+          o.sponsorMarkup = o.sponsorTemplate
+            .replace('{{count}}', i + 1)
+            .replace('{{logoUrl}}', sponsor.company_info.logo_url)
+            .replace('{{name}}', sponsor.company_info.company_name)
+            .replace(/(\{\{website}})/g, sponsor.company_info.company_website)
+            .replace('{{sponsor}}', sponsor.vertical_name);
+
+          // add to relevant list
+          switch (sponsor.match.type) {
+            case 'email':
+              o.sponsorsEmailMarkup.push(o.sponsorMarkup);
+              break;
+
+            case 'zip':
+              o.sponsorsZipMarkup.push(o.sponsorMarkup);
+              break;
+
+            default:
+              console.log('showSelectSponsor: unknown match.type: ', sponsor.match.type);
+          }
+        });
+
+        // add match type "email" results.
+        if (o.sponsorsEmailMarkup.length) {
+
+          // check if there is only one result returned AND that it is the "Benutech"
+          if (o.sponsorsData.length === 1 &amp;&amp; o.sponsorsData[0].vertical_name === 'leads') {
+            o.resultsMessage = 'There is no title company is available in your area. The data will be proudly sponsored by Benutech Inc.';
+          } else {
+            o.resultsMessage = 'It looks like you already have an account with the following {{totalSponsors}} sponsor(s).'
+              .replace('{{totalSponsors}}', o.sponsorsEmailMarkup.length);
+          }
+
+          o.bodyMarkup.push(o.bodyTemplate
+            .replace('{{resultsMessage}}', o.resultsMessage)
+            .replace('{{sponsorsMarkup}}', o.sponsorsEmailMarkup.join(''))
+          );
+        }
+
+        // add match type "zip" results.
+        if (o.sponsorsZipMarkup.length) {
+
+          // add a separator if match type "email" results were added too.
+          if (o.sponsorsEmailMarkup.length) {
+            o.bodyMarkup.push('&lt;hr>');
+          }
+
+          o.resultsMessage = '{{totalSponsors}} sponsors available serving your zipcode of &lt;strong>{{zipCode}}&lt;/strong>.'
+            .replace('{{totalSponsors}}', o.sponsorsZipMarkup.length)
+            .replace('{{zipCode}}', payload.zipCode);
+
+          o.bodyMarkup.push(o.bodyTemplate
+            .replace('{{resultsMessage}}', o.resultsMessage)
+            .replace('{{sponsorsMarkup}}', o.sponsorsZipMarkup.join(''))
+          );
+        }
+
+        // add the final markup to DOM.
         $modal
           .find('.modal-dialog').css({width: '760px'})
-          .find('.modal-body').html(bodyContent);
+          .find('.modal-body').html(o.bodyMarkup.join(''));
 
         // register the click handler for sponsor selection
         $('#' + modalId + ' tbody').on('click', 'button', function (e) {
@@ -1561,7 +1605,7 @@
 
         <footer>
             Copyright © 2018 <a href="http://www.benutech.com/" target="_blank" title="Benutech official website">Benutech Inc.</a> All rights reserved.</a>
-           <!-- Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Apr 03 2018 04:30:39 GMT+0500 (PKT) -->
+           <!-- Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Apr 09 2018 04:00:07 GMT+0500 (PKT) -->
         </footer>
     </div>
 </div>
