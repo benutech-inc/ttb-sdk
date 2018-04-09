@@ -1,7 +1,7 @@
 /**
  * Copyright © 2018 Benutech Inc. All rights reserved.
  * http://www.benutech.com - help@benutech.com
- * version: 0.6.0
+ * version: 0.6.1
  * https://github.com/benutech-inc/ttb-sdk
  * For latest release, please check - https://github.com/benutech-inc/ttb-sdk/releases
  * */
@@ -75,7 +75,7 @@
    * <p>
    * <strong>TitleToolBox SDK </strong> script file itself, it can be pulled via our public repo link:
    * <i>(keep the [latest version]{@link https://github.com/benutech-inc/ttb-sdk/releases})</i><br>
-   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.6.0/dist/ttbSdk.min.js​">&lt;/script> </code>
+   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.6.1/dist/ttbSdk.min.js​">&lt;/script> </code>
    * <br><br>OR via<strong> Bower</strong> using <code>bower install ttb-sdk --save</code>
    * <br><br>
    *
@@ -384,7 +384,7 @@
 
           // generate sponsor info markup
           o.sponsorMarkup = o.sponsorTemplate
-            .replace('{{count}}', i + 1)
+            //.replace('{{count}}', i + 1)
             .replace('{{logoUrl}}', sponsor.company_info.logo_url)
             .replace('{{name}}', sponsor.company_info.company_name)
             .replace(/(\{\{website}})/g, sponsor.company_info.company_website)
@@ -392,11 +392,18 @@
 
           // add to relevant list
           switch (sponsor.match.type) {
+
             case 'email':
+              o.sponsorMarkup = o.sponsorMarkup
+                .replace('{{count}}', o.sponsorsEmailMarkup.length + 1);
+
               o.sponsorsEmailMarkup.push(o.sponsorMarkup);
               break;
 
             case 'zip':
+              o.sponsorMarkup = o.sponsorMarkup
+                .replace('{{count}}', o.sponsorsZipMarkup.length + 1);
+
               o.sponsorsZipMarkup.push(o.sponsorMarkup);
               break;
 
