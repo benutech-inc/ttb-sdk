@@ -384,7 +384,7 @@
 
           // generate sponsor info markup
           o.sponsorMarkup = o.sponsorTemplate
-            .replace('{{count}}', i + 1)
+            //.replace('{{count}}', i + 1)
             .replace('{{logoUrl}}', sponsor.company_info.logo_url)
             .replace('{{name}}', sponsor.company_info.company_name)
             .replace(/(\{\{website}})/g, sponsor.company_info.company_website)
@@ -392,11 +392,18 @@
 
           // add to relevant list
           switch (sponsor.match.type) {
+
             case 'email':
+              o.sponsorMarkup = o.sponsorMarkup
+                .replace('{{count}}', o.sponsorsEmailMarkup.length + 1);
+
               o.sponsorsEmailMarkup.push(o.sponsorMarkup);
               break;
 
             case 'zip':
+              o.sponsorMarkup = o.sponsorMarkup
+                .replace('{{count}}', o.sponsorsZipMarkup.length + 1);
+
               o.sponsorsZipMarkup.push(o.sponsorMarkup);
               break;
 
