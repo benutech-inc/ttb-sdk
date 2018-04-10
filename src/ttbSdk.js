@@ -426,7 +426,7 @@
 
           // check if there is only one result returned AND that it is the "Benutech"
           if (o.sponsorsData.length === 1 && o.sponsorsData[0].vertical_name === 'leads') {
-            o.resultsMessage = 'There is no title company is available in your area. The data will be proudly sponsored by Benutech Inc.';
+            o.resultsMessage = 'There is no title company available in your area. The data will be proudly sponsored by Benutech Inc.';
 
           } else {
             o.resultsMessage = '{{totalSponsors}} sponsors available.'
