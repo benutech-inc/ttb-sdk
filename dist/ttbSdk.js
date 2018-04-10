@@ -1,7 +1,7 @@
 /**
  * Copyright © 2018 Benutech Inc. All rights reserved.
  * http://www.benutech.com - help@benutech.com
- * version: 0.6.1
+ * version: 0.6.2
  * https://github.com/benutech-inc/ttb-sdk
  * For latest release, please check - https://github.com/benutech-inc/ttb-sdk/releases
  * */
@@ -75,7 +75,7 @@
    * <p>
    * <strong>TitleToolBox SDK </strong> script file itself, it can be pulled via our public repo link:
    * <i>(keep the [latest version]{@link https://github.com/benutech-inc/ttb-sdk/releases})</i><br>
-   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.6.1/dist/ttbSdk.min.js​">&lt;/script> </code>
+   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.6.2/dist/ttbSdk.min.js​">&lt;/script> </code>
    * <br><br>OR via<strong> Bower</strong> using <code>bower install ttb-sdk --save</code>
    * <br><br>
    *
@@ -335,7 +335,8 @@
           sponsorMarkup: undefined,
           sponsorsEmailMarkup: undefined,
           sponsorsZipMarkup: undefined,
-          resultsMessage: undefined
+          resultsMessage: undefined,
+          tempTargetList: undefined
         };
         
         if (res.response.status !== 'OK') {
@@ -350,6 +351,7 @@
         o.bodyMarkup = [];
         o.sponsorsEmailMarkup = [];
         o.sponsorsZipMarkup = [];
+        o.sponsorsOtherMarkup = [];
 
         o.sponsorTemplate = [
           '<tr>',
@@ -390,38 +392,58 @@
             .replace(/(\{\{website}})/g, sponsor.company_info.company_website)
             .replace('{{sponsor}}', sponsor.vertical_name);
 
-          // add to relevant list
+          // set the target list with respect to match.type
           switch (sponsor.match.type) {
 
             case 'email':
-              o.sponsorMarkup = o.sponsorMarkup
-                .replace('{{count}}', o.sponsorsEmailMarkup.length + 1);
-
-              o.sponsorsEmailMarkup.push(o.sponsorMarkup);
+              o.tempTargetList = o.sponsorsEmailMarkup;
               break;
 
             case 'zip':
-              o.sponsorMarkup = o.sponsorMarkup
-                .replace('{{count}}', o.sponsorsZipMarkup.length + 1);
+              o.tempTargetList = o.sponsorsZipMarkup;
+              break;
 
-              o.sponsorsZipMarkup.push(o.sponsorMarkup);
+            // assuming it is Benutech / leads
+            case null:
+              o.tempTargetList = o.sponsorsOtherMarkup;
               break;
 
             default:
               console.log('showSelectSponsor: unknown match.type: ', sponsor.match.type);
+              // skip addition
+              return;
           }
+
+          // add the item to the relevant list
+          o.sponsorMarkup = o.sponsorMarkup
+            .replace('{{count}}', o.tempTargetList.length + 1);
+
+          o.tempTargetList.push(o.sponsorMarkup);
         });
 
-        // add match type "email" results.
-        if (o.sponsorsEmailMarkup.length) {
+        // add match type "null" results - when no zip, email results are there.
+        if (o.sponsorsOtherMarkup.length && !o.sponsorsZipMarkup.length && !o.sponsorsEmailMarkup.length) {
 
           // check if there is only one result returned AND that it is the "Benutech"
           if (o.sponsorsData.length === 1 && o.sponsorsData[0].vertical_name === 'leads') {
             o.resultsMessage = 'There is no title company is available in your area. The data will be proudly sponsored by Benutech Inc.';
+
           } else {
-            o.resultsMessage = 'It looks like you already have an account with the following {{totalSponsors}} sponsor(s).'
-              .replace('{{totalSponsors}}', o.sponsorsEmailMarkup.length);
+            o.resultsMessage = '{{totalSponsors}} sponsors available.'
+              .replace('{{totalSponsors}}', o.sponsorsOtherMarkup.length);
           }
+
+          o.bodyMarkup.push(o.bodyTemplate
+            .replace('{{resultsMessage}}', o.resultsMessage)
+            .replace('{{sponsorsMarkup}}', o.sponsorsOtherMarkup.join(''))
+          );
+        }
+
+        // add match type "email" results.
+        if (o.sponsorsEmailMarkup.length) {
+
+          o.resultsMessage = 'It looks like you already have an account with the following {{totalSponsors}} sponsor(s).'
+            .replace('{{totalSponsors}}', o.sponsorsEmailMarkup.length);
 
           o.bodyMarkup.push(o.bodyTemplate
             .replace('{{resultsMessage}}', o.resultsMessage)
