@@ -317,8 +317,8 @@
     // render the sponsors selector content via modal
     $modal = this._modal({
       id: modalId,
-      title: 'Select Sponsor',
-      bodyContent: 'Retrieving list of all available sponsors...'
+      title: 'Select TTB Participant',
+      bodyContent: 'Retrieving list of all available TTB participants...'
     });
 
     // retrieve the available sponsors
@@ -429,7 +429,7 @@
             o.resultsMessage = 'There is no title company available in your area. The data will be proudly sponsored by Benutech Inc.';
 
           } else {
-            o.resultsMessage = '{{totalSponsors}} sponsors available.'
+            o.resultsMessage = '{{totalSponsors}} TTB participants available.'
               .replace('{{totalSponsors}}', o.sponsorsOtherMarkup.length);
           }
 
@@ -442,7 +442,7 @@
         // add match type "email" results.
         if (o.sponsorsEmailMarkup.length) {
 
-          o.resultsMessage = 'It looks like you already have an account with the following {{totalSponsors}} sponsor(s).'
+          o.resultsMessage = 'It looks like you already have an account with the following {{totalSponsors}} TTB participant(s).'
             .replace('{{totalSponsors}}', o.sponsorsEmailMarkup.length);
 
           o.bodyMarkup.push(o.bodyTemplate
@@ -459,7 +459,7 @@
             o.bodyMarkup.push('<hr>');
           }
 
-          o.resultsMessage = '{{totalSponsors}} sponsors available serving your zipcode of <strong>{{zipCode}}</strong>.'
+          o.resultsMessage = '{{totalSponsors}} TTB participant(s) available serving your zipcode of <strong>{{zipCode}}</strong>.'
             .replace('{{totalSponsors}}', o.sponsorsZipMarkup.length)
             .replace('{{zipCode}}', payload.zipCode);
 
