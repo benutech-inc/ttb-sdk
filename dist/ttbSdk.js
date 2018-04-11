@@ -1,7 +1,7 @@
 /**
  * Copyright © 2018 Benutech Inc. All rights reserved.
  * http://www.benutech.com - help@benutech.com
- * version: 0.6.4
+ * version: 0.6.5
  * https://github.com/benutech-inc/ttb-sdk
  * For latest release, please check - https://github.com/benutech-inc/ttb-sdk/releases
  * */
@@ -75,7 +75,7 @@
    * <p>
    * <strong>TitleToolBox SDK </strong> script file itself, it can be pulled via our public repo link:
    * <i>(keep the [latest version]{@link https://github.com/benutech-inc/ttb-sdk/releases})</i><br>
-   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.6.4/dist/ttbSdk.min.js​">&lt;/script> </code>
+   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.6.5/dist/ttbSdk.min.js​">&lt;/script> </code>
    * <br><br>OR via<strong> Bower</strong> using <code>bower install ttb-sdk --save</code>
    * <br><br>
    *
@@ -317,8 +317,8 @@
     // render the sponsors selector content via modal
     $modal = this._modal({
       id: modalId,
-      title: 'Select TTB Participant',
-      bodyContent: 'Retrieving list of all available TTB participants...'
+      title: 'Select the company you want to provide you with your data integration',
+      bodyContent: 'Retrieving list of all available companies...'
     });
 
     // retrieve the available sponsors
@@ -409,7 +409,7 @@
               break;
 
             default:
-              console.log('showSelectSponsor: unknown match.type: ', sponsor.match.type);
+              console.log('showSelectSponsor: unknown sponsor.match.type: ', sponsor.match.type);
               // skip addition
               return;
           }
@@ -426,10 +426,10 @@
 
           // check if there is only one result returned AND that it is the "Benutech"
           if (o.sponsorsData.length === 1 && o.sponsorsData[0].vertical_name === 'leads') {
-            o.resultsMessage = 'There is no title company available in your area. The data will be proudly sponsored by Benutech Inc.';
+            o.resultsMessage = 'There is no company available that has Title Toolbox in your area. The data will be proudly provided by Benutech, Inc.';
 
           } else {
-            o.resultsMessage = '{{totalSponsors}} TTB participants available.'
+            o.resultsMessage = 'There are {{totalSponsors}} companies that have Title Toolbox to choose from.'
               .replace('{{totalSponsors}}', o.sponsorsOtherMarkup.length);
           }
 
@@ -442,7 +442,7 @@
         // add match type "email" results.
         if (o.sponsorsEmailMarkup.length) {
 
-          o.resultsMessage = 'It looks like you already have an account with the following {{totalSponsors}} TTB participant(s).'
+          o.resultsMessage = 'It looks like you already have a Title Toolbox account with the following {{totalSponsors}} companies.'
             .replace('{{totalSponsors}}', o.sponsorsEmailMarkup.length);
 
           o.bodyMarkup.push(o.bodyTemplate
@@ -459,7 +459,7 @@
             o.bodyMarkup.push('<hr>');
           }
 
-          o.resultsMessage = '{{totalSponsors}} TTB participant(s) available serving your zipcode of <strong>{{zipCode}}</strong>.'
+          o.resultsMessage = 'There are {{totalSponsors}} companies that have Title Toolbox in your zip code of <strong>{{zipCode}}</strong> to choose from.'
             .replace('{{totalSponsors}}', o.sponsorsZipMarkup.length)
             .replace('{{zipCode}}', payload.zipCode);
 
