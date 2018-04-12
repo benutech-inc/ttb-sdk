@@ -1,7 +1,7 @@
 /**
  * Copyright © 2018 Benutech Inc. All rights reserved.
  * http://www.benutech.com - help@benutech.com
- * version: 0.6.5
+ * version: 0.6.6
  * https://github.com/benutech-inc/ttb-sdk
  * For latest release, please check - https://github.com/benutech-inc/ttb-sdk/releases
  * */
@@ -75,7 +75,7 @@
    * <p>
    * <strong>TitleToolBox SDK </strong> script file itself, it can be pulled via our public repo link:
    * <i>(keep the [latest version]{@link https://github.com/benutech-inc/ttb-sdk/releases})</i><br>
-   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.6.5/dist/ttbSdk.min.js​">&lt;/script> </code>
+   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.6.6/dist/ttbSdk.min.js​">&lt;/script> </code>
    * <br><br>OR via<strong> Bower</strong> using <code>bower install ttb-sdk --save</code>
    * <br><br>
    *
@@ -317,8 +317,8 @@
     // render the sponsors selector content via modal
     $modal = this._modal({
       id: modalId,
-      title: 'Select the company you want to provide you with your data integration',
-      bodyContent: 'Retrieving list of all available companies...'
+      title: 'Please select a Company to Partner with on your Data Integration:',
+      bodyContent: 'Retrieving list of all available Companies ...'
     });
 
     // retrieve the available sponsors
@@ -403,7 +403,7 @@
               o.tempTargetList = o.sponsorsZipMarkup;
               break;
 
-            // assuming it is Benutech / leads
+            // considering them as Benutech / leads
             case null:
               o.tempTargetList = o.sponsorsOtherMarkup;
               break;
@@ -421,29 +421,10 @@
           o.tempTargetList.push(o.sponsorMarkup);
         });
 
-        // add match type "null" results - when no zip, email results are there.
-        if (o.sponsorsOtherMarkup.length && !o.sponsorsZipMarkup.length && !o.sponsorsEmailMarkup.length) {
-
-          // check if there is only one result returned AND that it is the "Benutech"
-          if (o.sponsorsData.length === 1 && o.sponsorsData[0].vertical_name === 'leads') {
-            o.resultsMessage = 'There is no company available that has Title Toolbox in your area. The data will be proudly provided by Benutech, Inc.';
-
-          } else {
-            o.resultsMessage = 'There are {{totalSponsors}} companies that have Title Toolbox to choose from.'
-              .replace('{{totalSponsors}}', o.sponsorsOtherMarkup.length);
-          }
-
-          o.bodyMarkup.push(o.bodyTemplate
-            .replace('{{resultsMessage}}', o.resultsMessage)
-            .replace('{{sponsorsMarkup}}', o.sponsorsOtherMarkup.join(''))
-          );
-        }
-
         // add match type "email" results.
         if (o.sponsorsEmailMarkup.length) {
 
-          o.resultsMessage = 'It looks like you already have a Title Toolbox account with the following {{totalSponsors}} companies.'
-            .replace('{{totalSponsors}}', o.sponsorsEmailMarkup.length);
+          o.resultsMessage = 'It appears you currently partner with the following Companies ...';
 
           o.bodyMarkup.push(o.bodyTemplate
             .replace('{{resultsMessage}}', o.resultsMessage)
@@ -459,13 +440,31 @@
             o.bodyMarkup.push('<hr>');
           }
 
-          o.resultsMessage = 'There are {{totalSponsors}} companies that have Title Toolbox in your zip code of <strong>{{zipCode}}</strong> to choose from.'
-            .replace('{{totalSponsors}}', o.sponsorsZipMarkup.length)
+          o.resultsMessage = 'The following Companies are available Partners in the <strong>{{zipCode}}</strong> Zip Code.'
             .replace('{{zipCode}}', payload.zipCode);
 
           o.bodyMarkup.push(o.bodyTemplate
             .replace('{{resultsMessage}}', o.resultsMessage)
             .replace('{{sponsorsMarkup}}', o.sponsorsZipMarkup.join(''))
+          );
+        }
+
+        // add match type "null" results - when no zip, email results are there.
+        if (o.sponsorsOtherMarkup.length && !o.sponsorsZipMarkup.length && !o.sponsorsEmailMarkup.length) {
+
+          // check if there is only one result returned AND that it is the "Benutech"
+          if (o.sponsorsData.length === 1 && o.sponsorsData[0].vertical_name === 'leads') {
+            o.resultsMessage = 'There is currently not a Company as a participating Partner in Zip Code <strong>{{zipCode}}</strong>. ' +
+              'The Data will be proudly supplied by Benutech Inc.'
+                .replace('{{zipCode}}', payload.zipCode);
+
+          } else {
+            o.resultsMessage = 'The following Companies are available Partners.';
+          }
+
+          o.bodyMarkup.push(o.bodyTemplate
+            .replace('{{resultsMessage}}', o.resultsMessage)
+            .replace('{{sponsorsMarkup}}', o.sponsorsOtherMarkup.join(''))
           );
         }
 

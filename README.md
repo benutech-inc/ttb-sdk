@@ -5,7 +5,7 @@ SDK to consume web-services of [Title ToolBox](https://www.demottb.com/).
 ### Installation
 
 #### Include script file from a CDN (minified file ~9kbs)
-`<script src="https://raw.githubusercontent.com/benutech-inc/ttb-sdk/0.6.5/dist/ttbSdk.min.js"></script>`
+`<script src="https://raw.githubusercontent.com/benutech-inc/ttb-sdk/0.6.6/dist/ttbSdk.min.js"></script>`
 
 #### Bower
 ```sh
