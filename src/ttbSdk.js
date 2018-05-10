@@ -682,6 +682,9 @@
      * @return {Object} promise - Jquery AJAX deferred promise is returned which on-success returns the required info.
      * */
     loginRemote: function (payload) {
+
+      payload.sso = false;
+
       var request = {
         method: 'POST',
         data: JSON.stringify(payload)
