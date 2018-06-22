@@ -1,7 +1,7 @@
 /**
  * Copyright © 2018 Benutech Inc. All rights reserved.
  * http://www.benutech.com - help@benutech.com
- * version: 0.7.0
+ * version: 0.7.1
  * https://github.com/benutech-inc/ttb-sdk
  * For latest release, please check - https://github.com/benutech-inc/ttb-sdk/releases
  * */
@@ -75,7 +75,7 @@
    * <p>
    * <strong>TitleToolBox SDK </strong> script file itself, it can be pulled via our public repo link:
    * <i>(keep the [latest version]{@link https://github.com/benutech-inc/ttb-sdk/releases})</i><br>
-   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.7.0/dist/ttbSdk.min.js​">&lt;/script> </code>
+   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.7.1/dist/ttbSdk.min.js​">&lt;/script> </code>
    * <br><br>OR via<strong> Bower</strong> using <code>bower install ttb-sdk --save</code>
    * <br><br>
    *
@@ -454,9 +454,11 @@
 
           // check if there is only one result returned AND that it is the "Benutech"
           if (o.sponsorsData.length === 1 && o.sponsorsData[0].vertical_name === 'leads') {
-            o.resultsMessage = 'There is currently not a Company as a participating Partner in Zip Code <strong>{{zipCode}}</strong>. ' +
+            o.resultsMessage = [
+              'There is currently not a Company as a participating Partner in Zip Code <strong>{{zipCode}}</strong>. ',
               'The Data will be proudly supplied by Benutech Inc.'
-                .replace('{{zipCode}}', payload.zipCode);
+            ].join('')
+            .replace('{{zipCode}}', payload.zipCode);
 
           } else {
             o.resultsMessage = 'The following Companies are available Partners.';
