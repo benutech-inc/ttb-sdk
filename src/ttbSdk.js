@@ -454,9 +454,11 @@
 
           // check if there is only one result returned AND that it is the "Benutech"
           if (o.sponsorsData.length === 1 && o.sponsorsData[0].vertical_name === 'leads') {
-            o.resultsMessage = 'There is currently not a Company as a participating Partner in Zip Code <strong>{{zipCode}}</strong>. ' +
+            o.resultsMessage = [
+              'There is currently not a Company as a participating Partner in Zip Code <strong>{{zipCode}}</strong>. ',
               'The Data will be proudly supplied by Benutech Inc.'
-                .replace('{{zipCode}}', payload.zipCode);
+            ].join('')
+            .replace('{{zipCode}}', payload.zipCode);
 
           } else {
             o.resultsMessage = 'The following Companies are available Partners.';
