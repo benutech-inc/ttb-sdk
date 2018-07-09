@@ -1510,6 +1510,9 @@
 
       // Special field handling for "site_address"
       addressInfo.site_address = addressInfo.site_street_number + ' ' + addressInfo.site_route;
+
+      // return the built address info, in order to let consumer use the info the way they want.
+      return addressInfo;
     }
 
   };
