@@ -1658,8 +1658,8 @@
 
         '  <ul class="dropdown-menu">',
         //'  <li><a data-action-name="netSheet" href="javascript:">NetSheet</a></li>',
-        '  <li><a data-action-name="generateReport" href="javascript:">Generate Report</a></li>',
-        '  <li role="separator" class="divider"></li>',
+        //'  <li><a data-action-name="generateReport" href="javascript:">Generate Report</a></li>',
+        //'  <li role="separator" class="divider"></li>',
         '  <li><a data-action-name="fullProfileReport" href="javascript:">Full Profile Report</a></li>',
         '  </ul>',
         '</div>',
@@ -1729,7 +1729,7 @@
       }
 
       function invokeSelectedAction() {
-        var promise, selectionActionCb;
+        var promise, selectionActionCb, enableControls;
         //console.log('invokeSelectedAction');
 
         // if no address was selected / fetched via autocomplete
@@ -1745,6 +1745,14 @@
         o.$selectedAction.prop('disabled', true)
           .next('button')
           .prop('disabled', true);
+
+        // function to enable widget controls back to normal
+        enableControls = function () {
+          autoComplete.$element.prop('disabled', false);
+          o.$selectedAction.prop('disabled', false)
+            .next('button')
+            .prop('disabled', false);
+        };
 
         // get property_id and state info against the given addressInfo
         promise = ttb.searchBySiteAddress(o.selectedAddressInfo);
@@ -1772,12 +1780,13 @@
                 //  ttb._log([defaults.sdkPrefix, ' : instantLookup : netSheet - ']);
                 //  break;
 
-                case 'generateReport':
-                  ttb._log([defaults.sdkPrefix, ' : instantLookup : generateReport - ']);
-                  break;
+                //case 'generateReport':
+                //  ttb._log([defaults.sdkPrefix, ' : instantLookup : generateReport - dev in progress.']);
+                //  enableControls();
+                //  break;
 
                 case 'fullProfileReport':
-                  ttb._log([defaults.sdkPrefix, ' : instantLookup : fullProfileReport - ']);
+                  ttb._log([defaults.sdkPrefix, ' : instantLookup : fullProfileReport']);
 
                   ttb.orderReport({
                       sa_property_id: property.sa_property_id,
@@ -1791,29 +1800,27 @@
                       window.open(res.response.data.report.link);
 
                     }, function (reason) {
-                      alert('Failed to get full profile report.');
+                      alert('Failed in getting full profile report.');
                     })
                     .always(function () {
-
-                      // enable widget controls back to normal
-                      autoComplete.$element.prop('disabled', false);
-                      o.$selectedAction.prop('disabled', false)
-                        .next('button')
-                        .prop('disabled', false);
+                      enableControls();
                     });
 
                   break;
 
                 default:
                   ttb._log([defaults.sdkPrefix, ' : instantLookup : action not found - ', elementSelector]);
+                  enableControls();
               }
 
             } else {
               selectionActionCb(promise);
+              enableControls();
             }
 
           }, function() {
             selectionActionCb(promise);
+            enableControls();
           });
       }
     }
