@@ -159,6 +159,69 @@
 
   /**
    * @memberof TTB
+   * @alias _createDefaultInstance
+   * @static
+   *
+   * This static method provides an instance for the internal use for TTB static methods.
+   * @private
+   *
+   * @example
+   *
+   * var defaultTtb = TTB._createDefaultInstance();
+   *
+   * @return {Object} instance - instance object created with default configuration.
+   *
+   * */
+  window.TTB._createDefaultInstance = function () {
+    return new TTB({
+      partnerKey: defaults.partnerKey
+    });
+  };
+
+  /**
+   * @memberof TTB
+   * @alias _getLocal
+   * @static
+   *
+   * This static method gets a model from local storage with given ttb sdk prefix.
+   * @private
+   *
+   * @param {String} key - name of the model against which was the value saved.
+   *
+   * @example
+   *
+   * var actionName = TTB._getLocal('selectedAction');
+   *
+   * @return {any} value - value retrieved from local Storage.
+   *
+   * */
+  window.TTB._getLocal = function (key) {
+    var value = window.localStorage.getItem(defaults.sdkPrefix + '-' + key);
+    return JSON.parse(value);
+  };
+
+  /**
+   * @memberof TTB
+   * @alias _setLocal
+   * @static
+   *
+   * This static method gets a model from local storage with given ttb sdk prefix.
+   * @private
+   *
+   * @param {String} key - name of the model against which was the value saved.
+   * @param {any} value - the value to be saved.
+   *
+   * @example
+   *
+   * var actionName = TTB._setLocal('selectedAction', 'fullProfileReport');
+   *
+   * */
+  window.TTB._setLocal = function (key, value) {
+    window.localStorage.setItem(defaults.sdkPrefix + '-' + key, JSON.stringify(value));
+  };
+
+  /**
+   * @memberof TTB
    * @alias _modal
    * @static
    *
@@ -246,10 +309,8 @@
    * */
   window.TTB.getSponsors = function (payload) {
 
-    // for static, no existing ttb instance, create new one on the fly
-    var ttb = new TTB({
-      partnerKey: defaults.partnerKey
-    });
+    // get a default instance for internal use
+    var ttb = window.TTB._createDefaultInstance();
 
     var request = {
       method: 'POST',
@@ -1472,13 +1533,13 @@
      *
      * */
     googleBuildAddress: function (autocomplete, options) {
-      var place, addressInfo, addressComp, addressType, addressValue;
+      var place, addressInfo, addressComp, addressType, addressValue, componentForm;
 
       // our details object can be used for payload
       addressInfo = {};
 
       // place-components vs form-fields mapping
-      var componentForm = {
+      componentForm = {
         street_number: {field_name: 'site_street_number', name_type: 'short_name'},
         route: {field_name: 'site_route', name_type: 'short_name'},
         locality: {field_name: 'site_city', name_type: 'long_name'},
@@ -1504,7 +1565,7 @@
           addressInfo[componentForm[addressType].field_name] = addressValue;
 
           // check to auto-fill field if auto-fill-context option was provided.
-          options.autoFillContext && this._fillField(options.autoFillContext, componentForm[addressType].field_name, addressValue);
+          options && options.autoFillContext && this._fillField(options.autoFillContext, componentForm[addressType].field_name, addressValue);
         }
       }
 
@@ -1513,6 +1574,174 @@
 
       // return the built address info, in order to let consumer use the info the way they want.
       return addressInfo;
+    },
+
+    /**
+     * This method renders a widget includes google autocomplete and supported actions drop-down.
+     *
+     * @param {String} elementSelector - DOM element selector where the widget needs to be rendered.
+     * <code>#lorem</code> or <code>.ipsum</code> etc.
+     *
+     * @param {Object} actions - The actions object contains mapping callbacks to be consumed when any action is clicked.
+     * (only one action available currently.)
+     * @param {Function} actions.fullProfileReport - To be invoked with a promise as argument, when user selects an address
+     * from the autocomplete and then clicks the action "Full Profile Report". This promise can be used for handling success and failure.
+     *
+     * @example
+     * var ttb = new TTB({ ... }); // skip if already instantiated.
+     * var elementSelector = '#ttb-instant-lookup';
+     *
+     * var actions = {
+     *  fullProfileReport: function(promise) {
+     *
+     *   promise
+     *   .done(function(res){
+     *     if (res.response.status === 'OK') {
+     *       // your success code here to consume res.response.data
+     *       console.log(res.response.data);
+     *     } else {
+     *       // your failure code here to consume res.response.data
+     *       console.log(res.response.data);
+     *     }
+     *   })
+     *   .fail(function(err) {
+     *     // your failure code here
+     *   })
+     *   .always(function() {
+     *    // your on-complete code here as common for both success and failure
+     *   });
+     *  }
+     * };
+     *
+     * var $instantLookup = ttb.instantLookup(elementSelector, actions);
+     *
+     * @return {Object} $element - JQuery reference to the rendered widget container element.
+     *
+     * */
+    instantLookup: function (elementSelector, actions) {
+      var o, autoComplete, ttb;
+
+      ttb = this;
+
+      o = {};
+      o.selectedAction = window.TTB._getLocal('selectedAction', o.selectedAction) || {name: 'fullProfileReport', label: 'Full Profile Report'};
+      o.widgetClass = 'ttb-sdk--instant-lookup--container';
+      o.widgetTemplate = [
+        '<!-- the google autocomplete address lookup -->',
+        '<div id="ttb-sdk--instant-lookup--address" class="col-xs-7">',
+        ' <div class="form-group">',
+        '  <input type="text" class="form-control" id="ttb-sdk--instant-lookup--auto-complete" name="ttb-sdk--instant-lookup--auto-complete" placeholder="Search for an address...">',
+        ' </div>',
+        '</div>',
+
+        '<!-- actions menu -->',
+        '<div id="ttb-sdk--instant-lookup--actions" class="col-xs-5">',
+        ' <i class="async loading spinner"></i>',
+
+        ' <!-- Split button -->',
+        ' <div class="btn-group" dropdown="">',
+
+        '  <!-- dynamic placeholder to contain last selected action -->',
+        '  <button type="button" id="ttb-sdk--instant-lookup--selected-action" class="btn btn-default">{{selectedActionLabel}}</button>',
+
+        '  <button type="button" class="btn btn-default dropdown-toggle" data-dropdown-toggle="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">',
+        '  <span class="caret"></span>',
+        '  <span class="sr-only">Toggle Dropdown</span>',
+        '  </button>',
+
+        '  <ul class="dropdown-menu">',
+        '  <li><a data-action-name="netSheet" href="javascript:">NetSheet</a></li>',
+        '  <li><a data-action-name="generateReport" href="javascript:">Generate Report</a></li>',
+        '  <li role="separator" class="divider"></li>',
+        '  <li><a data-action-name="fullProfileReport" href="javascript:">Full Profile Report</a></li>',
+        '  </ul>',
+        '</div>',
+
+        '</div>'
+      ].join('')
+        .replace('{{selectedActionLabel}}', o.selectedAction.label);
+
+      o.$container = $(elementSelector);
+
+      // validate if target element not found
+      if (!o.$container.length) {
+        this._log([defaults.sdkPrefix, ' : instantLookup : abort : element not found - ', elementSelector]);
+        return null;
+      }
+
+      // add required class for CSS
+      o.$container
+        .addClass(o.widgetClass)
+
+        // render the widget template
+        .append(o.widgetTemplate);
+
+      // check for google autocomplete first
+      try {
+        var test = google.maps.places.Autocomplete;
+      } catch(e) {
+        this._log([defaults.sdkPrefix,
+          ' : instantLookup : abort : "google.maps.places.Autocomplete" not found -',
+          ' please make sure the google script was loaded and that instantLookup() is being called inside/after google load cb is ',
+          ' called i.e. googleInit() or the mentioned callback=* in the google script src value.'
+        ]);
+      }
+
+      // bind google autocomplete
+      autoComplete = {};
+      autoComplete.element = o.$container.find('#ttb-sdk--instant-lookup--auto-complete')[0];
+      autoComplete.instance = new google.maps.places.Autocomplete(autoComplete.element, {types: ['geocode']});
+
+      // on address select, store the address components for later use when action is clicked.
+      autoComplete.instance.addListener('place_changed', function() {
+
+        // fill the address form fields
+        o.selectedAddressInfo = ttb.googleBuildAddress(autoComplete.instance);
+      });
+
+      o.$selectedAction = o.$container.find('#ttb-sdk--instant-lookup--selected-action');
+
+      // bind selected actions click handlers
+      o.$selectedAction.on('click', invokeSelectedAction);
+      o.$container.find('#ttb-sdk--instant-lookup--actions ul').on('click', setAndInvokeAction);
+
+      function setAndInvokeAction(evt) {
+        //console.log('setAndInvokeAction:');
+        setActionSelection(evt);
+        invokeSelectedAction();
+      }
+
+      function setActionSelection(evt) {
+        //console.log('setActionSelection:', evt);
+
+        o.selectedAction.name = $(evt.target).data('action-name');
+        o.selectedAction.label = $(evt.target).text();
+
+        o.$selectedAction.text(o.selectedAction.label);
+        window.TTB._setLocal('selectedAction', o.selectedAction);
+      }
+
+      function invokeSelectedAction() {
+        //console.log('invokeSelectedAction');
+
+        switch (o.selectedAction.name) {
+
+          case 'netSheet':
+            console.log('netSheet');
+            break;
+
+          case 'generateReport':
+            console.log('generateReport');
+            break;
+
+          case 'fullProfileReport':
+            console.log('fullProfileReport');
+            break;
+
+          default:
+            ttb._log([defaults.sdkPrefix, ' : instantLookup : action not found - ', elementSelector]);
+        }
+      }
     }
 
   };
