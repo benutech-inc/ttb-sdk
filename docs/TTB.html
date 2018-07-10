@@ -70,6 +70,8 @@
             
                 <li data-name="TTB#googleBuildAddress"><a href="TTB.html#googleBuildAddress">googleBuildAddress</a></li>
             
+                <li data-name="TTB#instantLookup"><a href="TTB.html#instantLookup">instantLookup</a></li>
+            
                 <li data-name="TTB#login"><a href="TTB.html#login">login</a></li>
             
                 <li data-name="TTB#loginRemote"><a href="TTB.html#loginRemote">loginRemote</a></li>
@@ -130,7 +132,7 @@
 <p>
 <strong>TitleToolBox SDK </strong> script file itself, it can be pulled via our public repo link:
 <i>(keep the <a target="_blank" href="https://github.com/benutech-inc/ttb-sdk/releases">latest version</a>)</i><br>
-<code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.7.1/dist/ttbSdk.min.js​">&lt;/script> </code>
+<code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.8.0/dist/ttbSdk.min.js​">&lt;/script> </code>
 <br><br>OR via<strong> Bower</strong> using <code>bower install ttb-sdk --save</code>
 <br><br>
 
@@ -847,7 +849,7 @@ or &lt;input type="text" <code>data-ttb-field="GeneralInfo['Year Built']"</code>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line247">line 247</a>
+            <a href="s.html">s</a>, <a href="s.html#line310">line 310</a>
         </div>
         
     </div>
@@ -1101,7 +1103,7 @@ TTB.getSponsors(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line307">line 307</a>
+            <a href="s.html">s</a>, <a href="s.html#line368">line 368</a>
         </div>
         
     </div>
@@ -1380,7 +1382,7 @@ TTB.showSponsorSelector(payload, {
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1396">line 1396</a>
+            <a href="s.html">s</a>, <a href="s.html#line1457">line 1457</a>
         </div>
         
     </div>
@@ -1510,7 +1512,7 @@ ttb.getSearchFields()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1356">line 1356</a>
+            <a href="s.html">s</a>, <a href="s.html#line1417">line 1417</a>
         </div>
         
     </div>
@@ -1635,7 +1637,7 @@ ttb.getTypesReport()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1180">line 1180</a>
+            <a href="s.html">s</a>, <a href="s.html#line1241">line 1241</a>
         </div>
         
     </div>
@@ -2286,7 +2288,7 @@ ttb.globalSearch(payload, queryParams)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1241">line 1241</a>
+            <a href="s.html">s</a>, <a href="s.html#line1302">line 1302</a>
         </div>
         
     </div>
@@ -2479,7 +2481,7 @@ ttb.globalSearchCount(payload, params)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1474">line 1474</a>
+            <a href="s.html">s</a>, <a href="s.html#line1535">line 1535</a>
         </div>
         
     </div>
@@ -2862,6 +2864,255 @@ autocomplete.addListener('place_changed', function () {
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="instantLookup">
+            
+            instantLookup<span class="signature">(elementSelector, actions)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="s.html">s</a>, <a href="s.html#line1628">line 1628</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        This method renders a widget includes google autocomplete and supported actions drop-down.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>elementSelector</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                DOM element selector where the widget needs to be rendered.
+<code>#lorem</code> or <code>.ipsum</code> etc.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>actions</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                The actions object contains mapping callbacks to be consumed when any action is clicked.
+(only one action available currently.)
+                
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>fullProfileReport</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                To be invoked with a promise as argument, when user selects an address
+from the autocomplete and then clicks the action "Full Profile Report". This promise can be used for handling success and failure.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+            </td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        Object
+                        
+                    
+            </td>
+            <td class="description last">$element - JQuery reference to the rendered widget container element.</td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code>var ttb = new TTB({ ... }); // skip if already instantiated.
+var elementSelector = '#ttb-instant-lookup';
+
+var actions = {
+ fullProfileReport: function(promise) {
+
+  promise
+  .done(function(res){
+    if (res.response.status === 'OK') {
+      // your success code here to consume res.response.data
+      console.log(res.response.data);
+    } else {
+      // your failure code here to consume res.response.data
+      console.log(res.response.data);
+    }
+  })
+  .fail(function(err) {
+    // your failure code here
+  })
+  .always(function() {
+   // your on-complete code here as common for both success and failure
+  });
+ }
+};
+
+var $instantLookup = ttb.instantLookup(elementSelector, actions);</code></pre>
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="login">
             
             login<span class="signature">(payload)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
@@ -2869,7 +3120,7 @@ autocomplete.addListener('place_changed', function () {
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line736">line 736</a>
+            <a href="s.html">s</a>, <a href="s.html#line797">line 797</a>
         </div>
         
     </div>
@@ -3115,7 +3366,7 @@ ttb.login(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line686">line 686</a>
+            <a href="s.html">s</a>, <a href="s.html#line747">line 747</a>
         </div>
         
     </div>
@@ -3335,7 +3586,7 @@ ttb.remoteLogin(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line773">line 773</a>
+            <a href="s.html">s</a>, <a href="s.html#line834">line 834</a>
         </div>
         
     </div>
@@ -3462,7 +3713,7 @@ ttb.logout()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1289">line 1289</a>
+            <a href="s.html">s</a>, <a href="s.html#line1350">line 1350</a>
         </div>
         
     </div>
@@ -3677,7 +3928,7 @@ ttb.nearbySearch(payload, params)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line963">line 963</a>
+            <a href="s.html">s</a>, <a href="s.html#line1024">line 1024</a>
         </div>
         
     </div>
@@ -4014,7 +4265,7 @@ ttb.orderReport(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1024">line 1024</a>
+            <a href="s.html">s</a>, <a href="s.html#line1085">line 1085</a>
         </div>
         
     </div>
@@ -4453,7 +4704,7 @@ ttb.propertyComps(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1076">line 1076</a>
+            <a href="s.html">s</a>, <a href="s.html#line1137">line 1137</a>
         </div>
         
     </div>
@@ -4788,7 +5039,7 @@ ttb.propertyDetails(payload, options)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line915">line 915</a>
+            <a href="s.html">s</a>, <a href="s.html#line976">line 976</a>
         </div>
         
     </div>
@@ -5076,7 +5327,7 @@ ttb.searchByOwnerName(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line816">line 816</a>
+            <a href="s.html">s</a>, <a href="s.html#line877">line 877</a>
         </div>
         
     </div>
@@ -5319,7 +5570,7 @@ ttb.searchByParcelNumber(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line869">line 869</a>
+            <a href="s.html">s</a>, <a href="s.html#line930">line 930</a>
         </div>
         
     </div>
@@ -5701,7 +5952,7 @@ ttb.searchBySiteAddress(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line648">line 648</a>
+            <a href="s.html">s</a>, <a href="s.html#line709">line 709</a>
         </div>
         
     </div>
@@ -5865,7 +6116,7 @@ ttb.setSponsor('xyz');</code></pre>
 
         <footer>
             Copyright © 2018 <a target="_blank" href="http://www.benutech.com/" target="_blank" title="Benutech official website">Benutech Inc.</a> All rights reserved.</a>
-           <!-- Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat Jun 23 2018 02:28:55 GMT+0500 (PKT) -->
+           <!-- Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jul 11 2018 02:33:07 GMT+0500 (PKT) -->
         </footer>
     </div>
 </div>

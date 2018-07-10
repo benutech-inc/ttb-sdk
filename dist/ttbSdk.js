@@ -1,7 +1,7 @@
 /**
  * Copyright © 2018 Benutech Inc. All rights reserved.
  * http://www.benutech.com - help@benutech.com
- * version: 0.7.1
+ * version: 0.8.0
  * https://github.com/benutech-inc/ttb-sdk
  * For latest release, please check - https://github.com/benutech-inc/ttb-sdk/releases
  * */
@@ -75,7 +75,7 @@
    * <p>
    * <strong>TitleToolBox SDK </strong> script file itself, it can be pulled via our public repo link:
    * <i>(keep the [latest version]{@link https://github.com/benutech-inc/ttb-sdk/releases})</i><br>
-   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.7.1/dist/ttbSdk.min.js​">&lt;/script> </code>
+   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.8.0/dist/ttbSdk.min.js​">&lt;/script> </code>
    * <br><br>OR via<strong> Bower</strong> using <code>bower install ttb-sdk --save</code>
    * <br><br>
    *
@@ -1570,7 +1570,14 @@
       }
 
       // Special field handling for "site_address"
-      addressInfo.site_address = addressInfo.site_street_number + ' ' + addressInfo.site_route;
+      // add field only if at least one of the field is given.
+      if (addressInfo.site_street_number || addressInfo.site_route) {
+        addressInfo.site_address = (addressInfo.site_street_number || '') +
+          (addressInfo.site_street_number && addressInfo.site_route ? ' ' : '') +
+          (addressInfo.site_route || '');
+      }
+        
+      //addressInfo.site_address = addressInfo.site_street_number + ' ' + addressInfo.site_route;
 
       // return the built address info, in order to let consumer use the info the way they want.
       return addressInfo;
@@ -1650,7 +1657,7 @@
         '  </button>',
 
         '  <ul class="dropdown-menu">',
-        '  <li><a data-action-name="netSheet" href="javascript:">NetSheet</a></li>',
+        //'  <li><a data-action-name="netSheet" href="javascript:">NetSheet</a></li>',
         '  <li><a data-action-name="generateReport" href="javascript:">Generate Report</a></li>',
         '  <li role="separator" class="divider"></li>',
         '  <li><a data-action-name="fullProfileReport" href="javascript:">Full Profile Report</a></li>',
@@ -1689,8 +1696,8 @@
 
       // bind google autocomplete
       autoComplete = {};
-      autoComplete.element = o.$container.find('#ttb-sdk--instant-lookup--auto-complete')[0];
-      autoComplete.instance = new google.maps.places.Autocomplete(autoComplete.element, {types: ['geocode']});
+      autoComplete.$element = o.$container.find('#ttb-sdk--instant-lookup--auto-complete');
+      autoComplete.instance = new google.maps.places.Autocomplete(autoComplete.$element[0], {types: ['geocode']});
 
       // on address select, store the address components for later use when action is clicked.
       autoComplete.instance.addListener('place_changed', function() {
@@ -1722,25 +1729,92 @@
       }
 
       function invokeSelectedAction() {
+        var promise, selectionActionCb;
         //console.log('invokeSelectedAction');
 
-        switch (o.selectedAction.name) {
-
-          case 'netSheet':
-            console.log('netSheet');
-            break;
-
-          case 'generateReport':
-            console.log('generateReport');
-            break;
-
-          case 'fullProfileReport':
-            console.log('fullProfileReport');
-            break;
-
-          default:
-            ttb._log([defaults.sdkPrefix, ' : instantLookup : action not found - ', elementSelector]);
+        // if no address was selected / fetched via autocomplete
+        if (!o.selectedAddressInfo) {
+          autoComplete.$element.focus();
+          return;
         }
+
+        selectionActionCb = actions[o.selectedAction.name];
+
+        // disable widget controls
+        autoComplete.$element.prop('disabled', true);
+        o.$selectedAction.prop('disabled', true)
+          .next('button')
+          .prop('disabled', true);
+
+        // get property_id and state info against the given addressInfo
+        promise = ttb.searchBySiteAddress(o.selectedAddressInfo);
+        promise
+          .then(function (res) {
+            var property;
+
+            ttb._log([defaults.sdkPrefix, ' : instantLookup : searchBySiteAddress - success - ', res]);
+
+            res = res.response;
+
+            if (res.status === 'OK' && res.data && res.data.length) {
+              //selectionActionCb(promise);
+
+              // if multiple records found, cancel and alert user.
+              if (res.data.length > 1) {
+                alert('Multiple records found, please refine your search to make it more specific.');
+                return res;
+              }
+
+              property = res.data[0];
+              switch (o.selectedAction.name) {
+
+                //case 'netSheet':
+                //  ttb._log([defaults.sdkPrefix, ' : instantLookup : netSheet - ']);
+                //  break;
+
+                case 'generateReport':
+                  ttb._log([defaults.sdkPrefix, ' : instantLookup : generateReport - ']);
+                  break;
+
+                case 'fullProfileReport':
+                  ttb._log([defaults.sdkPrefix, ' : instantLookup : fullProfileReport - ']);
+
+                  ttb.orderReport({
+                      sa_property_id: property.sa_property_id,
+                      state_county_fips: property.mm_fips_state_code + property.mm_fips_muni_code,
+                      report_type: 'property_profile',
+                      output: 'link'
+                    })
+                    .then(function (res) {
+
+                      // open a new tab to get the PDF file.
+                      window.open(res.response.data.report.link);
+
+                    }, function (reason) {
+                      alert('Failed to get full profile report.');
+                    })
+                    .always(function () {
+
+                      // enable widget controls back to normal
+                      autoComplete.$element.prop('disabled', false);
+                      o.$selectedAction.prop('disabled', false)
+                        .next('button')
+                        .prop('disabled', false);
+                    });
+
+                  break;
+
+                default:
+                  ttb._log([defaults.sdkPrefix, ' : instantLookup : action not found - ', elementSelector]);
+              }
+
+            } else {
+              selectionActionCb(promise);
+            }
+
+          }, function() {
+            selectionActionCb(promise);
+          });
       }
     }
 
