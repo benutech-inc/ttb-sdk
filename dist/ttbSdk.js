@@ -1,7 +1,7 @@
 /**
  * Copyright © 2018 Benutech Inc. All rights reserved.
  * http://www.benutech.com - help@benutech.com
- * version: 0.8.0
+ * version: 0.8.1
  * https://github.com/benutech-inc/ttb-sdk
  * For latest release, please check - https://github.com/benutech-inc/ttb-sdk/releases
  * */
@@ -75,7 +75,7 @@
    * <p>
    * <strong>TitleToolBox SDK </strong> script file itself, it can be pulled via our public repo link:
    * <i>(keep the [latest version]{@link https://github.com/benutech-inc/ttb-sdk/releases})</i><br>
-   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.8.0/dist/ttbSdk.min.js​">&lt;/script> </code>
+   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.8.1/dist/ttbSdk.min.js​">&lt;/script> </code>
    * <br><br>OR via<strong> Bower</strong> using <code>bower install ttb-sdk --save</code>
    * <br><br>
    *
@@ -1658,8 +1658,8 @@
 
         '  <ul class="dropdown-menu">',
         //'  <li><a data-action-name="netSheet" href="javascript:">NetSheet</a></li>',
-        '  <li><a data-action-name="generateReport" href="javascript:">Generate Report</a></li>',
-        '  <li role="separator" class="divider"></li>',
+        //'  <li><a data-action-name="generateReport" href="javascript:">Generate Report</a></li>',
+        //'  <li role="separator" class="divider"></li>',
         '  <li><a data-action-name="fullProfileReport" href="javascript:">Full Profile Report</a></li>',
         '  </ul>',
         '</div>',
@@ -1729,7 +1729,7 @@
       }
 
       function invokeSelectedAction() {
-        var promise, selectionActionCb;
+        var promise, selectionActionCb, enableControls;
         //console.log('invokeSelectedAction');
 
         // if no address was selected / fetched via autocomplete
@@ -1745,6 +1745,14 @@
         o.$selectedAction.prop('disabled', true)
           .next('button')
           .prop('disabled', true);
+
+        // function to enable widget controls back to normal
+        enableControls = function () {
+          autoComplete.$element.prop('disabled', false);
+          o.$selectedAction.prop('disabled', false)
+            .next('button')
+            .prop('disabled', false);
+        };
 
         // get property_id and state info against the given addressInfo
         promise = ttb.searchBySiteAddress(o.selectedAddressInfo);
@@ -1772,12 +1780,13 @@
                 //  ttb._log([defaults.sdkPrefix, ' : instantLookup : netSheet - ']);
                 //  break;
 
-                case 'generateReport':
-                  ttb._log([defaults.sdkPrefix, ' : instantLookup : generateReport - ']);
-                  break;
+                //case 'generateReport':
+                //  ttb._log([defaults.sdkPrefix, ' : instantLookup : generateReport - dev in progress.']);
+                //  enableControls();
+                //  break;
 
                 case 'fullProfileReport':
-                  ttb._log([defaults.sdkPrefix, ' : instantLookup : fullProfileReport - ']);
+                  ttb._log([defaults.sdkPrefix, ' : instantLookup : fullProfileReport']);
 
                   ttb.orderReport({
                       sa_property_id: property.sa_property_id,
@@ -1791,29 +1800,27 @@
                       window.open(res.response.data.report.link);
 
                     }, function (reason) {
-                      alert('Failed to get full profile report.');
+                      alert('Failed in getting full profile report.');
                     })
                     .always(function () {
-
-                      // enable widget controls back to normal
-                      autoComplete.$element.prop('disabled', false);
-                      o.$selectedAction.prop('disabled', false)
-                        .next('button')
-                        .prop('disabled', false);
+                      enableControls();
                     });
 
                   break;
 
                 default:
                   ttb._log([defaults.sdkPrefix, ' : instantLookup : action not found - ', elementSelector]);
+                  enableControls();
               }
 
             } else {
               selectionActionCb(promise);
+              enableControls();
             }
 
           }, function() {
             selectionActionCb(promise);
+            enableControls();
           });
       }
     }
