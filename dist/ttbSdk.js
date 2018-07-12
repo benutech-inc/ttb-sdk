@@ -1,7 +1,7 @@
 /**
  * Copyright © 2018 Benutech Inc. All rights reserved.
  * http://www.benutech.com - help@benutech.com
- * version: 0.8.1
+ * version: 0.8.2
  * https://github.com/benutech-inc/ttb-sdk
  * For latest release, please check - https://github.com/benutech-inc/ttb-sdk/releases
  * */
@@ -75,7 +75,7 @@
    * <p>
    * <strong>TitleToolBox SDK </strong> script file itself, it can be pulled via our public repo link:
    * <i>(keep the [latest version]{@link https://github.com/benutech-inc/ttb-sdk/releases})</i><br>
-   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.8.1/dist/ttbSdk.min.js​">&lt;/script> </code>
+   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.8.2/dist/ttbSdk.min.js​">&lt;/script> </code>
    * <br><br>OR via<strong> Bower</strong> using <code>bower install ttb-sdk --save</code>
    * <br><br>
    *
@@ -1589,15 +1589,20 @@
      * @param {String} elementSelector - DOM element selector where the widget needs to be rendered.
      * <code>#lorem</code> or <code>.ipsum</code> etc.
      *
-     * @param {Object} actions - The actions object contains mapping callbacks to be consumed when any action is clicked.
+     * @param {Object} [actions] - The actions object contains mapping callbacks to be consumed when any action is clicked.
      * (only one action available currently.)
-     * @param {Function} actions.fullProfileReport - To be invoked with a promise as argument, when user selects an address
+     * @param {Function} [actions.fullProfileReport] - To be invoked with a promise as argument, when user selects an address
      * from the autocomplete and then clicks the action "Full Profile Report". This promise can be used for handling success and failure.
      *
      * @example
      * var ttb = new TTB({ ... }); // skip if already instantiated.
-     * var elementSelector = '#ttb-instant-lookup';
      *
+     * // with basic and minimum requirement.
+     * var elementSelector = '#ttb-instant-lookup';
+     * var $instantLookup = ttb.instantLookup(elementSelector);
+     *
+     * // with advanced configuration for handling success, and failure of the actions results.
+     * var elementSelector = '#ttb-instant-lookup';
      * var actions = {
      *  fullProfileReport: function(promise) {
      *
@@ -1629,6 +1634,7 @@
       var o, autoComplete, ttb;
 
       ttb = this;
+      actions = actions || {};
 
       o = {};
       o.selectedAction = window.TTB._getLocal('selectedAction', o.selectedAction) || {name: 'fullProfileReport', label: 'Full Profile Report'};
@@ -1738,7 +1744,9 @@
           return;
         }
 
-        selectionActionCb = actions[o.selectedAction.name];
+        selectionActionCb = function() {
+          actions[o.selectedAction.name] && actions[o.selectedAction.name]();
+        };
 
         // disable widget controls
         autoComplete.$element.prop('disabled', true);
