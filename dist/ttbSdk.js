@@ -1,7 +1,7 @@
 /**
  * Copyright © 2018 Benutech Inc. All rights reserved.
  * http://www.benutech.com - help@benutech.com
- * version: 0.8.2
+ * version: 0.8.3
  * https://github.com/benutech-inc/ttb-sdk
  * For latest release, please check - https://github.com/benutech-inc/ttb-sdk/releases
  * */
@@ -75,7 +75,7 @@
    * <p>
    * <strong>TitleToolBox SDK </strong> script file itself, it can be pulled via our public repo link:
    * <i>(keep the [latest version]{@link https://github.com/benutech-inc/ttb-sdk/releases})</i><br>
-   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.8.2/dist/ttbSdk.min.js​">&lt;/script> </code>
+   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.8.3/dist/ttbSdk.min.js​">&lt;/script> </code>
    * <br><br>OR via<strong> Bower</strong> using <code>bower install ttb-sdk --save</code>
    * <br><br>
    *
@@ -1526,6 +1526,7 @@
      * @return {Object} address.site_route         Component Type: <code>"route"</code> | Name Type: <code>"short_name"</code>.
      * @return {Object} address.site_address       *Built using <code>site_street_number</code> + ' ' + <code>site_route</code>.
      * @return {Object} address.site_city          Component Type: <code>"locality"</code> | Name Type: <code>"long_name"</code>.
+     * @return {Object} address.site_neighborhood  Component Type: <code>"neighborhood"</code> | Name Type: <code>"long_name"</code>.
      * @return {Object} address.site_state         Component Type: <code>"administrative_area_level_1"</code> | Name Type: <code>"short_name"</code>.
      * @return {Object} address.site_zip           Component Type: <code>"postal_code"</code> | Name Type: <code>"short_name"</code>.
      * @return {Object} address.county             Component Type: <code>"administrative_area_level_2"</code> | Name Type: <code>"short_name"</code>.
@@ -1543,6 +1544,7 @@
         street_number: {field_name: 'site_street_number', name_type: 'short_name'},
         route: {field_name: 'site_route', name_type: 'short_name'},
         locality: {field_name: 'site_city', name_type: 'long_name'},
+        neighborhood: {field_name: 'site_neighborhood', name_type: 'long_name'},
         administrative_area_level_1: {field_name: 'site_state', name_type: 'short_name'},
         administrative_area_level_2: {field_name: 'site_county', name_type: 'short_name'},
         postal_code: {field_name: 'site_zip', name_type: 'short_name'}
@@ -1576,6 +1578,9 @@
           (addressInfo.site_street_number && addressInfo.site_route ? ' ' : '') +
           (addressInfo.site_route || '');
       }
+
+      // replace extra suffix by google for county for some addresses.
+      addressInfo.site_county = addressInfo.site_county.replace(' County', '');
         
       //addressInfo.site_address = addressInfo.site_street_number + ' ' + addressInfo.site_route;
 
@@ -1600,6 +1605,8 @@
      * // with basic and minimum requirement.
      * var elementSelector = '#ttb-instant-lookup';
      * var $instantLookup = ttb.instantLookup(elementSelector);
+     *
+     * // OR
      *
      * // with advanced configuration for handling success, and failure of the actions results.
      * var elementSelector = '#ttb-instant-lookup';
