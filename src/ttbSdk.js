@@ -1600,16 +1600,15 @@
      * from the autocomplete and then clicks the action "Full Profile Report". This promise can be used for handling success and failure.
      *
      * @example
-     * var ttb = new TTB({ ... }); // skip if already instantiated.
      *
      * // with basic and minimum requirement.
+     * var ttb = new TTB({ ... }); // skip if already instantiated.
      * var elementSelector = '#ttb-instant-lookup';
      * var $instantLookup = ttb.instantLookup(elementSelector);
      *
-     * // OR
+     * @example
      *
      * // with advanced configuration for handling success, and failure of the actions results.
-     * var elementSelector = '#ttb-instant-lookup';
      * var actions = {
      *  fullProfileReport: function(promise) {
      *
@@ -1632,6 +1631,8 @@
      *  }
      * };
      *
+     * var ttb = new TTB({ ... }); // skip if already instantiated.
+     * var elementSelector = '#ttb-instant-lookup';
      * var $instantLookup = ttb.instantLookup(elementSelector, actions);
      *
      * @return {Object} $element - JQuery reference to the rendered widget container element.
