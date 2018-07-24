@@ -1595,7 +1595,8 @@
     },
 
     /**
-     * This method renders a widget includes google autocomplete and supported actions drop-down. Please make sure you have injected Google Maps scripts dependency.
+     * This method renders a widget includes google autocomplete and supported actions drop-down. <br>
+     * Make sure <strong>Google Maps script</strong> file is injected and ttb.instantLookup() should be called inside global <strong>googleInit()</strong> function.
      *
      * @param {String} elementSelector - DOM element selector where the widget needs to be rendered.
      * <code>#lorem</code> or <code>.ipsum</code> etc.
@@ -1609,37 +1610,47 @@
      *
      * // with basic and minimum requirement.
      * var ttb = new TTB({ ... }); // skip if already instantiated.
-     * var elementSelector = '#ttb-instant-lookup';
-     * var $instantLookup = ttb.instantLookup(elementSelector);
+     *
+     * // define googleInit() it is already not created.
+     * window.googleInit = function () {
+     *
+     *  var elementSelector = '#ttb-instant-lookup';
+     *  var $instantLookup = ttb.instantLookup(elementSelector);
+     * };
      *
      * @example
      *
      * // with advanced configuration for handling success, and failure of the actions results.
-     * var actions = {
-     *  fullProfileReport: function(promise) {
-     *
-     *   promise
-     *   .done(function(res){
-     *     if (res.response.status === 'OK') {
-     *       // your success code here to consume res.response.data
-     *       console.log(res.response.data);
-     *     } else {
-     *       // your failure code here to consume res.response.data
-     *       console.log(res.response.data);
-     *     }
-     *   })
-     *   .fail(function(err) {
-     *     // your failure code here
-     *   })
-     *   .always(function() {
-     *    // your on-complete code here as common for both success and failure
-     *   });
-     *  }
-     * };
-     *
      * var ttb = new TTB({ ... }); // skip if already instantiated.
-     * var elementSelector = '#ttb-instant-lookup';
-     * var $instantLookup = ttb.instantLookup(elementSelector, actions);
+     *
+     * // define googleInit() it is already not created.
+     * window.googleInit = function () {
+     *
+     *  var actions = {
+     *   fullProfileReport: function(promise) {
+     *
+     *    promise
+     *    .done(function(res){
+     *      if (res.response.status === 'OK') {
+     *        // your success code here to consume res.response.data
+     *        console.log(res.response.data);
+     *      } else {
+     *        // your failure code here to consume res.response.data
+     *        console.log(res.response.data);
+     *      }
+     *    })
+     *    .fail(function(err) {
+     *      // your failure code here
+     *    })
+     *    .always(function() {
+     *     // your on-complete code here as common for both success and failure
+     *    });
+     *   }
+     *  };
+     *
+     *  var elementSelector = '#ttb-instant-lookup';
+     *  var $instantLookup = ttb.instantLookup(elementSelector, actions);
+     * };
      *
      * @return {Object} $element - JQuery reference to the rendered widget container element.
      *
