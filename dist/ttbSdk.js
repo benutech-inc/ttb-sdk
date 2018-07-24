@@ -60,7 +60,7 @@
    *
    * @classdesc <p class="main-desc">JavaScript SDK for consuming webservices and widgets by TitleToolBox from third-party websites.</p>
    *
-   * <p><strong>Dependencies:</strong></p>
+   * <p><strong id="dependencies">Dependencies:</strong></p>
    * <p>
    * <strong>JQuery</strong> - version <code>1.x</code> or <code>2.x</code> any would work. We recommend the latest version <code>3.x</code> <br/>
    * <code> &lt;script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">&lt;/script> </code>
