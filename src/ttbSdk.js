@@ -1611,7 +1611,7 @@
      * // with basic and minimum requirement.
      * var ttb = new TTB({ ... }); // skip if already instantiated.
      *
-     * // define googleInit() it is already not created.
+     * // define googleInit() if it is not already created.
      * window.googleInit = function () {
      *
      *  var elementSelector = '#ttb-instant-lookup';
@@ -1623,7 +1623,7 @@
      * // with advanced configuration for handling success, and failure of the actions results.
      * var ttb = new TTB({ ... }); // skip if already instantiated.
      *
-     * // define googleInit() it is already not created.
+     * // define googleInit() if it is not already created.
      * window.googleInit = function () {
      *
      *  var actions = {
