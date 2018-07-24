@@ -75,7 +75,7 @@
    * <p>
    * <strong>Google Maps</strong> - Optional/for some methods only - E.g. ttb.instantLookup(), and other google related methods/widgets only.)
    * <code> &lt;script src="https://maps.googleapis.com/maps/api/js?key=GOOGLE_API_KEY&libraries=places&callback=googleInit">&lt;/script> </code><br/>
-   * (For API KEY, <a target="_blank" href="https://developers.google.com/places/web-service/get-api-key#get_an_api_key">Google documentation</a> will be helpful.
+   * (For API KEY, <a target="_blank" href="https://support.google.com/googleapi/answer/6158862">Google documentation</a> will be helpful.
    * </p>
    *
    * <p>
