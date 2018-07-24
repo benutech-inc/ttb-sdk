@@ -130,6 +130,12 @@
 </p>
 
 <p>
+<strong>Google Maps</strong> - Optional/for some methods only - E.g. ttb.instantLookup(), and other google related methods/widgets only.)
+<code> &lt;script src="https://maps.googleapis.com/maps/api/js?key=GOOGLE_API_KEY&libraries=places&callback=googleInit">&lt;/script> </code><br/>
+(For API KEY, <a target="_blank" target="_blank" href="https://developers.google.com/places/web-service/get-api-key#get_an_api_key">Google documentation</a> will be helpful.
+</p>
+
+<p>
 <strong>TitleToolBox SDK </strong> script file itself, it can be pulled via our public repo link:
 <i>(keep the <a target="_blank" href="https://github.com/benutech-inc/ttb-sdk/releases">latest version</a>)</i><br>
 <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.8.3/dist/ttbSdk.min.js​">&lt;/script> </code>
@@ -156,7 +162,7 @@
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line141">line 141</a>
+            <a href="s.html">s</a>, <a href="s.html#line147">line 147</a>
         </div>
         
     </div>
@@ -849,7 +855,7 @@ or &lt;input type="text" <code>data-ttb-field="GeneralInfo['Year Built']"</code>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line310">line 310</a>
+            <a href="s.html">s</a>, <a href="s.html#line316">line 316</a>
         </div>
         
     </div>
@@ -1103,7 +1109,7 @@ TTB.getSponsors(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line368">line 368</a>
+            <a href="s.html">s</a>, <a href="s.html#line374">line 374</a>
         </div>
         
     </div>
@@ -1382,7 +1388,7 @@ TTB.showSponsorSelector(payload, {
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1457">line 1457</a>
+            <a href="s.html">s</a>, <a href="s.html#line1463">line 1463</a>
         </div>
         
     </div>
@@ -1512,7 +1518,7 @@ ttb.getSearchFields()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1417">line 1417</a>
+            <a href="s.html">s</a>, <a href="s.html#line1423">line 1423</a>
         </div>
         
     </div>
@@ -1637,7 +1643,7 @@ ttb.getTypesReport()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1241">line 1241</a>
+            <a href="s.html">s</a>, <a href="s.html#line1247">line 1247</a>
         </div>
         
     </div>
@@ -2288,7 +2294,7 @@ ttb.globalSearch(payload, queryParams)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1302">line 1302</a>
+            <a href="s.html">s</a>, <a href="s.html#line1308">line 1308</a>
         </div>
         
     </div>
@@ -2481,7 +2487,7 @@ ttb.globalSearchCount(payload, params)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1536">line 1536</a>
+            <a href="s.html">s</a>, <a href="s.html#line1542">line 1542</a>
         </div>
         
     </div>
@@ -2882,7 +2888,7 @@ autocomplete.addListener('place_changed', function () {
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1641">line 1641</a>
+            <a href="s.html">s</a>, <a href="s.html#line1647">line 1647</a>
         </div>
         
     </div>
@@ -2893,7 +2899,7 @@ autocomplete.addListener('place_changed', function () {
     
     
     <div class="description">
-        This method renders a widget includes google autocomplete and supported actions drop-down.
+        This method renders a widget includes google autocomplete and supported actions drop-down. Please make sure you have injected Google Maps scripts dependency.
     </div>
     
 
@@ -3158,7 +3164,7 @@ var $instantLookup = ttb.instantLookup(elementSelector, actions);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line797">line 797</a>
+            <a href="s.html">s</a>, <a href="s.html#line803">line 803</a>
         </div>
         
     </div>
@@ -3404,7 +3410,7 @@ ttb.login(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line747">line 747</a>
+            <a href="s.html">s</a>, <a href="s.html#line753">line 753</a>
         </div>
         
     </div>
@@ -3624,7 +3630,7 @@ ttb.remoteLogin(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line834">line 834</a>
+            <a href="s.html">s</a>, <a href="s.html#line840">line 840</a>
         </div>
         
     </div>
@@ -3751,7 +3757,7 @@ ttb.logout()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1350">line 1350</a>
+            <a href="s.html">s</a>, <a href="s.html#line1356">line 1356</a>
         </div>
         
     </div>
@@ -3966,7 +3972,7 @@ ttb.nearbySearch(payload, params)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1024">line 1024</a>
+            <a href="s.html">s</a>, <a href="s.html#line1030">line 1030</a>
         </div>
         
     </div>
@@ -4303,7 +4309,7 @@ ttb.orderReport(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1085">line 1085</a>
+            <a href="s.html">s</a>, <a href="s.html#line1091">line 1091</a>
         </div>
         
     </div>
@@ -4742,7 +4748,7 @@ ttb.propertyComps(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1137">line 1137</a>
+            <a href="s.html">s</a>, <a href="s.html#line1143">line 1143</a>
         </div>
         
     </div>
@@ -5077,7 +5083,7 @@ ttb.propertyDetails(payload, options)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line976">line 976</a>
+            <a href="s.html">s</a>, <a href="s.html#line982">line 982</a>
         </div>
         
     </div>
@@ -5365,7 +5371,7 @@ ttb.searchByOwnerName(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line877">line 877</a>
+            <a href="s.html">s</a>, <a href="s.html#line883">line 883</a>
         </div>
         
     </div>
@@ -5608,7 +5614,7 @@ ttb.searchByParcelNumber(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line930">line 930</a>
+            <a href="s.html">s</a>, <a href="s.html#line936">line 936</a>
         </div>
         
     </div>
@@ -5990,7 +5996,7 @@ ttb.searchBySiteAddress(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line709">line 709</a>
+            <a href="s.html">s</a>, <a href="s.html#line715">line 715</a>
         </div>
         
     </div>
@@ -6154,7 +6160,7 @@ ttb.setSponsor('xyz');</code></pre>
 
         <footer>
             Copyright © 2018 <a target="_blank" href="http://www.benutech.com/" target="_blank" title="Benutech official website">Benutech Inc.</a> All rights reserved.</a>
-           <!-- Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Jul 20 2018 05:16:11 GMT-0700 (PDT) -->
+           <!-- Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Jul 24 2018 11:12:31 GMT-0700 (PDT) -->
         </footer>
     </div>
 </div>

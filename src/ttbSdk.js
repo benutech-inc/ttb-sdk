@@ -73,6 +73,12 @@
    * </p>
    *
    * <p>
+   * <strong>Google Maps</strong> - Optional/for some methods only - E.g. ttb.instantLookup(), and other google related methods/widgets only.)
+   * <code> &lt;script src="https://maps.googleapis.com/maps/api/js?key=GOOGLE_API_KEY&libraries=places&callback=googleInit">&lt;/script> </code><br/>
+   * (For API KEY, <a target="_blank" href="https://developers.google.com/places/web-service/get-api-key#get_an_api_key">Google documentation</a> will be helpful.
+   * </p>
+   *
+   * <p>
    * <strong>TitleToolBox SDK </strong> script file itself, it can be pulled via our public repo link:
    * <i>(keep the [latest version]{@link https://github.com/benutech-inc/ttb-sdk/releases})</i><br>
    * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.8.3/dist/ttbSdk.min.js​">&lt;/script> </code>
@@ -1589,7 +1595,7 @@
     },
 
     /**
-     * This method renders a widget includes google autocomplete and supported actions drop-down.
+     * This method renders a widget includes google autocomplete and supported actions drop-down. Please make sure you have injected Google Maps scripts dependency.
      *
      * @param {String} elementSelector - DOM element selector where the widget needs to be rendered.
      * <code>#lorem</code> or <code>.ipsum</code> etc.
