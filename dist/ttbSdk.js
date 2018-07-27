@@ -349,7 +349,7 @@
    *   zipCode: '12345'
    * };
    *
-   * TTB.showSponsorSelector(payload, {
+   * TTB.showSelectSponsor(payload, {
    *   onSelect: function(selectedSponsor) {
    *    // your success code here to consume "selectedSponsor"
    *
