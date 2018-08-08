@@ -1,7 +1,7 @@
 /**
  * Copyright © 2018 Benutech Inc. All rights reserved.
  * http://www.benutech.com - help@benutech.com
- * version: 0.8.4
+ * version: 0.9.0
  * https://github.com/benutech-inc/ttb-sdk
  * For latest release, please check - https://github.com/benutech-inc/ttb-sdk/releases
  * */
@@ -81,8 +81,8 @@
    * <p>
    * <strong>TitleToolBox SDK </strong> files (1 script, and 1 style), can be pulled via our public repo link:
    * <i>(keep the [latest version]{@link https://github.com/benutech-inc/ttb-sdk/releases})</i><br>
-   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.8.5/dist/ttbSdk.min.css​"> </code>
-   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.8.5/dist/ttbSdk.min.js​">&lt;/script> </code>
+   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.9.0/dist/ttbSdk.min.css​"> </code>
+   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.9.0/dist/ttbSdk.min.js​">&lt;/script> </code>
    * <br><br>OR via<strong> Bower</strong> using <code>bower install ttb-sdk --save</code>
    * <br><br>
    *
