@@ -1597,7 +1597,7 @@
 
     /**
      * This method renders a widget includes google autocomplete and supported actions drop-down. <br>
-     * Make sure <strong>Google Maps script</strong> file is injected and <code>ttb.instantLookupWidget()<code> should be called inside global <code>googleInit()</code> function. <br>
+     * Make sure <strong>Google Maps script</strong> file is injected and <code>ttb.instantLookupWidget()</code> should be called inside global <code>googleInit()</code> function. <br>
      * And also <strong>ttbSdk.min.css</strong> file is injected for proper style and look for the widgets.
      *
      * @param {String} elementSelector - DOM element selector where the widget needs to be rendered.
