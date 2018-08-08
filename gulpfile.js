@@ -28,14 +28,27 @@ gulp.task('docs', ['copy-docs-assets'], function () {
     .pipe($.jsdoc3(jsdocConfig));
 });
 
-gulp.task('build', ['del'], function () {
-  //console.log('task: build');
+gulp.task('build:js', ['del'], function () {
+  //console.log('task: build:js');
   return gulp.src(['src/ttbSdk.js'])
     .pipe(gulp.dest(settings.PATH_BUILD))
     .pipe($.uglify())
     //.on('error', function (err) { console.log(err.toString());})
     .pipe($.rename('ttbSdk.min.js'))
-    .pipe(gulp.dest(settings.PATH_BUILD));
+    .pipe(gulp.dest(settings.PATH_BUILD))
+});
+
+gulp.task('build:css', ['del'], function () {
+  //console.log('task: build:css');
+    return gulp.src(['src/ttbSdk.css'])
+    .pipe(gulp.dest(settings.PATH_BUILD))
+    .pipe($.csso())
+    .pipe($.rename('ttbSdk.min.css'))
+    .pipe(gulp.dest(settings.PATH_BUILD))
+});
+
+gulp.task('build', ['build:js', 'build:css'], function () {
+  //console.log('task: build');
 });
 
 gulp.task('watch', ['docs', 'build'], function () {
