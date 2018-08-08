@@ -1,7 +1,7 @@
 /**
  * Copyright © 2018 Benutech Inc. All rights reserved.
  * http://www.benutech.com - help@benutech.com
- * version: 0.9.1
+ * version: 0.10.0
  * https://github.com/benutech-inc/ttb-sdk
  * For latest release, please check - https://github.com/benutech-inc/ttb-sdk/releases
  * */
@@ -81,8 +81,8 @@
    * <p>
    * <strong>TitleToolBox SDK </strong> files (1 script, and 1 style), can be pulled via our public repo link:
    * <i>(keep the [latest version]{@link https://github.com/benutech-inc/ttb-sdk/releases})</i><br>
-   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.9.1/dist/ttbSdk.min.css​"> </code>
-   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.9.1/dist/ttbSdk.min.js​">&lt;/script> </code>
+   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.10.0/dist/ttbSdk.min.css​"> </code>
+   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.10.0/dist/ttbSdk.min.js​">&lt;/script> </code>
    * <br><br>OR via<strong> Bower</strong> using <code>bower install ttb-sdk --save</code>
    * <br><br>
    *
@@ -168,9 +168,9 @@
    * @memberof TTB
    * @alias version
    * @static
-   * @description Provides version of SDK being used.
+   * @description The version of the SDK being used.
    * */
-  window.TTB.version = '0.9.1';
+  window.TTB.version = '0.10.0';
 
 
   /**
@@ -593,22 +593,45 @@
      *
      * @param {String} selector - A query selector of context (form/parent element)
      * @param {Object} data - A data object retrieved from the response of certain of API, against which auto-fill needs to be processed.
+     * @param {Boolean} [clearExisting="false"] - clear the existing / previously added values to all of the fields that are to be auto-filled.
+     * @param {Number} [delay="0"] - A delay in milliseconds, useful when wished to visualize auto filling. (50 is a good value to test)
      *
      * */
-    _fillFields: function (selector, data) {
-      var _self, $fields, model, modelValue;
+    _fillFields: function (selector, data, clearExisting, delay) {
+      var _self, $fields, model, modelValue, fillValue, timeout;
 
       _self = this;
       $fields = $(selector).find('input[' + _self.autoFillAttr + ']');
 
+      // if delay is given, wrap the fillValue within a setTimeout.
+      if (delay) {
+        timeout = 0;
+        fillValue = function($element, modelValue) {
+
+          // how much to delay between each field
+          timeout += delay;
+          setTimeout(function(){
+            $element.val(modelValue);
+          }, timeout);
+        };
+      } else {
+        fillValue = function(modelValue) {
+          $(this).val(modelValue);
+        };
+      }
+
       $fields.each(function () {
         model = $(this).attr(_self.autoFillAttr);
 
+        if (clearExisting) {
+          $(this).val(undefined);
+        }
+
         try {
           modelValue = eval('data.' + model);
-          $(this).val(modelValue);
+          modelValue && fillValue($(this), modelValue);
         } catch (e) {
-          _self._log([defaults.sdkPrefix, ' : autoFill : skipping : invalid model - ', model]);
+          _self._log([defaults.sdkPrefix, ' : autoFill : ', model, ': skipping - invalid model']);
         }
       });
     },
@@ -1118,6 +1141,8 @@
      * @param {Object} [options] - The options object
      * @param {String} [options.autoFillContext] - A query selector of an element(s) inside which to look for inputs elements
      * having <code>data-ttb-field</code>attribute.
+     * @param {Boolean} [options.autoFillClearExisting="false"] - Clear the existing / previously added values to all of the fields that are to be auto-filled.
+     * @param {Number} [options.autoFillDelay="0"] - A delay in milliseconds, useful when wished to visualize auto filling. (50 is a good value to test)
      *
      * @example
      * var ttb = new TTB({ ... }); // skip if already instantiated.
@@ -1163,7 +1188,7 @@
 
       return this._ajax(request, methodsMapping.PROPERTY_DETAILS)
         .then(function (res) {
-          options.autoFillContext && _self._fillFields(options.autoFillContext, res.response.data);
+          options.autoFillContext && _self._fillFields(options.autoFillContext, res.response.data, options.autoFillClearExisting, options.autoFillDelay);
           return res;
         });
     },
@@ -1490,6 +1515,8 @@
      * @param {String} [options.autoFillContext] - A query selector of an element(s) inside which to look for inputs elements
      * having <code>data-ttb-field</code> attribute.
      * - For example: &lt;input type="text" <code>data-ttb-field="site_address"</code> />
+     * @param {Boolean} [options.autoFillClearExisting="false"] - Clear the existing / previously added values to all of the fields that are to be auto-filled.
+     * @param {Number} [options.autoFillDelay="0"] - A delay in milliseconds, useful when wished to visualize auto filling. (50 is a good value to test)
      *
      * @example
      * var ttb = new TTB({ ... }); // skip if already instantiated.
