@@ -1,7 +1,7 @@
 /**
  * Copyright © 2018 Benutech Inc. All rights reserved.
  * http://www.benutech.com - help@benutech.com
- * version: 0.9.0
+ * version: 0.9.1
  * https://github.com/benutech-inc/ttb-sdk
  * For latest release, please check - https://github.com/benutech-inc/ttb-sdk/releases
  * */
@@ -81,8 +81,8 @@
    * <p>
    * <strong>TitleToolBox SDK </strong> files (1 script, and 1 style), can be pulled via our public repo link:
    * <i>(keep the [latest version]{@link https://github.com/benutech-inc/ttb-sdk/releases})</i><br>
-   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.9.0/dist/ttbSdk.min.css​"> </code>
-   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.9.0/dist/ttbSdk.min.js​">&lt;/script> </code>
+   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.9.1/dist/ttbSdk.min.css​"> </code>
+   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.9.1/dist/ttbSdk.min.js​">&lt;/script> </code>
    * <br><br>OR via<strong> Bower</strong> using <code>bower install ttb-sdk --save</code>
    * <br><br>
    *
@@ -160,8 +160,17 @@
     this.autoFillAttr = config.autoFillAttr || defaults.autoFillAttr;
     this.debug = config.debug || defaults.debug;
 
-    this._log([defaults.sdkPrefix + ' :', 'TTB SDK instantiated.']);
+    this._log([defaults.sdkPrefix + ' :', 'TTB SDK instantiated. | version: ', window.TTB.version]);
   };
+
+
+  /**
+   * @memberof TTB
+   * @alias version
+   * @static
+   * @description Provides version of SDK being used.
+   * */
+  window.TTB.version = '0.9.1';
 
 
   /**
@@ -1597,7 +1606,7 @@
 
     /**
      * This method renders a widget includes google autocomplete and supported actions drop-down. <br>
-     * Make sure <strong>Google Maps script</strong> file is injected and <code>ttb.instantLookupWidget()<code> should be called inside global <code>googleInit()</code> function. <br>
+     * Make sure <strong>Google Maps script</strong> file is injected and <code>ttb.instantLookupWidget()</code> should be called inside global <code>googleInit()</code> function. <br>
      * And also <strong>ttbSdk.min.css</strong> file is injected for proper style and look for the widgets.
      *
      * @param {String} elementSelector - DOM element selector where the widget needs to be rendered.
