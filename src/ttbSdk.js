@@ -160,8 +160,17 @@
     this.autoFillAttr = config.autoFillAttr || defaults.autoFillAttr;
     this.debug = config.debug || defaults.debug;
 
-    this._log([defaults.sdkPrefix + ' :', 'TTB SDK instantiated.']);
+    this._log([defaults.sdkPrefix + ' :', 'TTB SDK instantiated. | version: ', window.TTB.version]);
   };
+
+
+  /**
+   * @memberof TTB
+   * @alias version
+   * @static
+   * @description Provides version of SDK being used.
+   * */
+  window.TTB.version = '0.9.0';
 
 
   /**
