@@ -79,9 +79,10 @@
    * </p>
    *
    * <p>
-   * <strong>TitleToolBox SDK </strong> script file itself, it can be pulled via our public repo link:
+   * <strong>TitleToolBox SDK </strong> files (1 script, and 1 style), can be pulled via our public repo link:
    * <i>(keep the [latest version]{@link https://github.com/benutech-inc/ttb-sdk/releases})</i><br>
-   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.8.4/dist/ttbSdk.min.js​">&lt;/script> </code>
+   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.8.5/dist/ttbSdk.min.css​"> </code>
+   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.8.5/dist/ttbSdk.min.js​">&lt;/script> </code>
    * <br><br>OR via<strong> Bower</strong> using <code>bower install ttb-sdk --save</code>
    * <br><br>
    *
@@ -1596,7 +1597,8 @@
 
     /**
      * This method renders a widget includes google autocomplete and supported actions drop-down. <br>
-     * Make sure <strong>Google Maps script</strong> file is injected and <code>ttb.instantLookupWidget()<code> should be called inside global <strong>googleInit()</strong> function. <br>
+     * Make sure <strong>Google Maps script</strong> file is injected and <code>ttb.instantLookupWidget()<code> should be called inside global <code>googleInit()</code> function. <br>
+     * And also <strong>ttbSdk.min.css</strong> file is injected for proper style and look for the widgets.
      *
      * @param {String} elementSelector - DOM element selector where the widget needs to be rendered.
      * <code>#lorem</code> or <code>.ipsum</code> etc.
@@ -1667,7 +1669,7 @@
       o.widgetTemplate = [
         '<!-- the google autocomplete address lookup -->',
         '<div id="ttb-sdk--instant-lookup--address" class="col-xs-7">',
-        ' <div class="form-group">',
+        ' <div class="">',
         '  <input type="text" class="form-control" id="ttb-sdk--instant-lookup--auto-complete" name="ttb-sdk--instant-lookup--auto-complete" placeholder="Search for an address...">',
         ' </div>',
         '</div>',
