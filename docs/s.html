@@ -70,7 +70,7 @@
             
                 <li data-name="TTB#googleBuildAddress"><a href="TTB.html#googleBuildAddress">googleBuildAddress</a></li>
             
-                <li data-name="TTB#instantLookup"><a href="TTB.html#instantLookup">instantLookup</a></li>
+                <li data-name="TTB#instantLookupWidget"><a href="TTB.html#instantLookupWidget">instantLookupWidget</a></li>
             
                 <li data-name="TTB#login"><a href="TTB.html#login">login</a></li>
             
@@ -113,7 +113,7 @@
             <pre class="prettyprint source "><code>/**
  * Copyright © 2018 Benutech Inc. All rights reserved.
  * http://www.benutech.com - help@benutech.com
- * version: 0.8.3
+ * version: 0.8.4
  * https://github.com/benutech-inc/ttb-sdk
  * For latest release, please check - https://github.com/benutech-inc/ttb-sdk/releases
  * */
@@ -185,7 +185,7 @@
    * &lt;/p>
    *
    * &lt;p>
-   * &lt;strong>Google Maps&lt;/strong> - Optional/for some methods only - E.g. ttb.instantLookup(), and other google related methods/widgets only.)
+   * &lt;strong>Google Maps&lt;/strong> - Optional/for some methods only - E.g. ttb.instantLookupWidget(), and other google related methods/widgets only.)
    * &lt;code> &amp;lt;script src="https://maps.googleapis.com/maps/api/js?key=GOOGLE_API_KEY&amp;libraries=places&amp;callback=googleInit">&amp;lt;/script> &lt;/code>&lt;br/>
    * (For API KEY, &lt;a target="_blank" href="https://support.google.com/googleapi/answer/6158862">Google documentation&lt;/a> will be helpful.
    * &lt;/p>
@@ -193,7 +193,7 @@
    * &lt;p>
    * &lt;strong>TitleToolBox SDK &lt;/strong> script file itself, it can be pulled via our public repo link:
    * &lt;i>(keep the [latest version]{@link https://github.com/benutech-inc/ttb-sdk/releases})&lt;/i>&lt;br>
-   * &lt;code> &amp;lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.8.3/dist/ttbSdk.min.js​">&amp;lt;/script> &lt;/code>
+   * &lt;code> &amp;lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.8.4/dist/ttbSdk.min.js​">&amp;lt;/script> &lt;/code>
    * &lt;br>&lt;br>OR via&lt;strong> Bower&lt;/strong> using &lt;code>bower install ttb-sdk --save&lt;/code>
    * &lt;br>&lt;br>
    *
@@ -1708,7 +1708,7 @@
 
     /**
      * This method renders a widget includes google autocomplete and supported actions drop-down. &lt;br>
-     * Make sure &lt;strong>Google Maps script&lt;/strong> file is injected and ttb.instantLookup() should be called inside global &lt;strong>googleInit()&lt;/strong> function.
+     * Make sure &lt;strong>Google Maps script&lt;/strong> file is injected and &lt;code>ttb.instantLookupWidget()&lt;code> should be called inside global &lt;strong>googleInit()&lt;/strong> function. &lt;br>
      *
      * @param {String} elementSelector - DOM element selector where the widget needs to be rendered.
      * &lt;code>#lorem&lt;/code> or &lt;code>.ipsum&lt;/code> etc.
@@ -1727,7 +1727,7 @@
      * window.googleInit = function () {
      *
      *  var elementSelector = '#ttb-instant-lookup';
-     *  var $instantLookup = ttb.instantLookup(elementSelector);
+     *  var $instantLookup = ttb.instantLookupWidget(elementSelector);
      * };
      *
      * @example
@@ -1761,13 +1761,13 @@
      *  };
      *
      *  var elementSelector = '#ttb-instant-lookup';
-     *  var $instantLookup = ttb.instantLookup(elementSelector, actions);
+     *  var $instantLookup = ttb.instantLookupWidget(elementSelector, actions);
      * };
      *
      * @return {Object} $element - JQuery reference to the rendered widget container element.
      *
      * */
-    instantLookup: function (elementSelector, actions) {
+    instantLookupWidget: function (elementSelector, actions) {
       var o, autoComplete, ttb;
 
       ttb = this;
@@ -1815,7 +1815,7 @@
 
       // validate if target element not found
       if (!o.$container.length) {
-        this._log([defaults.sdkPrefix, ' : instantLookup : abort : element not found - ', elementSelector]);
+        this._log([defaults.sdkPrefix, ' : instantLookupWidget : abort : element not found - ', elementSelector]);
         return null;
       }
 
@@ -1831,8 +1831,8 @@
         var test = google.maps.places.Autocomplete;
       } catch(e) {
         this._log([defaults.sdkPrefix,
-          ' : instantLookup : abort : "google.maps.places.Autocomplete" not found -',
-          ' please make sure the google script was loaded and that instantLookup() is being called inside/after google load cb is ',
+          ' : instantLookupWidget : abort : "google.maps.places.Autocomplete" not found -',
+          ' please make sure the google script was loaded and that instantLookupWidget() is being called inside/after google load cb is ',
           ' called i.e. googleInit() or the mentioned callback=* in the google script src value.'
         ]);
       }
@@ -1905,7 +1905,7 @@
           .then(function (res) {
             var property;
 
-            ttb._log([defaults.sdkPrefix, ' : instantLookup : searchBySiteAddress - success - ', res]);
+            ttb._log([defaults.sdkPrefix, ' : instantLookupWidget : searchBySiteAddress - success - ', res]);
 
             res = res.response;
 
@@ -1922,16 +1922,16 @@
               switch (o.selectedAction.name) {
 
                 //case 'netSheet':
-                //  ttb._log([defaults.sdkPrefix, ' : instantLookup : netSheet - ']);
+                //  ttb._log([defaults.sdkPrefix, ' : instantLookupWidget : netSheet - ']);
                 //  break;
 
                 //case 'generateReport':
-                //  ttb._log([defaults.sdkPrefix, ' : instantLookup : generateReport - dev in progress.']);
+                //  ttb._log([defaults.sdkPrefix, ' : instantLookupWidget : generateReport - dev in progress.']);
                 //  enableControls();
                 //  break;
 
                 case 'fullProfileReport':
-                  ttb._log([defaults.sdkPrefix, ' : instantLookup : fullProfileReport']);
+                  ttb._log([defaults.sdkPrefix, ' : instantLookupWidget : fullProfileReport']);
 
                   ttb.orderReport({
                       sa_property_id: property.sa_property_id,
@@ -1954,7 +1954,7 @@
                   break;
 
                 default:
-                  ttb._log([defaults.sdkPrefix, ' : instantLookup : action not found - ', elementSelector]);
+                  ttb._log([defaults.sdkPrefix, ' : instantLookupWidget : action not found - ', elementSelector]);
                   enableControls();
               }
 
@@ -1986,7 +1986,7 @@
 
         <footer>
             Copyright © 2018 <a href="http://www.benutech.com/" target="_blank" title="Benutech official website">Benutech Inc.</a> All rights reserved.</a>
-           <!-- Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Jul 27 2018 09:42:21 GMT-0700 (PDT) -->
+           <!-- Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Aug 08 2018 05:02:49 GMT-0700 (PDT) -->
         </footer>
     </div>
 </div>

@@ -1,7 +1,7 @@
 /**
  * Copyright © 2018 Benutech Inc. All rights reserved.
  * http://www.benutech.com - help@benutech.com
- * version: 0.8.3
+ * version: 0.8.4
  * https://github.com/benutech-inc/ttb-sdk
  * For latest release, please check - https://github.com/benutech-inc/ttb-sdk/releases
  * */
@@ -73,7 +73,7 @@
    * </p>
    *
    * <p>
-   * <strong>Google Maps</strong> - Optional/for some methods only - E.g. ttb.instantLookup(), and other google related methods/widgets only.)
+   * <strong>Google Maps</strong> - Optional/for some methods only - E.g. ttb.instantLookupWidget(), and other google related methods/widgets only.)
    * <code> &lt;script src="https://maps.googleapis.com/maps/api/js?key=GOOGLE_API_KEY&libraries=places&callback=googleInit">&lt;/script> </code><br/>
    * (For API KEY, <a target="_blank" href="https://support.google.com/googleapi/answer/6158862">Google documentation</a> will be helpful.
    * </p>
@@ -81,7 +81,7 @@
    * <p>
    * <strong>TitleToolBox SDK </strong> script file itself, it can be pulled via our public repo link:
    * <i>(keep the [latest version]{@link https://github.com/benutech-inc/ttb-sdk/releases})</i><br>
-   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.8.3/dist/ttbSdk.min.js​">&lt;/script> </code>
+   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.8.4/dist/ttbSdk.min.js​">&lt;/script> </code>
    * <br><br>OR via<strong> Bower</strong> using <code>bower install ttb-sdk --save</code>
    * <br><br>
    *
@@ -1596,7 +1596,7 @@
 
     /**
      * This method renders a widget includes google autocomplete and supported actions drop-down. <br>
-     * Make sure <strong>Google Maps script</strong> file is injected and ttb.instantLookup() should be called inside global <strong>googleInit()</strong> function.
+     * Make sure <strong>Google Maps script</strong> file is injected and <code>ttb.instantLookupWidget()<code> should be called inside global <strong>googleInit()</strong> function. <br>
      *
      * @param {String} elementSelector - DOM element selector where the widget needs to be rendered.
      * <code>#lorem</code> or <code>.ipsum</code> etc.
@@ -1615,7 +1615,7 @@
      * window.googleInit = function () {
      *
      *  var elementSelector = '#ttb-instant-lookup';
-     *  var $instantLookup = ttb.instantLookup(elementSelector);
+     *  var $instantLookup = ttb.instantLookupWidget(elementSelector);
      * };
      *
      * @example
@@ -1649,13 +1649,13 @@
      *  };
      *
      *  var elementSelector = '#ttb-instant-lookup';
-     *  var $instantLookup = ttb.instantLookup(elementSelector, actions);
+     *  var $instantLookup = ttb.instantLookupWidget(elementSelector, actions);
      * };
      *
      * @return {Object} $element - JQuery reference to the rendered widget container element.
      *
      * */
-    instantLookup: function (elementSelector, actions) {
+    instantLookupWidget: function (elementSelector, actions) {
       var o, autoComplete, ttb;
 
       ttb = this;
@@ -1703,7 +1703,7 @@
 
       // validate if target element not found
       if (!o.$container.length) {
-        this._log([defaults.sdkPrefix, ' : instantLookup : abort : element not found - ', elementSelector]);
+        this._log([defaults.sdkPrefix, ' : instantLookupWidget : abort : element not found - ', elementSelector]);
         return null;
       }
 
@@ -1719,8 +1719,8 @@
         var test = google.maps.places.Autocomplete;
       } catch(e) {
         this._log([defaults.sdkPrefix,
-          ' : instantLookup : abort : "google.maps.places.Autocomplete" not found -',
-          ' please make sure the google script was loaded and that instantLookup() is being called inside/after google load cb is ',
+          ' : instantLookupWidget : abort : "google.maps.places.Autocomplete" not found -',
+          ' please make sure the google script was loaded and that instantLookupWidget() is being called inside/after google load cb is ',
           ' called i.e. googleInit() or the mentioned callback=* in the google script src value.'
         ]);
       }
@@ -1793,7 +1793,7 @@
           .then(function (res) {
             var property;
 
-            ttb._log([defaults.sdkPrefix, ' : instantLookup : searchBySiteAddress - success - ', res]);
+            ttb._log([defaults.sdkPrefix, ' : instantLookupWidget : searchBySiteAddress - success - ', res]);
 
             res = res.response;
 
@@ -1810,16 +1810,16 @@
               switch (o.selectedAction.name) {
 
                 //case 'netSheet':
-                //  ttb._log([defaults.sdkPrefix, ' : instantLookup : netSheet - ']);
+                //  ttb._log([defaults.sdkPrefix, ' : instantLookupWidget : netSheet - ']);
                 //  break;
 
                 //case 'generateReport':
-                //  ttb._log([defaults.sdkPrefix, ' : instantLookup : generateReport - dev in progress.']);
+                //  ttb._log([defaults.sdkPrefix, ' : instantLookupWidget : generateReport - dev in progress.']);
                 //  enableControls();
                 //  break;
 
                 case 'fullProfileReport':
-                  ttb._log([defaults.sdkPrefix, ' : instantLookup : fullProfileReport']);
+                  ttb._log([defaults.sdkPrefix, ' : instantLookupWidget : fullProfileReport']);
 
                   ttb.orderReport({
                       sa_property_id: property.sa_property_id,
@@ -1842,7 +1842,7 @@
                   break;
 
                 default:
-                  ttb._log([defaults.sdkPrefix, ' : instantLookup : action not found - ', elementSelector]);
+                  ttb._log([defaults.sdkPrefix, ' : instantLookupWidget : action not found - ', elementSelector]);
                   enableControls();
               }
 
