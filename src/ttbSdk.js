@@ -767,6 +767,51 @@
       return this.baseURL = this.baseURLPattern.replace('{{sponsorName}}', sponsor.name);
     },
 
+    /**
+     * This method is used to open up a TOS (Terms of Services) Modal. which lists TOS info of the selected sponsor.
+     *
+     * @example
+     * var ttb = new TTB({ ... }); // skip if already instantiated.
+     *
+     * ttb.showTOS();
+     *
+     * @return {Object} $modal - JQuery reference to the rendered modal DOMNode.
+     *
+     * */
+    showTOS: function () {
+      var modalId, $modal, modalTemplate;
+
+      modalId = 'ttb-sdk-sponsor-tos';
+
+      // remove any previous attempt modal
+      if ($('#' + modalId).length) {
+        $('#' + modalId).remove();
+      }
+
+      modalTemplate = [
+        '<iframe src="{{src}}" width="100%" height="600px"></iframe>',
+        //'<div class="row">',
+        //' <div class="col-xs-12">',
+        //' <button class="btn btn-success ttb-sdk--tos-accept pull-right">Accept</button>',
+        //' </div>',
+        '</div>'
+      ]
+        .join('')
+        .replace('{{src}}', this.sponsor.TOSURL);
+
+      // render the sponsors TOS content via modal
+      $modal = window.TTB._modal({
+        id: modalId,
+        title: 'Terms of Service',
+        bodyContent: modalTemplate
+      });
+
+      // triggering .modal() of bootstrap
+      return $modal.modal({
+        //backdrop: 'static'
+      });
+    },
+
 
     /**
      * This method is used to log the user in from 3rd-party site, and maintain a session for the user throughout the App.
