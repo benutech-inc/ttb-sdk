@@ -1,7 +1,7 @@
 /**
  * Copyright © 2018 Benutech Inc. All rights reserved.
  * http://www.benutech.com - help@benutech.com
- * version: 0.10.0
+ * version: 0.11.0
  * https://github.com/benutech-inc/ttb-sdk
  * For latest release, please check - https://github.com/benutech-inc/ttb-sdk/releases
  * */
@@ -13,8 +13,12 @@
 
   defaults = {
     partnerKey: '1-234-567-890',
-    sponsor: 'direct',
-    baseURLPattern: 'https://{{sponsor}}.api.titletoolbox.com/',
+    sponsor: {
+      name: 'direct',
+      title: 'Benutech',
+      TOSURL: 'https://direct.api.titletoolbox.com/pages/tos/direct_tos'
+    },
+    baseURLPattern: 'https://{{sponsorName}}.api.titletoolbox.com/',
     debug: false,
     sdkPrefix: 'ttb-sdk',
     autoFillAttr: 'data-ttb-field',
@@ -81,8 +85,8 @@
    * <p>
    * <strong>TitleToolBox SDK </strong> files (1 script, and 1 style), can be pulled via our public repo link:
    * <i>(keep the [latest version]{@link https://github.com/benutech-inc/ttb-sdk/releases})</i><br>
-   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.10.0/dist/ttbSdk.min.css​"> </code>
-   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.10.0/dist/ttbSdk.min.js​">&lt;/script> </code>
+   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.11.0/dist/ttbSdk.min.css​"> </code>
+   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.11.0/dist/ttbSdk.min.js​">&lt;/script> </code>
    * <br><br>OR via<strong> Bower</strong> using <code>bower install ttb-sdk --save</code>
    * <br><br>
    *
@@ -100,8 +104,8 @@
    * @param {String} [config.sponsor="direct"] - The Title Company Sponsor name to be used in generating baseURL.
    * (note - It will be ignored if baseURL is already passed.)
    *
-   * @param {String} [config.baseURLPattern="https://{{sponsor}}.api.titletoolbox.com/"] - The URL pattern to be used
-   * to generate the baseURL which includes the <code>sponsor</code> provided. Must contain {{sponsor}} at least once.
+   * @param {String} [config.baseURLPattern="https://{{sponsorName}}.api.titletoolbox.com/"] - The URL pattern to be used
+   * to generate the baseURL which includes the <code>sponsor.name</code> provided. Must contain {{sponsorName}} at least once.
    * (note - It will be ignored if <code>baseURL</code> is already passed.)
    *
    * @param {Function} [config.onSessionExpire] - The callback / handler to be called whenever an API receives <code>401 - UNAUTHENTICATED</code>
@@ -140,8 +144,8 @@
    *  // With advanced configuration for custom <code>baseURLPattern</code> and <code>sponsor</code>, and custom auto-fill attributes.
    *  var ttb = new TTB({
    *    partnerKey: '{your partner key}',
-   *    baseURLPattern: 'https://customdomain.com/api/{{sponsor}}',
-   *    sponsor: 'abc' // switchable later via ttb.setSponsor(),
+   *    baseURLPattern: 'https://customdomain.com/api/{{sponsorName}}',
+   *    sponsor: {...} // switchable later via ttb.setSponsor(),
    *    autoFillAttr: 'data-model'
    *  });
    * */
@@ -169,8 +173,9 @@
    * @alias version
    * @static
    * @description The version of the SDK being used.
+   * @type String
    * */
-  window.TTB.version = '0.10.0';
+  window.TTB.version = '0.11.0';
 
 
   /**
@@ -436,7 +441,7 @@
           ' <td><img src="{{logoUrl}}" class="img-responsive" alt="Sponsor Logo"></td>',
           ' <td>{{name}}</td>',
           ' <td><a href="{{website}}" target="_blank">{{website}}</a></td>',
-          ' <td><button class="btn btn-primary pull-right" data-sponsor="{{sponsor}}">Select</button></td>',
+          ' <td><button class="btn btn-primary pull-right" data-sponsor-name="{{sponsorName}}" data-sponsor-title="{{sponsorTitle}}" data-sponsor-tos="{{sponsorTOSURL}}">Select</button></td>',
           '</tr>'
         ].join('');
 
@@ -467,7 +472,9 @@
             .replace('{{logoUrl}}', sponsor.company_info.logo_url)
             .replace('{{name}}', sponsor.company_info.company_name)
             .replace(/(\{\{website}})/g, sponsor.company_info.company_website)
-            .replace('{{sponsor}}', sponsor.vertical_name);
+            .replace('{{sponsorName}}', sponsor.vertical_name)
+            .replace('{{sponsorTitle}}', sponsor.company_info.company_name)
+            .replace('{{sponsorTOSURL}}', sponsor.TOS_content);
 
           // set the target list with respect to match.type
           switch (sponsor.match.type) {
@@ -554,7 +561,11 @@
 
         // register the click handler for sponsor selection
         $('#' + modalId + ' tbody').on('click', 'button', function (e) {
-          var selectedSponsor = $(this).attr('data-sponsor');
+          var selectedSponsor = {
+            name: $(this).attr('data-sponsor-name'),
+            title: $(this).attr('data-sponsor-title'),
+            TOSURL: $(this).attr('data-sponsor-tos')
+          };
 
           // pass the selectedSponsor to on-select callback if provided.
           options.onSelect && options.onSelect(selectedSponsor);
@@ -732,21 +743,73 @@
 
     /**
      * This method is use to switch to a different sponsor (Title Company) and so generates a new <code>baseURL</code>
-     * based on passed <code/>sponsor</code> with existing <code>baseURLPattern</code>.
+     * based on passed <code/>sponsor.name</code> with existing <code>baseURLPattern</code>.
      *
-     * @param {String} sponsor - The Title Company Sponsor name to be used in generating baseURL. - can retrieve
-     * from <code>TTB.getSponsors()</code>
+     * @param {Object} sponsor - Information to be retrieved via <code>options.onSelect()</code> of <code>TTB.getSponsors()</code>
+     * @param {String} sponsor.title - The <code>company_info.company_name</code> field value of sponsor object retrieved.
+     * @param {String} sponsor.name - The <code>vertical_name</code> field value of sponsor object retrieved. (to be used in generating baseURL)
+     * @param {String} sponsor.TOSURL - The <code>TOS_content</code> field value of sponsor object retrieved.
      *
      * @return {String} baseURL - The newly generated <code>baseURL</code>.
      *
      * @example
      * var ttb = new TTB({ ... }); // skip if already instantiated.
      *
-     * ttb.setSponsor('xyz');
+     * ttb.setSponsor({
+     *  name: 'direct',
+     *  title: 'Benutech',
+     *  TOSURL: 'https://direct.api.titletoolbox.com/pages/tos/direct_tos'
+     * });
      *
      * */
     setSponsor: function (sponsor) {
-      return this.baseURL = this.baseURLPattern.replace('{{sponsor}}', sponsor);
+      this.sponsor = sponsor;
+      return this.baseURL = this.baseURLPattern.replace('{{sponsorName}}', sponsor.name);
+    },
+
+    /**
+     * This method is used to open up a TOS (Terms of Services) Modal. which lists TOS info of the selected sponsor.
+     *
+     * @example
+     * var ttb = new TTB({ ... }); // skip if already instantiated.
+     *
+     * ttb.showTOS();
+     *
+     * @return {Object} $modal - JQuery reference to the rendered modal DOMNode.
+     *
+     * */
+    showTOS: function () {
+      var modalId, $modal, modalTemplate;
+
+      modalId = 'ttb-sdk-sponsor-tos';
+
+      // remove any previous attempt modal
+      if ($('#' + modalId).length) {
+        $('#' + modalId).remove();
+      }
+
+      modalTemplate = [
+        '<iframe src="{{src}}" width="100%" height="600px"></iframe>',
+        //'<div class="row">',
+        //' <div class="col-xs-12">',
+        //' <button class="btn btn-success ttb-sdk--tos-accept pull-right">Accept</button>',
+        //' </div>',
+        '</div>'
+      ]
+        .join('')
+        .replace('{{src}}', this.sponsor.TOSURL);
+
+      // render the sponsors TOS content via modal
+      $modal = window.TTB._modal({
+        id: modalId,
+        title: 'Terms of Service',
+        bodyContent: modalTemplate
+      });
+
+      // triggering .modal() of bootstrap
+      return $modal.modal({
+        //backdrop: 'static'
+      });
     },
 
 
