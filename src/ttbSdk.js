@@ -768,7 +768,7 @@
     },
 
     /**
-     * This method is used to open up a TOS (Terms of Services) Modal. which lists TOS info of the selected sponsor.
+     * This method is used to open up a TOS (Terms of Service) Modal. which lists TOS info of the selected sponsor.
      *
      * @example
      * var ttb = new TTB({ ... }); // skip if already instantiated.
