@@ -169,6 +169,7 @@
    * @alias version
    * @static
    * @description The version of the SDK being used.
+   * @type String
    * */
   window.TTB.version = '0.10.0';
 
