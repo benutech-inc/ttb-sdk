@@ -243,10 +243,11 @@
 
   /**
    * @memberof TTB
-   * @alias utilModal
+   * @alias _modal
    * @static
    *
    * Shows a modal with given dynamic content.
+   * @private
    *
    * @param {Object} options - configuration options for the modal.
    * @param {Object} options.title - The Title of the modal to be shown inside the modal header - can be plain text or HTML markup.
@@ -261,7 +262,7 @@
    * @return {String} $modal - A JQuery reference to the modal DOMNode Element.
    *
    * */
-  window.TTB.utilModal = function (options) {
+  window.TTB._modal = function (options) {
     var $modal, modalTemplate;
 
     options.id = options.id || (defaults.sdkPrefix + '--' + Date.now());
@@ -292,8 +293,9 @@
    * @static
    *
    * Shows a modal having iframe with given information, loaded. provide a subscription to "message" event of window, listening that iframe site origin.
+   * @private
    *
-   * @param {Object} modalOptions - configuration options for the modal. Please check TTB.utilModal for parameters information.
+   * @param {Object} modalOptions - configuration options for the modal. Please check TTB._modal for parameters information.
    *
    * @param {Object} iframeOptions - configuration options for the iframe site. (which is going to be loaded into the iframe)
    * @param {String} iframeOptions.id - The "id" value for the iframe element.
@@ -317,8 +319,8 @@
         .replace('{{hostOrigin}}', window.location.origin);
 
     // check if additional params are passed
-    if (o.params) {
-      $.each(o.params, function(value, key) {
+    if (iframeOptions.params) {
+      $.each(iframeOptions.params, function(key, value) {
         o.src += '&' + key + '=' + value;
       });
     }
@@ -328,7 +330,7 @@
     ].join('')
       .replace('{{src}}', o.src)
       .replace('{{height}}', iframeOptions.height)
-      .replace('/\{{iframeId\}\}/g', iframeOptions.id);
+      .replace('/\{\{iframeId\}\}/g', iframeOptions.id);
 
     // subscribe to message event from iframe site, only when onMessage is provided
     if (iframeOptions.onMessage) {
@@ -348,7 +350,7 @@
 
 
     modalOptions.bodyContent = o.iframeTemplate;
-    $modal = window.TTB.utilModal(modalOptions);
+    $modal = window.TTB._modal(modalOptions);
 
     // triggering .modal() of bootstrap
     $modal.modal({
@@ -481,7 +483,7 @@
     }
 
     // render the sponsors selector content via modal
-    $modal = this.utilModal({
+    $modal = this._modal({
       id: modalId,
       title: 'Please select a Company to Partner with on your Data Integration:',
       bodyContent: 'Retrieving list of all available Companies ...'
@@ -884,7 +886,7 @@
         .replace('{{src}}', this.sponsor.TOSURL);
 
       // render the sponsors TOS content via modal
-      $modal = window.TTB.utilModal({
+      $modal = window.TTB._modal({
         id: modalId,
         title: 'Terms of Service',
         bodyContent: modalTemplate
