@@ -62,6 +62,12 @@
             
                 <li data-name="TTB.showSelectSponsor"><a href="TTB.html#.showSelectSponsor">showSelectSponsor</a></li>
             
+                <li data-name="TTB.utilIframeModal"><a href="TTB.html#.utilIframeModal">utilIframeModal</a></li>
+            
+                <li data-name="TTB.utilModal"><a href="TTB.html#.utilModal">utilModal</a></li>
+            
+                <li data-name="TTB#connectWidget"><a href="TTB.html#connectWidget">connectWidget</a></li>
+            
                 <li data-name="TTB#getSearchFields"><a href="TTB.html#getSearchFields">getSearchFields</a></li>
             
                 <li data-name="TTB#getTypesReport"><a href="TTB.html#getTypesReport">getTypesReport</a></li>
@@ -905,7 +911,7 @@ or &lt;input type="text" <code>data-ttb-field="GeneralInfo['Year Built']"</code>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line331">line 331</a>
+            <a href="s.html">s</a>, <a href="s.html#line415">line 415</a>
         </div>
         
     </div>
@@ -1159,7 +1165,7 @@ TTB.getSponsors(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line389">line 389</a>
+            <a href="s.html">s</a>, <a href="s.html#line473">line 473</a>
         </div>
         
     </div>
@@ -1431,6 +1437,1137 @@ TTB.showSelectSponsor(payload, {
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id=".utilIframeModal">
+            
+            <span class="type-signature static">static</span>TTB.utilIframeModal<span class="signature">(modalOptions, iframeOptions)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{String}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="s.html">s</a>, <a href="s.html#line310">line 310</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>modalOptions</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                configuration options for the modal. Please check TTB.utilModal for parameters information.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>iframeOptions</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                configuration options for the iframe site. (which is going to be loaded into the iframe)
+                
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>id</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                    
+                        
+                    
+                
+                The "id" value for the iframe element.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>height</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                    
+                        
+                    
+                
+                The "height" value for the iframe element.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>origin</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                    
+                        
+                    
+                
+                The origin of the site. E.g. "https://www.example.com/"</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>pathname</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                    
+                        
+                    
+                
+                The pathname of the site. E.g. "/index.html" The final "src" value will be generated using origin, pathname, and params.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>params</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                params object to be auto transformed into query params with the final src URL. (hostOrigin is already being added)</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>onMessage</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                A callback to be invoked when a message event is broadcasted from the iframe site origin.
+parameters will be "data" - which is passed from iframe site, and "event" - complete event object.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+            </td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        String
+                        
+                    
+            </td>
+            <td class="description last">$modal - A JQuery reference to the modal DOMNode Element.</td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id=".utilModal">
+            
+            <span class="type-signature static">static</span>TTB.utilModal<span class="signature">(options)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{String}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="s.html">s</a>, <a href="s.html#line264">line 264</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                configuration options for the modal.
+                
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Default</th>
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>title</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                    
+                        
+                    
+                
+                The Title of the modal to be shown inside the modal header - can be plain text or HTML markup.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>bodyContent</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                    
+                        
+                    
+                
+                The body content - can be plain text or HTML markup.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>id</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    "Dynamically generated number e.g. ttb-sdk--1234567890"
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                A unique id to be assigned to the modal</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>sizeClass</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    "modal-sm"
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                modal dialog size class e.g. modal-lg, modal-md, modal-sm and custom as modal-full</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>onBeforeShow</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                A callback function to be invoked when modal is about to be shown. it uses <code>show.bs.modal</code> bootstrap modal event.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>onShown</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                A callback function to be invoked when modal has been triggered and shown to user. it uses <code>shown.bs.modal</code> bootstrap modal event.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>onClose</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                A callback function to be invoked when modal has been closed by the user. it uses <code>hidden.bs.modal</code> bootstrap modal event.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>onBeforeClose</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                A callback function to be invoked when modal is about to be close. it uses <code>hide.bs.modal</code> bootstrap modal event.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+            </td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        String
+                        
+                    
+            </td>
+            <td class="description last">$modal - A JQuery reference to the modal DOMNode Element.</td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="connectWidget">
+            
+            connectWidget<span class="signature">(options, <span class="optional">actions</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="s.html">s</a>, <a href="s.html#line2091">line 2091</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        This method renders a widget includes a connect button to open up the TTB integration modal which contains an code>iframe<code> controlled by TTB. <br>
+Make sure <strong>ttbSdk.min.css</strong> file is injected for proper style and look for the widgets.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                    
+                        
+                    
+                
+                configuration for the connect widget.
+                
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>elementSelector</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                DOM element selector where the widget needs to be rendered.
+<code>#lorem</code> or <code>.ipsum</code> etc.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>loginRemotePayload</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                "stk" and "getuser_url" information to be used for login. please check .loginRemote() documentation for more.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+            </td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>actions</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                The actions object contains mapping callbacks to be consumed when any action is clicked.
+(only one action available currently.)
+                
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>fullProfileReport</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                To be invoked with a promise as argument, when user selects an address
+from the autocomplete and then clicks the action "Full Profile Report". This promise can be used for handling success and failure.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+            </td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        Object
+                        
+                    
+            </td>
+            <td class="description last">$element - JQuery reference to the rendered widget container element.</td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code>// with basic and minimum requirement.
+var ttb = new TTB({ ... }); // skip if already instantiated.
+
+var options = {
+  elementSelector: '#ttb-connect'
+};
+
+var actions = {
+  onConnectSuccess: function(sponsorName, sponsorInfo) {
+    // optional callback - to be called when done.
+    // passed argument will be:
+    // sponsorName {String} - Name of the sponsor that user selected. e.g. "lead" for Benutech,
+    // sponsorInfo {Object} - Complete info object of the sponsor that user selected. (response object of the get_sponsors.json)
+  },
+
+  onConnectFailure: function(reason) {
+    // optional callback - to be called when failed connecting.
+   // passed argument will be:
+   // reason {String} - Reason of the failure, e.g. "failed" if API did not connect.
+  }
+};
+
+
+var $ttbConnect = ttb.connectWidget(options, actions);</code></pre>
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="getSearchFields">
             
             getSearchFields<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
@@ -1438,7 +2575,7 @@ TTB.showSelectSponsor(payload, {
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1561">line 1561</a>
+            <a href="s.html">s</a>, <a href="s.html#line1646">line 1646</a>
         </div>
         
     </div>
@@ -1568,7 +2705,7 @@ ttb.getSearchFields()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1521">line 1521</a>
+            <a href="s.html">s</a>, <a href="s.html#line1606">line 1606</a>
         </div>
         
     </div>
@@ -1693,7 +2830,7 @@ ttb.getTypesReport()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1345">line 1345</a>
+            <a href="s.html">s</a>, <a href="s.html#line1430">line 1430</a>
         </div>
         
     </div>
@@ -2344,7 +3481,7 @@ ttb.globalSearch(payload, queryParams)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1406">line 1406</a>
+            <a href="s.html">s</a>, <a href="s.html#line1491">line 1491</a>
         </div>
         
     </div>
@@ -2537,7 +3674,7 @@ ttb.globalSearchCount(payload, params)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1642">line 1642</a>
+            <a href="s.html">s</a>, <a href="s.html#line1727">line 1727</a>
         </div>
         
     </div>
@@ -3016,7 +4153,7 @@ autocomplete.addListener('place_changed', function () {
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1759">line 1759</a>
+            <a href="s.html">s</a>, <a href="s.html#line1844">line 1844</a>
         </div>
         
     </div>
@@ -3304,7 +4441,7 @@ window.googleInit = function () {
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line899">line 899</a>
+            <a href="s.html">s</a>, <a href="s.html#line984">line 984</a>
         </div>
         
     </div>
@@ -3550,7 +4687,7 @@ ttb.login(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line849">line 849</a>
+            <a href="s.html">s</a>, <a href="s.html#line934">line 934</a>
         </div>
         
     </div>
@@ -3647,7 +4784,42 @@ ttb.login(payload)
             
             <td class="description last">
                 
+                    
+                    
+                        
+                    
+                
                 The session token from existing login at 3rd-party app.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>getuser_url</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                The URL to hit to get the user information against the given stk.</td>
         </tr>
 	
 	
@@ -3770,7 +4942,7 @@ ttb.remoteLogin(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line936">line 936</a>
+            <a href="s.html">s</a>, <a href="s.html#line1021">line 1021</a>
         </div>
         
     </div>
@@ -3897,7 +5069,7 @@ ttb.logout()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1454">line 1454</a>
+            <a href="s.html">s</a>, <a href="s.html#line1539">line 1539</a>
         </div>
         
     </div>
@@ -4112,7 +5284,7 @@ ttb.nearbySearch(payload, params)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1126">line 1126</a>
+            <a href="s.html">s</a>, <a href="s.html#line1211">line 1211</a>
         </div>
         
     </div>
@@ -4449,7 +5621,7 @@ ttb.orderReport(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1187">line 1187</a>
+            <a href="s.html">s</a>, <a href="s.html#line1272">line 1272</a>
         </div>
         
     </div>
@@ -4888,7 +6060,7 @@ ttb.propertyComps(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1241">line 1241</a>
+            <a href="s.html">s</a>, <a href="s.html#line1326">line 1326</a>
         </div>
         
     </div>
@@ -5301,7 +6473,7 @@ ttb.propertyDetails(payload, options)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1078">line 1078</a>
+            <a href="s.html">s</a>, <a href="s.html#line1163">line 1163</a>
         </div>
         
     </div>
@@ -5589,7 +6761,7 @@ ttb.searchByOwnerName(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line979">line 979</a>
+            <a href="s.html">s</a>, <a href="s.html#line1064">line 1064</a>
         </div>
         
     </div>
@@ -5832,7 +7004,7 @@ ttb.searchByParcelNumber(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1032">line 1032</a>
+            <a href="s.html">s</a>, <a href="s.html#line1117">line 1117</a>
         </div>
         
     </div>
@@ -6214,7 +7386,7 @@ ttb.searchBySiteAddress(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line765">line 765</a>
+            <a href="s.html">s</a>, <a href="s.html#line849">line 849</a>
         </div>
         
     </div>
@@ -6465,7 +7637,7 @@ ttb.setSponsor({
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line781">line 781</a>
+            <a href="s.html">s</a>, <a href="s.html#line865">line 865</a>
         </div>
         
     </div>
@@ -6582,7 +7754,7 @@ ttb.showTOS();</code></pre>
 
         <footer>
             Copyright © 2018 <a target="_blank" href="http://www.benutech.com/" target="_blank" title="Benutech official website">Benutech Inc.</a> All rights reserved.</a>
-           <!-- Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Aug 09 2018 13:27:59 GMT-0700 (PDT) -->
+           <!-- Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Aug 17 2018 02:27:30 GMT+0500 (PKT) -->
         </footer>
     </div>
 </div>

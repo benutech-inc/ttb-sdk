@@ -243,11 +243,10 @@
 
   /**
    * @memberof TTB
-   * @alias _modal
+   * @alias utilModal
    * @static
    *
    * Shows a modal with given dynamic content.
-   * @private
    *
    * @param {Object} options - configuration options for the modal.
    * @param {Object} options.title - The Title of the modal to be shown inside the modal header - can be plain text or HTML markup.
@@ -262,7 +261,7 @@
    * @return {String} $modal - A JQuery reference to the modal DOMNode Element.
    *
    * */
-  window.TTB._modal = function (options) {
+  window.TTB.utilModal = function (options) {
     var $modal, modalTemplate;
 
     options.id = options.id || (defaults.sdkPrefix + '--' + Date.now());
@@ -293,9 +292,8 @@
    * @static
    *
    * Shows a modal having iframe with given information, loaded. provide a subscription to "message" event of window, listening that iframe site origin.
-   * @private
    *
-   * @param {Object} modalOptions - configuration options for the modal. Please check TTB._modal for parameters information.
+   * @param {Object} modalOptions - configuration options for the modal. Please check TTB.utilModal for parameters information.
    *
    * @param {Object} iframeOptions - configuration options for the iframe site. (which is going to be loaded into the iframe)
    * @param {String} iframeOptions.id - The "id" value for the iframe element.
@@ -350,7 +348,7 @@
 
 
     modalOptions.bodyContent = o.iframeTemplate;
-    $modal = window.TTB._modal(modalOptions);
+    $modal = window.TTB.utilModal(modalOptions);
 
     // triggering .modal() of bootstrap
     $modal.modal({
@@ -483,7 +481,7 @@
     }
 
     // render the sponsors selector content via modal
-    $modal = this._modal({
+    $modal = this.utilModal({
       id: modalId,
       title: 'Please select a Company to Partner with on your Data Integration:',
       bodyContent: 'Retrieving list of all available Companies ...'
@@ -886,7 +884,7 @@
         .replace('{{src}}', this.sponsor.TOSURL);
 
       // render the sponsors TOS content via modal
-      $modal = window.TTB._modal({
+      $modal = window.TTB.utilModal({
         id: modalId,
         title: 'Terms of Service',
         bodyContent: modalTemplate
