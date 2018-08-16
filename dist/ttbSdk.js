@@ -321,7 +321,7 @@
     // check if additional params are passed
     if (iframeOptions.params) {
       $.each(iframeOptions.params, function(key, value) {
-        o.src += '&' + key + '=' + value;
+        o.src += value ? ('&' + key + '=' + value) : '';
       });
     }
 
