@@ -217,7 +217,7 @@
    *
    * */
   window.TTB._getLocal = function (key) {
-    var value = window.localStorage.getItem(defaults.sdkPrefix + '-' + key);
+    var value = window.localStorage.getItem(defaults.sdkPrefix + '--' + key);
     return JSON.parse(value);
   };
 
@@ -252,7 +252,7 @@
    * @param {Object} options - configuration options for the modal.
    * @param {Object} options.title - The Title of the modal to be shown inside the modal header - can be plain text or HTML markup.
    * @param {Object} options.bodyContent - The body content - can be plain text or HTML markup.
-   * @param {Object} [options.id="Dynamically generated number e.g. ttb-sdk-1234567890"] - A unique id to be assigned to the modal
+   * @param {Object} [options.id="Dynamically generated number e.g. ttb-sdk--1234567890"] - A unique id to be assigned to the modal
    * @param {Object} [options.sizeClass="modal-sm"] - modal dialog size class e.g. modal-lg, modal-md, modal-sm and custom as modal-full
    * @param {Function} [options.onBeforeShow] - A callback function to be invoked when modal is about to be shown. it uses <code>show.bs.modal</code> bootstrap modal event.
    * @param {Function} [options.onShown] - A callback function to be invoked when modal has been triggered and shown to user. it uses <code>shown.bs.modal</code> bootstrap modal event.
@@ -265,7 +265,7 @@
   window.TTB._modal = function (options) {
     var $modal, modalTemplate;
 
-    options.id = options.id || (Date.now() + '');
+    options.id = options.id || (defaults.sdkPrefix + '--' + Date.now());
     options.sizeClass = options.sizeClass || 'modal-lg';
 
     // generate the modal template against given info
@@ -285,6 +285,92 @@
     options.onClose && $modal.on('hidden.bs.modal', options.onClose);
 
     return $modal;
+  };
+
+  /**
+   * @memberof TTB
+   * @alias utilIframeModal
+   * @static
+   *
+   * Shows a modal having iframe with given information, loaded. provide a subscription to "message" event of window, listening that iframe site origin.
+   * @private
+   *
+   * @param {Object} modalOptions - configuration options for the modal. Please check TTB._modal for parameters information.
+   *
+   * @param {Object} iframeOptions - configuration options for the iframe site. (which is going to be loaded into the iframe)
+   * @param {String} iframeOptions.id - The "id" value for the iframe element.
+   * @param {String} iframeOptions.height - The "height" value for the iframe element.
+   * @param {String} iframeOptions.origin - The origin of the site. E.g. "https://www.example.com/"
+   * @param {String} iframeOptions.pathname - The pathname of the site. E.g. "/index.html" The final "src" value will be generated using origin, pathname, and params.
+   * @param {Object} [iframeOptions.params] - params object to be auto transformed into query params with the final src URL. (hostOrigin is already being added)
+   * @param {Function} [iframeOptions.onMessage] - A callback to be invoked when a message event is broadcasted from the iframe site origin.
+   * parameters will be "data" - which is passed from iframe site, and "event" - complete event object.
+   *
+   * @return {String} $modal - A JQuery reference to the modal DOMNode Element.
+   *
+   * */
+  window.TTB.utilIframeModal = function (modalOptions, iframeOptions) {
+    var $modal, o;
+
+    iframeOptions.height = iframeOptions.height || '600px';
+
+    o = {};
+    o.src = iframeOptions.origin + iframeOptions.pathname + '?hostOrigin={{hostOrigin}}'
+        .replace('{{hostOrigin}}', window.location.origin);
+
+    // check if additional params are passed
+    if (o.params) {
+      $.each(o.params, function(value, key) {
+        o.src += '&' + key + '=' + value;
+      });
+    }
+
+    o.iframeTemplate = [
+      '<iframe src="{{src}}" id="{{iframeId}}" name="{{iframeId}}" width="100%" height="{{height}}"></iframe>'
+    ].join('')
+      .replace('{{src}}', o.src)
+      .replace('{{height}}', iframeOptions.height)
+      .replace('/\{{iframeId\}\}/g', iframeOptions.id);
+
+    // subscribe to message event from iframe site, only when onMessage is provided
+    if (iframeOptions.onMessage) {
+
+      window.addEventListener('message', receiveMessage, false);
+
+      o.modalOptionsOnClose = modalOptions.onClose;
+      modalOptions.onClose = function () {
+
+        // invoked any onClose callback if it was provide via modalOptions.
+        o.modalOptionsOnClose && o.modalOptionsOnClose();
+
+        // unsubscribe the message event when modal has been closed.
+        window.removeEventListener('message', receiveMessage);
+      };
+    }
+
+
+    modalOptions.bodyContent = o.iframeTemplate;
+    $modal = window.TTB._modal(modalOptions);
+
+    // triggering .modal() of bootstrap
+    $modal.modal({
+      //backdrop: 'static'
+    });
+
+    return $modal;
+
+    // listener to window "message" event.
+    function receiveMessage(event) {
+      //console.log('receiveMessage: event: ', event);
+
+      if (event.origin !== iframeOptions.origin) {
+        //console.log('receiveMessage: from other origin: ');
+        return;
+      }
+
+      //console.log('receiveMessage: from landing page: data: ', event.data);
+      iframeOptions.onMessage(event.data, event);
+    }
   };
 
 
@@ -818,6 +904,7 @@
      *
      * @param {Object} payload - The payload object containing required info
      * @param {String} payload.stk - The session token from existing login at 3rd-party app.
+     * @param {String} [payload.getuser_url] - The URL to hit to get the user information against the given stk.
      *
      * @example
      * var ttb = new TTB({ ... }); // skip if already instantiated.
@@ -1956,6 +2043,149 @@
             selectionActionCb(promise);
             enableControls();
           });
+      }
+    },
+
+    /**
+     * This method renders a widget includes a connect button to open up the TTB integration modal which contains an code>iframe<code> controlled by TTB. <br>
+     * Make sure <strong>ttbSdk.min.css</strong> file is injected for proper style and look for the widgets.
+     *
+     * @param {Object} options - configuration for the connect widget.
+     * @param {String} options.elementSelector - DOM element selector where the widget needs to be rendered.
+     * <code>#lorem</code> or <code>.ipsum</code> etc.
+     * @param {Object} options.loginRemotePayload - "stk" and "getuser_url" information to be used for login. please check .loginRemote() documentation for more.
+     *
+     * @param {Object} [actions] - The actions object contains mapping callbacks to be consumed when any action is clicked.
+     * (only one action available currently.)
+     * @param {Function} [actions.fullProfileReport] - To be invoked with a promise as argument, when user selects an address
+     * from the autocomplete and then clicks the action "Full Profile Report". This promise can be used for handling success and failure.
+     *
+     * @example
+     *
+     * // with basic and minimum requirement.
+     * var ttb = new TTB({ ... }); // skip if already instantiated.
+     *
+     * var options = {
+     *   elementSelector: '#ttb-connect'
+     * };
+     *
+     * var actions = {
+     *   onConnectSuccess: function(sponsorName, sponsorInfo) {
+     *     // optional callback - to be called when done.
+     *     // passed argument will be:
+     *     // sponsorName {String} - Name of the sponsor that user selected. e.g. "lead" for Benutech,
+     *     // sponsorInfo {Object} - Complete info object of the sponsor that user selected. (response object of the get_sponsors.json)
+     *   },
+     *
+     *   onConnectFailure: function(reason) {
+     *     // optional callback - to be called when failed connecting.
+      *    // passed argument will be:
+      *    // reason {String} - Reason of the failure, e.g. "failed" if API did not connect.
+     *   }
+     * };
+     *
+     *
+     * var $ttbConnect = ttb.connectWidget(options, actions);
+     *
+     * @return {Object} $element - JQuery reference to the rendered widget container element.
+     *
+     * */
+    connectWidget: function (options, actions) {
+      var o, ttb;
+
+      ttb = this;
+      actions = actions || {};
+
+      o = {};
+      o.selectedSponsor = window.TTB._getLocal('connect--selectedSponsor', o.selectedAction);
+      o.widgetClass = 'ttb-sdk--connect--container';
+      o.widgetTemplate = [
+        '<div id="ttb-sdk--connect--connect-section" class="row">',
+        ' <div class="col-xs-12">',
+        '  <button class="btn btn-primary pull-right">Connect</button>',
+        ' </div>',
+        '</div>',
+        '<!-- hidden by default -->',
+        '<div id="ttb-sdk--connect--disconnect-section" class="row" style="display: none;">',
+        ' <div class="col-xs-4">',
+        '  <strong>Title company</strong>',
+        ' </div>',
+        ' <!-- to be dynamically updated -->',
+        ' <div id="ttb-sdk--connect--company-name" class="col-xs-4">',
+        '  Lorem Ipsum Company',
+        ' </div>',
+        ' <div class="col-xs-4">',
+        '  <button class="btn btn-danger pull-right">Disconnect</button>',
+        ' </div>',
+        '</div>'
+      ].join('');
+
+      o.$container = $(options.elementSelector);
+
+      // validate if target element not found
+      if (!o.$container.length) {
+        this._log([defaults.sdkPrefix, ' : connectWidget : abort : element not found - ', options.elementSelector]);
+        return null;
+      }
+
+      // add required class for CSS
+      o.$container
+        .addClass(o.widgetClass)
+
+        // render the widget template
+        .append(o.widgetTemplate);
+
+      // check for any existing connection
+      if (o.selectedSponsor) {
+        o.$container
+          .find('#ttb-sdk--connect--connect-section').hide()
+          .find('#ttb-sdk--connect--disconnect-section').show()
+          .find('#ttb-sdk--connect--company-name').text(o.selectedSponsor.title)
+      }
+
+      // register handler of connect button to open up a connect modal
+      o.$container.find('#ttb-sdk--connect--connect-section button').on('click', onConnect);
+
+      // opens up the connect modal
+      function onConnect() {
+        var $modal, modalOptions, iframeOptions;
+
+        modalOptions = {
+          id: 'ttb-sdk--connect--modal',
+          title: 'Connect with TitleToolbox'
+        };
+
+        iframeOptions = {
+          id: 'ttb-sdk--connect--iframe',
+          height: '600px',
+          origin: 'http://ttb-landing-page.herokuapp.com',
+          //origin: 'http://localhost:9001',
+          pathname: '/index.html',
+          params: {
+            stk: options.loginRemotePayload.stk,
+            getuser_url: options.loginRemotePayload.getuser_url,
+            partnerKey: ttb.config.partnerKey
+          },
+          onMessage: onMessage
+        };
+
+        // render the sponsors TOS content via modal
+        $modal = window.TTB.utilIframeModal(modalOptions, iframeOptions);
+
+        // to be invoked when a "message" event is broadcasted from the given iframe site
+        function onMessage(data, event) {
+          ttb._log(['connectWidget: onMessage', data, event]);
+
+          // failure -
+          // invoke given callbacks
+
+
+          // success -
+          // store sponsor
+
+          // update connect widget
+
+        }
       }
     }
 
