@@ -30,12 +30,14 @@
       autoDestroy: true
     },
     modalTemplate: [
-      '<div id={{modalId}} class="ttb-sdk-modal modal" role="dialog">',
+      '<div id={{modalId}} class="ttb-sdk-modal modal" tabindex="-1" role="dialog" aria-labelledby="{{modalId}}-label" aria-hidden="true">',
       ' <div class="modal-dialog {{sizeClass}}">',
       '  <div class="modal-content">',
       '   <div class="modal-header">',
-      '    <button type="button" class="close" data-dismiss="modal" title="Close">&times;</button>',
-      '    <h4 class="modal-title">{{title}}</h4>',
+      '    <button type="button" class="close" data-dismiss="modal" aria-label="Close" title="Close">',
+      '     <span aria-hidden="true">&times;</span>',
+      '    </button>',
+      '    <h5 class="modal-title" id="{{modalId}}-label">{{title}}</h5>',
       '   </div>',
       '   <div class="modal-body">',
       '    {{bodyContent}}',
@@ -304,7 +306,7 @@
 
     // generate the modal template against given info
     modalTemplate = defaults.modalTemplate
-      .replace('{{modalId}}', options.id)
+      .replace('/\{\{modalId\}\}/g', options.id)
       .replace('{{sizeClass}}', options.sizeClass)
       .replace('{{title}}', options.title)
       .replace('{{bodyContent}}', options.bodyContent);
@@ -526,7 +528,7 @@
   window.TTB.showSelectSponsor = function (payload, options) {
     var modalId, $modal;
 
-    modalId = 'ttb-sdk-sponsor-selector';
+    modalId = 'ttb-sdk--show-select-sponsor';
 
     // remove any previous attempt modal
     if ($('#' + modalId).length) {
@@ -574,30 +576,32 @@
 
         o.sponsorTemplate = [
           '<tr>',
-          ' <td>{{count}}</td>',
+          ' <th scope="row">{{count}}</th>',
           ' <td><img src="{{logoUrl}}" class="img-responsive" alt="Sponsor Logo"></td>',
           ' <td>{{name}}</td>',
           ' <td><a href="{{website}}" target="_blank">{{website}}</a></td>',
-          ' <td><button class="btn btn-primary pull-right" data-sponsor-name="{{sponsorName}}" data-sponsor-title="{{sponsorTitle}}" data-sponsor-tos="{{sponsorTOSURL}}">Select</button></td>',
+          ' <td class="text-center">',
+          '  <button class="btn btn-primary" data-sponsor-name="{{sponsorName}}" data-sponsor-title="{{sponsorTitle}}" data-sponsor-tos="{{sponsorTOSURL}}">',
+          '   Select',
+          '  </button>',
+          ' </td>',
           '</tr>'
         ].join('');
 
         o.bodyTemplate = [
-          '<p>{{resultsMessage}}</p>',
-          '<div class="table-responsive">',
-          '<table class="table table-striped">',
-          '<thead>',
-          '<tr>',
-          '<th>#</th>',
-          '<th>LOGO</th>',
-          '<th>NAME</th>',
-          '<th>WEBSITE</th>',
-          '<th></th>',
-          '</tr>',
-          '<thead>',
-          '<tbody>{{sponsorsMarkup}}</tbody>',
-          '<table>',
-          '</div>'
+          '<h3>{{resultsMessage}}</h3>',
+          '<table class="table">',
+          ' <thead>',
+          '  <tr>',
+          '   <th scope="col" width="80" class="text-center">#</th>',
+          '   <th scope="col" width="80" class="text-center">Logo</th>',
+          '   <th scope="col" width="80" class="text-center">Name</th>',
+          '   <th scope="col" width="80" class="text-center">Website</th>',
+          '   <th scope="col" width="80" class="text-center"></th>',
+          '  </tr>',
+          ' <thead>',
+          ' <tbody class="align-items-center">{{sponsorsMarkup}}</tbody>',
+          '<table>'
         ].join('');
 
         // iterate over the list and generate the available options
@@ -661,7 +665,7 @@
             o.bodyMarkup.push('<hr>');
           }
 
-          o.resultsMessage = 'The following Companies are available Partners in the <strong>{{zipCode}}</strong> Zip Code.'
+          o.resultsMessage = 'The following Companies are available Partners in the <strong>{{zipCode}}</strong> zip code.'
             .replace('{{zipCode}}', payload.zipCode);
 
           o.bodyMarkup.push(o.bodyTemplate
