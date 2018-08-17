@@ -369,8 +369,9 @@
 
     // check if additional params are passed
     if (iframeOptions.params) {
+      // technique used to pass URLs. https://stackoverflow.com/a/1739132
       $.each(iframeOptions.params, function(key, value) {
-        o.src += value ? ('&' + key + '=' + value) : '';
+        o.src += value ? ('&' + key + '=' + encodeURIComponent(value)) : '';
       });
     }
 
@@ -823,7 +824,7 @@
       _self = this;
 
       // take the full URL or build it up using baseURL and the given endpoint
-      options.url = options.url || this.baseURL + mapping.endpoint;
+      options.url = options.url || (this.baseURL + mapping.endpoint);
 
       // append query params (if provided)
       options.url = queryParams ? options.url + '?' + $.param(queryParams) : options.url;
@@ -1854,7 +1855,7 @@
      * // define googleInit() if it is not already created.
      * window.googleInit = function () {
      *
-     *  var elementSelector = '#ttb-instant-lookup';
+     *  var elementSelector = '#ttb-instant-lookup-wrapper';
      *  var $instantLookup = ttb.instantLookupWidget(elementSelector);
      * };
      *
@@ -1888,7 +1889,7 @@
      *   }
      *  };
      *
-     *  var elementSelector = '#ttb-instant-lookup';
+     *  var elementSelector = '#ttb-instant-lookup-wrapper';
      *  var $instantLookup = ttb.instantLookupWidget(elementSelector, actions);
      * };
      *
@@ -1970,6 +1971,7 @@
       autoComplete.$element = o.$container.find('#ttb-sdk--instant-lookup--auto-complete');
       autoComplete.instance = new google.maps.places.Autocomplete(autoComplete.$element[0], {types: ['geocode']});
 
+      //TODO destroy listener when element widget gets destroyed.
       // on address select, store the address components for later use when action is clicked.
       autoComplete.instance.addListener('place_changed', function() {
 
@@ -2100,17 +2102,21 @@
 
     /**
      * This method renders a widget includes a connect button to open up the TTB integration modal which contains an <code>iframe</code> controlled by TTB. <br>
-     * Make sure <strong>ttbSdk.min.css</strong> file is injected for proper style and look for the widgets.
+     * <br>
+     * It uses <strong>localStorage</strong> of the host origin, to store the selected sponsor info as <code>ttb-sdk--connect--selected-sponsor</code>,
+     * It is a good gate for host sites to persist the user's sponsor selection over their servers, by reading/writing from/to it.
+     * Widget will pick it up whenever gets rendered.<br>
+     * <br>
+     * (Make sure <strong>ttbSdk.min.css</strong> file is injected for proper style and look for the widgets.)
      *
      * @param {Object} options - configuration for the connect widget.
      * @param {String} options.elementSelector - DOM element selector where the widget needs to be rendered.
      * <code>#lorem</code> or <code>.ipsum</code> etc.
      * @param {Object} options.loginRemotePayload - "stk" and "getuser_url" information to be used for login. please check .loginRemote() documentation for more.
      *
-     * @param {Object} [actions] - The actions object contains mapping callbacks to be consumed when any action is clicked.
-     * (only one action available currently.)
-     * @param {Function} [actions.fullProfileReport] - To be invoked with a promise as argument, when user selects an address
-     * from the autocomplete and then clicks the action "Full Profile Report". This promise can be used for handling success and failure.
+     * @param {Object} [actions] - The actions object contains mapping callbacks to be consumed on success or failure.
+     * @param {Function} [actions.onConnectSuccess] - To be invoked with <code>sponsorName</code>, <code>sponsorInfo</code> on successful connect.
+     * @param {Function} [actions.onConnectFailure] - To be invoked with <code>reason</code> on failing connecting.
      *
      * @example
      *
@@ -2118,7 +2124,25 @@
      * var ttb = new TTB({ ... }); // skip if already instantiated.
      *
      * var options = {
-     *   elementSelector: '#ttb-connect'
+     *   elementSelector: '#ttb-connect-wrapper',
+     *   loginRemotePayload: {
+     *     stk: '1234567890'
+     *   }
+     * };
+     *
+     * var $ttbConnect = ttb.connectWidget(options);
+     *
+     * @example
+     *
+     * // with advanced configuration for handling success, and failure of the connection process.
+     * var ttb = new TTB({ ... }); // skip if already instantiated.
+     *
+     * var options = {
+     *   elementSelector: '#ttb-connect-wrapper'
+     *   loginRemotePayload: {
+     *     stk: '1234567890',
+     *     getuser_url: 'https://www.yoursite.com/webservices/getuser.json'
+     *   }
      * };
      *
      * var actions = {
@@ -2127,6 +2151,8 @@
      *     // passed argument will be:
      *     // sponsorName {String} - Name of the sponsor that user selected. e.g. "lead" for Benutech,
      *     // sponsorInfo {Object} - Complete info object of the sponsor that user selected. (response object of the get_sponsors.json)
+     *
+     *     // required details from sponsorInfo already being written to localStorage as "ttb-sdk--connect--selected-sponsor" by SDK.
      *   },
      *
      *   onConnectFailure: function(reason) {
@@ -2135,7 +2161,6 @@
       *    // reason {String} - Reason of the failure, e.g. "failed" if API did not connect.
      *   }
      * };
-     *
      *
      * var $ttbConnect = ttb.connectWidget(options, actions);
      *
@@ -2149,7 +2174,7 @@
       actions = actions || {};
 
       o = {};
-      o.selectedSponsor = window.TTB._getLocal('connect--selectedSponsor', o.selectedAction);
+      o.selectedSponsor = window.TTB._getLocal('connect--selected-sponsor', o.selectedAction);
       o.widgetClass = 'ttb-sdk--connect--container';
       o.widgetTemplate = [
         '<div id="ttb-sdk--connect--connect-section" class="row">',
@@ -2176,7 +2201,7 @@
 
       // validate if target element not found
       if (!o.$container.length) {
-        this._log([defaults.sdkPrefix, ' : connectWidget : abort : element not found - ', options.elementSelector]);
+        this._log(['connectWidget : abort : element not found - ', options.elementSelector]);
         return null;
       }
 
@@ -2210,8 +2235,8 @@
         iframeOptions = {
           id: 'ttb-sdk--connect--iframe',
           height: '600px',
-          origin: 'http://ttb-landing-page.herokuapp.com',
-          //origin: 'http://localhost:9001',
+          //origin: 'http://ttb-landing-page.herokuapp.com',
+          origin: 'http://localhost:9001',
           pathname: '/index.html',
           params: {
             stk: options.loginRemotePayload.stk,
