@@ -22,6 +22,13 @@
     debug: false,
     sdkPrefix: 'ttb-sdk',
     autoFillAttr: 'data-ttb-field',
+    iframeOptions: {
+      height: '600px'
+    },
+    modalOptions: {
+      sizeClass: 'modal-lg',
+      autoDestroy: true
+    },
     modalTemplate: [
       '<div id={{modalId}} class="ttb-sdk-modal modal" role="dialog">',
       ' <div class="modal-dialog {{sizeClass}}">',
@@ -154,6 +161,7 @@
     /**
      * @type {Object}
      * @desc The configuration passed while instantiating main SDK class.
+     * For details, Please check documentation of <code> new TTB(...) </code> constructor.
      * */
     this.config = config;
 
@@ -164,7 +172,7 @@
     this.autoFillAttr = config.autoFillAttr || defaults.autoFillAttr;
     this.debug = config.debug || defaults.debug;
 
-    this._log([defaults.sdkPrefix + ' :', 'TTB SDK instantiated. | version: ', window.TTB.version]);
+    this._log(['TTB SDK instantiated. | version: ', window.TTB.version]);
   };
 
 
@@ -176,6 +184,29 @@
    * @type String
    * */
   window.TTB.version = '0.11.0';
+
+  /**
+   * @memberof TTB
+   * @alias debug
+   * @static
+   * @description The debug logs flag for static functions only.
+   * (For instance methods, The "debug" property passed while instantiating, will be used.)
+   * @type {Boolean}
+   * */
+  window.TTB.debug = false;
+
+  /**
+   * @memberof TTB
+   * @alias _log
+   * @static
+   * @private
+   * @description Logger for static functions only. uses window.TTB.debug flag to enable/disable logging.
+   *
+   * @param {Array} args - list of values to be logged.
+   * */
+  window.TTB._log = function (args) {
+    window.TTB.debug && console.log.apply(console, [defaults.sdkPrefix + ' :'].concat(args));
+  };
 
 
   /**
@@ -250,10 +281,12 @@
    * @private
    *
    * @param {Object} options - configuration options for the modal.
-   * @param {Object} options.title - The Title of the modal to be shown inside the modal header - can be plain text or HTML markup.
-   * @param {Object} options.bodyContent - The body content - can be plain text or HTML markup.
-   * @param {Object} [options.id="Dynamically generated number e.g. ttb-sdk--1234567890"] - A unique id to be assigned to the modal
-   * @param {Object} [options.sizeClass="modal-sm"] - modal dialog size class e.g. modal-lg, modal-md, modal-sm and custom as modal-full
+   * @param {String} options.title - The Title of the modal to be shown inside the modal header - can be plain text or HTML markup.
+   * @param {String} options.bodyContent - The body content - can be plain text or HTML markup.
+   * @param {String} [options.id="Dynamically generated number e.g. ttb-sdk--1234567890"] - A unique id to be assigned to the modal
+   * @param {String} [options.sizeClass="modal-sm"] - modal dialog size class e.g. modal-lg, modal-md, modal-sm and custom as modal-full
+   * @param {Boolean} [options.autoDestroy="true"] - To auto destroy the modal from the DOM, after it gets closed.
+   *
    * @param {Function} [options.onBeforeShow] - A callback function to be invoked when modal is about to be shown. it uses <code>show.bs.modal</code> bootstrap modal event.
    * @param {Function} [options.onShown] - A callback function to be invoked when modal has been triggered and shown to user. it uses <code>shown.bs.modal</code> bootstrap modal event.
    * @param {Function} [options.onClose] - A callback function to be invoked when modal has been closed by the user. it uses <code>hidden.bs.modal</code> bootstrap modal event.
@@ -266,7 +299,8 @@
     var $modal, modalTemplate;
 
     options.id = options.id || (defaults.sdkPrefix + '--' + Date.now());
-    options.sizeClass = options.sizeClass || 'modal-lg';
+    options.sizeClass = options.sizeClass || defaults.modalOptions.sizeClass;
+    options.autoDestroy = options.autoDestroy != undefined ? options.autoDestroy : defaults.modalOptions.autoDestroy;
 
     // generate the modal template against given info
     modalTemplate = defaults.modalTemplate
@@ -282,7 +316,22 @@
     options.onBeforeShow && $modal.on('show.bs.modal', options.onBeforeShow);
     options.onShown && $modal.on('shown.bs.modal', options.onShown);
     options.onBeforeClose && $modal.on('hide.bs.modal', options.onBeforeClose);
-    options.onClose && $modal.on('hidden.bs.modal', options.onClose);
+
+    // to auto destroy, always listen to close event
+    if (options.autoDestroy) {
+
+      $modal.on('hidden.bs.modal', function () {
+
+        // invoked the given callback, before destroying
+        options.onClose && options.onClose();
+
+        // destroy the modal from DOM.
+        $modal.remove();
+      });
+
+    } else {
+      options.onClose && $modal.on('hide.bs.modal', options.onClose);
+    }
 
     return $modal;
   };
@@ -312,7 +361,7 @@
   window.TTB.utilIframeModal = function (modalOptions, iframeOptions) {
     var $modal, o;
 
-    iframeOptions.height = iframeOptions.height || '600px';
+    iframeOptions.height = iframeOptions.height || defaults.iframeOptions.height;
 
     o = {};
     o.src = iframeOptions.origin + iframeOptions.pathname + '?hostOrigin={{hostOrigin}}'
@@ -340,6 +389,8 @@
       o.modalOptionsOnClose = modalOptions.onClose;
       modalOptions.onClose = function () {
 
+        window.TTB._log(['utilIframeModal: onClose']);
+
         // invoked any onClose callback if it was provide via modalOptions.
         o.modalOptionsOnClose && o.modalOptionsOnClose();
 
@@ -347,7 +398,6 @@
         window.removeEventListener('message', receiveMessage);
       };
     }
-
 
     modalOptions.bodyContent = o.iframeTemplate;
     $modal = window.TTB._modal(modalOptions);
@@ -361,14 +411,14 @@
 
     // listener to window "message" event.
     function receiveMessage(event) {
-      //console.log('receiveMessage: event: ', event);
+      window.TTB._log(['utilIframeModal: receiveMessage: origin:', event.origin]);
 
       if (event.origin !== iframeOptions.origin) {
-        //console.log('receiveMessage: from other origin: ');
+        //window.TTB._log(['utilIframeModal: receiveMessage: from other origin:', event.origin]);
         return;
       }
 
-      //console.log('receiveMessage: from landing page: data: ', event.data);
+      window.TTB._log(['utilIframeModal: receiveMessage: data:', event.data, 'event: ', event]);
       iframeOptions.onMessage(event.data, event);
     }
   };
@@ -579,7 +629,7 @@
               break;
 
             default:
-              console.log('showSelectSponsor: unknown sponsor.match.type: ', sponsor.match.type);
+              window.TTB._log(['showSelectSponsor: unknown sponsor.match.type: ', sponsor.match.type]);
               // skip addition
               return;
           }
@@ -679,9 +729,11 @@
     /**
      * Logs the arguments based on debug flag.
      * @private
+     *
+     * @param {Array} args - list of values to be logged.
      * */
     _log: function (args) {
-      this.config.debug && console.log.apply(console, args);
+      this.config.debug && console.log.apply(console, [defaults.sdkPrefix + ' :'].concat(args));
     },
 
     /**
@@ -2047,7 +2099,7 @@
     },
 
     /**
-     * This method renders a widget includes a connect button to open up the TTB integration modal which contains an code>iframe<code> controlled by TTB. <br>
+     * This method renders a widget includes a connect button to open up the TTB integration modal which contains an <code>iframe</code> controlled by TTB. <br>
      * Make sure <strong>ttbSdk.min.css</strong> file is injected for proper style and look for the widgets.
      *
      * @param {Object} options - configuration for the connect widget.

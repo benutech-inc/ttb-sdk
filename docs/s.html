@@ -46,6 +46,8 @@
             
             <span class="subtitle">Members</span>
             
+                <li data-name="TTB.debug"><a href="TTB.html#.debug">debug</a></li>
+            
                 <li data-name="TTB.version"><a href="TTB.html#.version">version</a></li>
             
                 <li data-name="TTB#config"><a href="TTB.html#config">config</a></li>
@@ -61,10 +63,6 @@
                 <li data-name="TTB.getSponsors"><a href="TTB.html#.getSponsors">getSponsors</a></li>
             
                 <li data-name="TTB.showSelectSponsor"><a href="TTB.html#.showSelectSponsor">showSelectSponsor</a></li>
-            
-                <li data-name="TTB.utilIframeModal"><a href="TTB.html#.utilIframeModal">utilIframeModal</a></li>
-            
-                <li data-name="TTB.utilModal"><a href="TTB.html#.utilModal">utilModal</a></li>
             
                 <li data-name="TTB#connectWidget"><a href="TTB.html#connectWidget">connectWidget</a></li>
             
@@ -144,6 +142,13 @@
     debug: false,
     sdkPrefix: 'ttb-sdk',
     autoFillAttr: 'data-ttb-field',
+    iframeOptions: {
+      height: '600px'
+    },
+    modalOptions: {
+      sizeClass: 'modal-lg',
+      autoDestroy: true
+    },
     modalTemplate: [
       '&lt;div id={{modalId}} class="ttb-sdk-modal modal" role="dialog">',
       ' &lt;div class="modal-dialog {{sizeClass}}">',
@@ -276,6 +281,7 @@
     /**
      * @type {Object}
      * @desc The configuration passed while instantiating main SDK class.
+     * For details, Please check documentation of &lt;code> new TTB(...) &lt;/code> constructor.
      * */
     this.config = config;
 
@@ -286,7 +292,7 @@
     this.autoFillAttr = config.autoFillAttr || defaults.autoFillAttr;
     this.debug = config.debug || defaults.debug;
 
-    this._log([defaults.sdkPrefix + ' :', 'TTB SDK instantiated. | version: ', window.TTB.version]);
+    this._log(['TTB SDK instantiated. | version: ', window.TTB.version]);
   };
 
 
@@ -298,6 +304,29 @@
    * @type String
    * */
   window.TTB.version = '0.11.0';
+
+  /**
+   * @memberof TTB
+   * @alias debug
+   * @static
+   * @description The debug logs flag for static functions only.
+   * (For instance methods, The "debug" property passed while instantiating, will be used.)
+   * @type {Boolean}
+   * */
+  window.TTB.debug = false;
+
+  /**
+   * @memberof TTB
+   * @alias _log
+   * @static
+   * @private
+   * @description Logger for static functions only. uses window.TTB.debug flag to enable/disable logging.
+   *
+   * @param {Array} args - list of values to be logged.
+   * */
+  window.TTB._log = function (args) {
+    window.TTB.debug &amp;&amp; console.log.apply(console, [defaults.sdkPrefix + ' :'].concat(args));
+  };
 
 
   /**
@@ -365,16 +394,19 @@
 
   /**
    * @memberof TTB
-   * @alias utilModal
+   * @alias _modal
    * @static
    *
    * Shows a modal with given dynamic content.
+   * @private
    *
    * @param {Object} options - configuration options for the modal.
-   * @param {Object} options.title - The Title of the modal to be shown inside the modal header - can be plain text or HTML markup.
-   * @param {Object} options.bodyContent - The body content - can be plain text or HTML markup.
-   * @param {Object} [options.id="Dynamically generated number e.g. ttb-sdk--1234567890"] - A unique id to be assigned to the modal
-   * @param {Object} [options.sizeClass="modal-sm"] - modal dialog size class e.g. modal-lg, modal-md, modal-sm and custom as modal-full
+   * @param {String} options.title - The Title of the modal to be shown inside the modal header - can be plain text or HTML markup.
+   * @param {String} options.bodyContent - The body content - can be plain text or HTML markup.
+   * @param {String} [options.id="Dynamically generated number e.g. ttb-sdk--1234567890"] - A unique id to be assigned to the modal
+   * @param {String} [options.sizeClass="modal-sm"] - modal dialog size class e.g. modal-lg, modal-md, modal-sm and custom as modal-full
+   * @param {Boolean} [options.autoDestroy="true"] - To auto destroy the modal from the DOM, after it gets closed.
+   *
    * @param {Function} [options.onBeforeShow] - A callback function to be invoked when modal is about to be shown. it uses &lt;code>show.bs.modal&lt;/code> bootstrap modal event.
    * @param {Function} [options.onShown] - A callback function to be invoked when modal has been triggered and shown to user. it uses &lt;code>shown.bs.modal&lt;/code> bootstrap modal event.
    * @param {Function} [options.onClose] - A callback function to be invoked when modal has been closed by the user. it uses &lt;code>hidden.bs.modal&lt;/code> bootstrap modal event.
@@ -383,11 +415,12 @@
    * @return {String} $modal - A JQuery reference to the modal DOMNode Element.
    *
    * */
-  window.TTB.utilModal = function (options) {
+  window.TTB._modal = function (options) {
     var $modal, modalTemplate;
 
     options.id = options.id || (defaults.sdkPrefix + '--' + Date.now());
-    options.sizeClass = options.sizeClass || 'modal-lg';
+    options.sizeClass = options.sizeClass || defaults.modalOptions.sizeClass;
+    options.autoDestroy = options.autoDestroy != undefined ? options.autoDestroy : defaults.modalOptions.autoDestroy;
 
     // generate the modal template against given info
     modalTemplate = defaults.modalTemplate
@@ -403,7 +436,22 @@
     options.onBeforeShow &amp;&amp; $modal.on('show.bs.modal', options.onBeforeShow);
     options.onShown &amp;&amp; $modal.on('shown.bs.modal', options.onShown);
     options.onBeforeClose &amp;&amp; $modal.on('hide.bs.modal', options.onBeforeClose);
-    options.onClose &amp;&amp; $modal.on('hidden.bs.modal', options.onClose);
+
+    // to auto destroy, always listen to close event
+    if (options.autoDestroy) {
+
+      $modal.on('hidden.bs.modal', function () {
+
+        // invoked the given callback, before destroying
+        options.onClose &amp;&amp; options.onClose();
+
+        // destroy the modal from DOM.
+        $modal.remove();
+      });
+
+    } else {
+      options.onClose &amp;&amp; $modal.on('hide.bs.modal', options.onClose);
+    }
 
     return $modal;
   };
@@ -414,8 +462,9 @@
    * @static
    *
    * Shows a modal having iframe with given information, loaded. provide a subscription to "message" event of window, listening that iframe site origin.
+   * @private
    *
-   * @param {Object} modalOptions - configuration options for the modal. Please check TTB.utilModal for parameters information.
+   * @param {Object} modalOptions - configuration options for the modal. Please check TTB._modal for parameters information.
    *
    * @param {Object} iframeOptions - configuration options for the iframe site. (which is going to be loaded into the iframe)
    * @param {String} iframeOptions.id - The "id" value for the iframe element.
@@ -432,16 +481,16 @@
   window.TTB.utilIframeModal = function (modalOptions, iframeOptions) {
     var $modal, o;
 
-    iframeOptions.height = iframeOptions.height || '600px';
+    iframeOptions.height = iframeOptions.height || defaults.iframeOptions.height;
 
     o = {};
     o.src = iframeOptions.origin + iframeOptions.pathname + '?hostOrigin={{hostOrigin}}'
         .replace('{{hostOrigin}}', window.location.origin);
 
     // check if additional params are passed
-    if (o.params) {
-      $.each(o.params, function(value, key) {
-        o.src += '&amp;' + key + '=' + value;
+    if (iframeOptions.params) {
+      $.each(iframeOptions.params, function(key, value) {
+        o.src += value ? ('&amp;' + key + '=' + value) : '';
       });
     }
 
@@ -450,7 +499,7 @@
     ].join('')
       .replace('{{src}}', o.src)
       .replace('{{height}}', iframeOptions.height)
-      .replace('/\{{iframeId\}\}/g', iframeOptions.id);
+      .replace('/\{\{iframeId\}\}/g', iframeOptions.id);
 
     // subscribe to message event from iframe site, only when onMessage is provided
     if (iframeOptions.onMessage) {
@@ -460,6 +509,8 @@
       o.modalOptionsOnClose = modalOptions.onClose;
       modalOptions.onClose = function () {
 
+        window.TTB._log(['utilIframeModal: onClose']);
+
         // invoked any onClose callback if it was provide via modalOptions.
         o.modalOptionsOnClose &amp;&amp; o.modalOptionsOnClose();
 
@@ -468,9 +519,8 @@
       };
     }
 
-
     modalOptions.bodyContent = o.iframeTemplate;
-    $modal = window.TTB.utilModal(modalOptions);
+    $modal = window.TTB._modal(modalOptions);
 
     // triggering .modal() of bootstrap
     $modal.modal({
@@ -481,14 +531,14 @@
 
     // listener to window "message" event.
     function receiveMessage(event) {
-      //console.log('receiveMessage: event: ', event);
+      window.TTB._log(['utilIframeModal: receiveMessage: origin:', event.origin]);
 
       if (event.origin !== iframeOptions.origin) {
-        //console.log('receiveMessage: from other origin: ');
+        //window.TTB._log(['utilIframeModal: receiveMessage: from other origin:', event.origin]);
         return;
       }
 
-      //console.log('receiveMessage: from landing page: data: ', event.data);
+      window.TTB._log(['utilIframeModal: receiveMessage: data:', event.data, 'event: ', event]);
       iframeOptions.onMessage(event.data, event);
     }
   };
@@ -603,7 +653,7 @@
     }
 
     // render the sponsors selector content via modal
-    $modal = this.utilModal({
+    $modal = this._modal({
       id: modalId,
       title: 'Please select a Company to Partner with on your Data Integration:',
       bodyContent: 'Retrieving list of all available Companies ...'
@@ -699,7 +749,7 @@
               break;
 
             default:
-              console.log('showSelectSponsor: unknown sponsor.match.type: ', sponsor.match.type);
+              window.TTB._log(['showSelectSponsor: unknown sponsor.match.type: ', sponsor.match.type]);
               // skip addition
               return;
           }
@@ -799,9 +849,11 @@
     /**
      * Logs the arguments based on debug flag.
      * @private
+     *
+     * @param {Array} args - list of values to be logged.
      * */
     _log: function (args) {
-      this.config.debug &amp;&amp; console.log.apply(console, args);
+      this.config.debug &amp;&amp; console.log.apply(console, [defaults.sdkPrefix + ' :'].concat(args));
     },
 
     /**
@@ -1006,7 +1058,7 @@
         .replace('{{src}}', this.sponsor.TOSURL);
 
       // render the sponsors TOS content via modal
-      $modal = window.TTB.utilModal({
+      $modal = window.TTB._modal({
         id: modalId,
         title: 'Terms of Service',
         bodyContent: modalTemplate
@@ -2167,7 +2219,7 @@
     },
 
     /**
-     * This method renders a widget includes a connect button to open up the TTB integration modal which contains an code>iframe&lt;code> controlled by TTB. &lt;br>
+     * This method renders a widget includes a connect button to open up the TTB integration modal which contains an &lt;code>iframe&lt;/code> controlled by TTB. &lt;br>
      * Make sure &lt;strong>ttbSdk.min.css&lt;/strong> file is injected for proper style and look for the widgets.
      *
      * @param {Object} options - configuration for the connect widget.
@@ -2325,7 +2377,7 @@
 
         <footer>
             Copyright © 2018 <a href="http://www.benutech.com/" target="_blank" title="Benutech official website">Benutech Inc.</a> All rights reserved.</a>
-           <!-- Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Aug 17 2018 02:27:30 GMT+0500 (PKT) -->
+           <!-- Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Aug 17 2018 17:06:57 GMT+0500 (PKT) -->
         </footer>
     </div>
 </div>
