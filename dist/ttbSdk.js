@@ -30,14 +30,14 @@
       autoDestroy: true
     },
     modalTemplate: [
-      '<div id={{modalId}} class="ttb-sdk-modal modal" tabindex="-1" role="dialog" aria-labelledby="{{modalId}}-label" aria-hidden="true">',
-      ' <div class="modal-dialog {{sizeClass}}">',
+      '<div id={{modalId}} class="ttb-sdk--modal modal" tabindex="-1" role="dialog" aria-labelledby="{{modalId}}-label" aria-hidden="true">',
+      ' <div class="modal-dialog {{sizeClass}}" role="document">',
       '  <div class="modal-content">',
       '   <div class="modal-header">',
       '    <button type="button" class="close" data-dismiss="modal" aria-label="Close" title="Close">',
       '     <span aria-hidden="true">&times;</span>',
       '    </button>',
-      '    <h5 class="modal-title" id="{{modalId}}-label">{{title}}</h5>',
+      '    <h4 class="modal-title" id="{{modalId}}-label">{{title}}</h4>',
       '   </div>',
       '   <div class="modal-body">',
       '    {{bodyContent}}',
@@ -306,7 +306,7 @@
 
     // generate the modal template against given info
     modalTemplate = defaults.modalTemplate
-      .replace('/\{\{modalId\}\}/g', options.id)
+      .replace(/\{\{modalId}}/g, options.id)
       .replace('{{sizeClass}}', options.sizeClass)
       .replace('{{title}}', options.title)
       .replace('{{bodyContent}}', options.bodyContent);
@@ -343,7 +343,7 @@
    * @alias utilIframeModal
    * @static
    *
-   * Shows a modal having iframe with given information, loaded. provide a subscription to "message" event of window, listening that iframe site origin.
+   * [Coming soon in 1.x version] Shows a modal having an iframe with given information, loaded. provide a subscription to "message" event of window, listening that iframe site origin.
    * @private
    *
    * @param {Object} modalOptions - configuration options for the modal. Please check TTB._modal for parameters information.
@@ -382,7 +382,7 @@
     ].join('')
       .replace('{{src}}', o.src)
       .replace('{{height}}', iframeOptions.height)
-      .replace('/\{\{iframeId\}\}/g', iframeOptions.id);
+      .replace(/\{\{iframeId}}/g, iframeOptions.id);
 
     // subscribe to message event from iframe site, only when onMessage is provided
     if (iframeOptions.onMessage) {
@@ -402,7 +402,8 @@
       };
     }
 
-    modalOptions.bodyContent = o.iframeTemplate;
+    // take in existing bodyContent if given.
+    modalOptions.bodyContent = [modalOptions.bodyContent || '', o.iframeTemplate].join('');
     $modal = window.TTB._modal(modalOptions);
 
     // triggering .modal() of bootstrap
@@ -528,7 +529,7 @@
   window.TTB.showSelectSponsor = function (payload, options) {
     var modalId, $modal;
 
-    modalId = 'ttb-sdk--show-select-sponsor';
+    modalId = 'ttb-sdk--select-sponsor';
 
     // remove any previous attempt modal
     if ($('#' + modalId).length) {
@@ -538,8 +539,8 @@
     // render the sponsors selector content via modal
     $modal = this._modal({
       id: modalId,
-      title: 'Please select a Company to Partner with on your Data Integration:',
-      bodyContent: 'Retrieving list of all available Companies ...'
+      title: 'Please select a Company to Partner with on your Data Integration',
+      bodyContent: '<h3>Retrieving list of all available Companies ...</h3>'
     });
 
     // retrieve the available sponsors
@@ -601,7 +602,7 @@
           '  </tr>',
           ' <thead>',
           ' <tbody class="align-items-center">{{sponsorsMarkup}}</tbody>',
-          '<table>'
+          '</table>'
         ].join('');
 
         // iterate over the list and generate the available options
@@ -2105,7 +2106,7 @@
     },
 
     /**
-     * This method renders a widget includes a connect button to open up the TTB integration modal which contains an <code>iframe</code> controlled by TTB. <br>
+     * [Coming soon in 1.x version] This method renders a widget includes a connect button to open up the TTB integration modal which contains an <code>iframe</code> controlled by TTB. <br>
      * <br>
      * It uses <strong>localStorage</strong> of the host origin, to store the selected sponsor info as <code>ttb-sdk--connect--selected-sponsor</code>,
      * It is a good gate for host sites to persist the user's sponsor selection over their servers, by reading/writing from/to it.
@@ -2238,7 +2239,7 @@
 
         iframeOptions = {
           id: 'ttb-sdk--connect--iframe',
-          height: '600px',
+          height: '635px',
           //origin: 'http://ttb-landing-page.herokuapp.com',
           origin: 'http://localhost:9001',
           pathname: '/index.html',

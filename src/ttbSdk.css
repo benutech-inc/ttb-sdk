@@ -7,6 +7,7 @@
  * */
 
 /* widgets styles */
+/* instant lookup widget - starts */
 .ttb-sdk--instant-lookup--container{
     width: 500px;
     padding: 5px 0;
@@ -23,17 +24,19 @@
 #ttb-sdk--instant-lookup--actions{
     padding-left: 0;
 }
+/* instant lookup widget - ends */
 
-/* for select sponsor widget modal */
+/* select-sponsor widget - starts */
 #ttb-sdk--select-sponsor .modal-dialog {
     max-width: 880px;
+    width: 880px !important;
     margin: 1.75rem auto;
 }
 #ttb-sdk--select-sponsor .modal-header{
     text-align: center;
     background: #f8fafb;
 }
-.modal-header{
+#ttb-sdk--select-sponsor .modal-header{
     text-align: center;
     background: #f8fafb;
 }
@@ -46,9 +49,10 @@
 #ttb-sdk--select-sponsor .modal-body{
     padding: 0;
 }
-
 #ttb-sdk--select-sponsor .close {
     font-size: 1rem;
+    position: absolute;
+    right: 22px;
 }
 #ttb-sdk--select-sponsor .table{
     border-bottom: 1px solid #dee2e6;
@@ -60,7 +64,6 @@
     border-top: 1px solid #dee2e6;
     text-align: left;
 }
-
 #ttb-sdk--select-sponsor thead{
     border-left: 4px #3288db solid;
 }
@@ -81,19 +84,20 @@
     margin: 0;
     padding: 25px 0;
 }
-
 #ttb-sdk--select-sponsor strong{
     font-weight: 700;
 }
 #ttb-sdk--select-sponsor a{
     color: #3d9ce2;
 }
-
+#ttb-sdk--select-sponsor img{
+    max-width: 150px;
+}
 #ttb-sdk--select-sponsor .selected td, #ttb-sdk--select-sponsor .selected th{
     background: #eff6fc;
 }
-
 #ttb-sdk--select-sponsor .selected .btn{
     background: #92d400;
     border: 1px #80b900 solid;
 }
+/* select-sponsor widget - ends */
