@@ -492,8 +492,10 @@
    * @param {Object} payload - To be used for <code>getSponsors()</code>. Please see payload information [over there]{@link TTB#getSponsors}.
 
    * @param {Object} options - The callbacks options to retrieve success and failure info.
-   * @param {Function} [options.onSelect] - The callback to be invoked with <code>selectedSponsor</code> when user selects it.
-   * @param {Function} [options.onError] - The callback to be invoked with <code>error</code>.
+   * @param {Function} [options.onDone] - The callback to be invoked with <code>selectedSponsor</code>
+   * when user is completely done with selecting sponsor and then accepting the their TOS.
+   * @param {Function} [options.onSelect] - The callback to be invoked with <code>selectedSponsor</code> when user selects the sponsor.
+   * @param {Function} [options.onError] - The callback to be invoked with <code>error</code> on whatever step it fails.
    *
    * @example
    * // No ttb instance needed.
@@ -527,41 +529,48 @@
    *
    * */
   window.TTB.showSelectSponsor = function (payload, options) {
-    var modalId, $modal;
+    var modalId, $modal, messageTemplate;
 
     modalId = 'ttb-sdk--select-sponsor';
-
-    // remove any previous attempt modal
-    if ($('#' + modalId).length) {
-      $('#' + modalId).remove();
-    }
+    messageTemplate = '<h3>{{message}}</h3>';
 
     // render the sponsors selector content via modal
     $modal = this._modal({
       id: modalId,
       title: 'Please select a Company to Partner with on your Data Integration',
-      bodyContent: '<h3>Retrieving list of all available Companies ...</h3>'
+      bodyContent: messageTemplate.replace('{{message}}', 'Retrieving list of all available Companies ...')
     });
 
     // retrieve the available sponsors
-    TTB.getSponsors(payload)
+    window.TTB.getSponsors(payload)
       //.fail(function (res) {
       .done(function (res) {
-        var o;
+        var o, errorMessage;
         
         o = {
           sponsorsData: undefined,
           bodyTemplate: undefined,
           bodyMarkup: undefined,
+
           sponsorTemplate: undefined,
           sponsorMarkup: undefined,
           sponsorsEmailMarkup: undefined,
           sponsorsZipMarkup: undefined,
+
+          sponsorTOSTemplate: undefined,
+          sponsorTOSMarkup: undefined,
+          $sponsorTOSModal: undefined,
+
           resultsMessage: undefined,
           tempTargetList: undefined
         };
         
         if (res.response.status !== 'OK') {
+
+          window.TTB._log(['showSelectSponsor: getSponsors: error in response: ', res.response]);
+
+          errorMessage = messageTemplate.replace('{{message}}', 'Failed in retrieving companies list.');
+          $modal.find('.modal-body').html(errorMessage);
 
           // pass the error response to error callback if provided.
           options.onError && options.onError(res);
@@ -697,9 +706,7 @@
         }
 
         // add the final markup to DOM.
-        $modal
-          .find('.modal-dialog').css({width: '760px'})
-          .find('.modal-body').html(o.bodyMarkup.join(''));
+        $modal.find('.modal-body').html(o.bodyMarkup.join(''));
 
         // register the click handler for sponsor selection
         $('#' + modalId + ' tbody').on('click', 'button', function (e) {
@@ -712,13 +719,20 @@
           // pass the selectedSponsor to on-select callback if provided.
           options.onSelect && options.onSelect(selectedSponsor);
 
-          // auto close/hide the modal
+          // present TOS modal
+          showSponsorTOSModal(selectedSponsor, options);
+
+          // auto close/hide the select-sponsor modal
           $modal.modal('hide');
         });
 
       })
       .fail(function (err) {
-        $modal.find('.modal-body').html('Failed in retrieving list.');
+        var errorMessage;
+
+        errorMessage = messageTemplate.replace('{{message}}', 'Failed in retrieving companies list.');
+        $modal.find('.modal-body').html(errorMessage);
+
         // pass the error to error callback if provided.
         options.onError && options.onError(err);
       });
@@ -727,6 +741,65 @@
     return $modal.modal({
       //backdrop: 'static'
     });
+
+    // shows a modal for handling TOS against selected sponsor.
+    function showSponsorTOSModal(selectedSponsor, options) {
+      var modalId, $modal, headingTemplate, headingMarkup, bodyTemplate, bodyMarkup;
+
+      modalId = 'ttb-sdk--sponsor-tos-modal';
+
+      // define modal component templates.
+      headingTemplate = [
+        'Thank you for choosing <br>{{sponsorTitle}} <br> as your sponsor <br>',
+        '<p>Please read and agree {{sponsorTitle}} <a href="{{sponsorTOSURL}}" target="_blank">Terms and conditions</a></p>'
+      ].join('');
+
+      bodyTemplate = [
+        '<div class="form-group form-check">',
+        ' <input id="ttb-sdk--sponsor-tos-agree" type="checkbox" class="form-check-input">',
+        ' <label class="form-check-label" for="ttb-sdk--sponsor-tos-agree">I hereby agree</label>',
+        '</div>',
+        '<button id="ttb-sdk--sponsor-tos-accept" type="button" class="btn btn-success btn-block" disabled>Finish</button>'
+      ].join('');
+
+      headingMarkup = headingTemplate
+        .replace(/\{\{sponsorTitle}}/g, selectedSponsor.title)
+        .replace('{{sponsorTOSURL}}', selectedSponsor.TOSURL);
+
+      bodyMarkup = bodyTemplate;
+        //.replace('{{sponsorTitle}}', selectedSponsor.title);
+
+      // render the sponsors selector content via modal
+      $modal = window.TTB._modal({
+        id: modalId,
+        modalClass: ' ',
+        title: headingMarkup,
+        bodyContent: bodyMarkup
+      });
+
+      // registers the click handler for accept sponsor TOS
+      $('#ttb-sdk--sponsor-tos-agree').on('change', TOSAgreeChange);
+      $('#ttb-sdk--sponsor-tos-accept').on('click', TOSAccept);
+
+      // triggering .modal() of bootstrap
+      return $modal.modal({
+        //backdrop: 'static'
+      });
+
+      function TOSAgreeChange() {
+        var isChecked = $(this).prop('checked');
+        $('#ttb-sdk--sponsor-tos-accept').prop('disabled', !isChecked);
+      }
+
+      function TOSAccept(e) {
+        window.TTB._log(['TOSAccept: clicked']);
+
+        // perform ajax call to the selected sponsor
+
+        // pass the selectedSponsor to on-select callback if provided.
+        options.onDone && options.onDone(selectedSponsor);
+      }
+    }
   };
 
   /** @lends TTB.prototype */
@@ -925,12 +998,52 @@
     showTOS: function () {
       var modalId, $modal, modalTemplate;
 
-      modalId = 'ttb-sdk-sponsor-tos';
+      modalId = 'ttb-sdk--sponsor-tos';
 
-      // remove any previous attempt modal
-      if ($('#' + modalId).length) {
-        $('#' + modalId).remove();
-      }
+      modalTemplate = [
+        '<iframe src="{{src}}" width="100%" height="600px"></iframe>',
+        //'<div class="row">',
+        //' <div class="col-xs-12">',
+        //' <button class="btn btn-success ttb-sdk--tos-accept pull-right">Accept</button>',
+        //' </div>',
+        '</div>'
+      ]
+        .join('')
+        .replace('{{src}}', this.sponsor.TOSURL);
+
+      // render the sponsors TOS content via modal
+      $modal = window.TTB._modal({
+        id: modalId,
+        title: 'Terms of Service',
+        bodyContent: modalTemplate
+      });
+
+      // triggering .modal() of bootstrap
+      return $modal.modal({
+        //backdrop: 'static'
+      });
+    },
+
+    /**
+     * This method is used after selecting a sponsor via the static function <code>TTB.showSelectSponsor(...)</code> to open up a Thank you modal,
+     * via which user can agree to TOS (Terms of Service) of the selected sponsor.
+     *
+     *
+     * @example
+     * var ttb = new TTB({ ... }); // skip if already instantiated.
+     *
+     * ttb.handleSponsorTOS(selectedSponsor);
+     *
+     * @return {Object} $modal - JQuery reference to the rendered modal DOMNode.
+     *
+     * */
+    handleSponsorTOS: function (selectedSponsor) {
+      var modalId, $modal, modalTemplate, modalTitleTemplate;
+
+      modalId = 'ttb-sdk--handle-sponsor-tos';
+
+      // update the instance sponsor
+      this.setSponsor(selectedSponsor);
 
       modalTemplate = [
         '<iframe src="{{src}}" width="100%" height="600px"></iframe>',
