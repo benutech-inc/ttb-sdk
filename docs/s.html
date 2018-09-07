@@ -64,6 +64,8 @@
             
                 <li data-name="TTB.showSelectSponsor"><a href="TTB.html#.showSelectSponsor">showSelectSponsor</a></li>
             
+                <li data-name="TTB.showSponsorTOSModal"><a href="TTB.html#.showSponsorTOSModal">showSponsorTOSModal</a></li>
+            
                 <li data-name="TTB#connectWidget"><a href="TTB.html#connectWidget">connectWidget</a></li>
             
                 <li data-name="TTB#getSearchFields"><a href="TTB.html#getSearchFields">getSearchFields</a></li>
@@ -176,6 +178,7 @@
     LOGIN_REMOTE: {methodName: 'loginRemote', endpoint: 'webservices/remote_login.json'},
     LOGOUT: {methodName: 'logout', endpoint: 'webservices/logout.json'},
     GET_SPONSORS: {methodName: 'TTB.getSponsors', endpoint: 'webservices/get_sponsors.json'},
+    ACCEPT_SPONSOR_TOS: {methodName: 'TTB.getSponsors', endpoint: 'webservices/accept_tos/accept.json'},
     SEARCH_PARCEL: {methodName: 'searchByParcelNumber', endpoint: 'webservices/search_parcel_number.json'},
     SEARCH_PROPERTY: {methodName: 'searchBySiteAddress', endpoint: 'webservices/search_property/ttb.json'},
     SEARCH_OWNER: {methodName: 'searchByOwnerName', endpoint: 'webservices/search_owner_name/ttb.json'},
@@ -609,15 +612,15 @@
    * @alias showSelectSponsor
    * @static
    *
-   * This static method provides the list of all available sponsors based on given info.
+   * [Updates for coming in 1.x version] This static method provides the list of all available sponsors based on given info.
    *
    * @param {Object} payload - To be used for &lt;code>getSponsors()&lt;/code>. Please see payload information [over there]{@link TTB#getSponsors}.
 
-   * @param {Object} options - The callbacks options to retrieve success and failure info.
-   * @param {Function} [options.onDone] - The callback to be invoked with &lt;code>selectedSponsor&lt;/code>
-   * when user is completely done with selecting sponsor and then accepting the their TOS.
-   * @param {Function} [options.onSelect] - The callback to be invoked with &lt;code>selectedSponsor&lt;/code> when user selects the sponsor.
-   * @param {Function} [options.onError] - The callback to be invoked with &lt;code>error&lt;/code> on whatever step it fails.
+   * @param {Object} actions - The callbacks options to retrieve success and failure info.
+   * @param {Function} [actions.onConnect] - The callback to be invoked with
+   * when user is completely connected .ie. done with selecting sponsor and then accepting the their TOS.
+   * @param {Function} [actions.onSelect] - The callback to be invoked with &lt;code>selectedSponsor&lt;/code> when user selects the sponsor.
+   * @param {Function} [actions.onError] - The callback to be invoked with &lt;code>error&lt;/code> on whatever step it fails.
    *
    * @example
    * // No ttb instance needed.
@@ -629,7 +632,10 @@
    * };
    *
    * TTB.showSelectSponsor(payload, {
-   *   onSelect: function(selectedSponsor) {
+   *   onConnect: function(selectedSponsor) {
+   *    // your success code here to wrap things up considering it as a complete callback.
+   *   },
+   *   onSelect: function(selectedSponsor, authPromise) {
    *    // your success code here to consume "selectedSponsor"
    *
    *    // you can instantiate the TTB sdk against the selected sponsor.
@@ -641,6 +647,11 @@
    *
    *    // OR you can update the sponsor of already instantiated TTB sdk
    *    // ttb.setSponsor(selectedSponsor);
+   *
+   *    // must do your login here via loginRemote()
+   *    // and then call the authPromise.resolve(), or authPromise.reject()
+   *    // since the TOS acceptance feature waits on this promise to be fulfilled to proceed with an AJAX call.
+   *    // on successful TOS actions.onConnect gets called.
    *   },
    *   onError: function(error) {
    *    // your failure code here
@@ -650,7 +661,7 @@
    * @return {Object} $modal - JQuery reference to the rendered modal DOMNode.
    *
    * */
-  window.TTB.showSelectSponsor = function (payload, options) {
+  window.TTB.showSelectSponsor = function (payload, actions) {
     var modalId, $modal, messageTemplate;
 
     modalId = 'ttb-sdk--select-sponsor';
@@ -695,7 +706,7 @@
           $modal.find('.modal-body').html(errorMessage);
 
           // pass the error response to error callback if provided.
-          options.onError &amp;&amp; options.onError(res);
+          actions.onError &amp;&amp; actions.onError(res);
           return;
         }
 
@@ -838,11 +849,8 @@
             TOSURL: $(this).attr('data-sponsor-tos')
           };
 
-          // pass the selectedSponsor to on-select callback if provided.
-          options.onSelect &amp;&amp; options.onSelect(selectedSponsor);
-
           // present TOS modal
-          showSponsorTOSModal(selectedSponsor, options);
+          window.TTB.showSponsorTOSModal(selectedSponsor, actions);
 
           // auto close/hide the select-sponsor modal
           $modal.modal('hide');
@@ -856,71 +864,201 @@
         $modal.find('.modal-body').html(errorMessage);
 
         // pass the error to error callback if provided.
-        options.onError &amp;&amp; options.onError(err);
+        actions.onError &amp;&amp; actions.onError(err);
       });
 
     // triggering .modal() of bootstrap
     return $modal.modal({
       //backdrop: 'static'
     });
+  };
 
-    // shows a modal for handling TOS against selected sponsor.
-    function showSponsorTOSModal(selectedSponsor, options) {
-      var modalId, $modal, headingTemplate, headingMarkup, bodyTemplate, bodyMarkup;
+  /**
+   * @memberof TTB
+   * @alias showSponsorTOSModal
+   * @static
+   *
+   * [Coming soon in 1.x version] This static method is used as a helper component inside &lt;code>showSelectSponsor()&lt;/code> method.
+   * This method shows a "Thank you" modal for handling TOS against the selected sponsor, after user selected it
+   * via &lt;code>TTB.showSelectSponsor()&lt;/code>.
+   *
+   * @param {Object} selectedSponsor - The sponsor information retrieved after selecting a sponsor from the list via &lt;code>TTB.showSelectSponsor()&lt;/code>.
 
-      modalId = 'ttb-sdk--sponsor-tos-modal';
+   * @param {Object} actions - The callbacks options to retrieve success and failure info.
+   * @param {Function} [actions.onConnect] - The callback to be invoked with
+   * when user is completely connected .ie. done with selecting sponsor (via TTB.showSelectSponsor()) and then accepting the their TOS.
+   * @param {Function} [actions.onSelect] - The callback to be invoked with &lt;code>selectedSponsor&lt;/code> when user selects the sponsor.
+   * @param {Function} [actions.onError] - The callback to be invoked with &lt;code>error&lt;/code> on whatever step it fails.
+   *
+   * @example
+   * // No ttb instance needed.
+   * // var ttb = new TTB({ ... });
+   *
+   * var selectedSponsor = { ... }; // received from options.onSelect of TTB.showSelectSponsor()
+   *
+   * TTB.showSponsorTOSModal(selectedSponsor, {
+   *  onConnect: function(selectedSponsor) {
+   *    // your success code here to wrap things up considering it as a complete callback.
+   *   },
+   *   onSelect: function(selectedSponsor) {
+   *    // your success code here to consume "selectedSponsor"
+   *
+   *    // you can instantiate the TTB sdk against the selected sponsor.
+   *    // var ttb = new TTB({
+   *    //  ...
+   *    //  sponsor: selectedSponsor
+   *    //  ...
+   *    // });
+   *
+   *    // OR you can update the sponsor of already instantiated TTB sdk
+   *    // ttb.setSponsor(selectedSponsor);
+   *
+   *    // must do your login here via loginRemote()
+   *    // and then call the authPromise.resolve(), or authPromise.reject()
+   *    // since the TOS acceptance feature waits on this promise to be fulfilled to proceed with an AJAX call.
+   *    // on successful TOS actions.onConnect gets called.
+   *   },
+   *   onError: function(error) {
+   *    // your failure code here
+   *   }
+   * });
+   *
+   * @return {Object} $modal - JQuery reference to the rendered modal DOMNode.
+   *
+   * */
+  window.TTB.showSponsorTOSModal = function (selectedSponsor, actions) {
+    var modalId, $modal, headingTemplate, headingMarkup, bodyTemplate, bodyMarkup;
 
-      // define modal component templates.
-      headingTemplate = [
-        'Thank you for choosing &lt;br>{{sponsorTitle}} &lt;br> as your sponsor &lt;br>',
-        '&lt;p>Please read and agree {{sponsorTitle}} &lt;a href="{{sponsorTOSURL}}" target="_blank">Terms and conditions&lt;/a>&lt;/p>'
-      ].join('');
+    modalId = 'ttb-sdk--sponsor-tos-modal';
 
-      bodyTemplate = [
-        '&lt;div class="form-group form-check">',
-        ' &lt;input id="ttb-sdk--sponsor-tos-agree" type="checkbox" class="form-check-input">',
-        ' &lt;label class="form-check-label" for="ttb-sdk--sponsor-tos-agree">I hereby agree&lt;/label>',
-        '&lt;/div>',
-        '&lt;button id="ttb-sdk--sponsor-tos-accept" type="button" class="btn btn-success btn-block" disabled>Finish&lt;/button>'
-      ].join('');
+    // define modal component templates.
+    headingTemplate = [
+      'Thank you for choosing &lt;br>{{sponsorTitle}} &lt;br> as your sponsor &lt;br>',
+      '&lt;p>Please read and agree {{sponsorTitle}} &lt;a href="{{sponsorTOSURL}}" target="_blank">Terms and conditions&lt;/a>&lt;/p>'
+    ].join('');
 
-      headingMarkup = headingTemplate
-        .replace(/\{\{sponsorTitle}}/g, selectedSponsor.title)
-        .replace('{{sponsorTOSURL}}', selectedSponsor.TOSURL);
+    bodyTemplate = [
+      '&lt;div class="form-group form-check">',
+      ' &lt;input id="ttb-sdk--sponsor-tos-agree" type="checkbox" class="form-check-input">',
+      ' &lt;label class="form-check-label" for="ttb-sdk--sponsor-tos-agree">I hereby agree&lt;/label>',
+      '&lt;/div>',
+      '&lt;button id="ttb-sdk--sponsor-tos-accept" type="button" class="btn btn-success btn-block" disabled>Finish&lt;/button>'
+    ].join('');
 
-      bodyMarkup = bodyTemplate;
-        //.replace('{{sponsorTitle}}', selectedSponsor.title);
+    headingMarkup = headingTemplate
+      .replace(/\{\{sponsorTitle}}/g, selectedSponsor.title)
+      .replace('{{sponsorTOSURL}}', selectedSponsor.TOSURL);
 
-      // render the sponsors selector content via modal
-      $modal = window.TTB._modal({
-        id: modalId,
-        modalClass: ' ',
-        title: headingMarkup,
-        bodyContent: bodyMarkup
-      });
+    bodyMarkup = bodyTemplate;
+    //.replace('{{sponsorTitle}}', selectedSponsor.title);
 
-      // registers the click handler for accept sponsor TOS
-      $('#ttb-sdk--sponsor-tos-agree').on('change', TOSAgreeChange);
-      $('#ttb-sdk--sponsor-tos-accept').on('click', TOSAccept);
+    // render the sponsors selector content via modal
+    $modal = window.TTB._modal({
+      id: modalId,
+      sizeClass: ' ',
+      title: headingMarkup,
+      bodyContent: bodyMarkup
+    });
 
-      // triggering .modal() of bootstrap
-      return $modal.modal({
-        //backdrop: 'static'
-      });
+    // registers the click handler for accept sponsor TOS
+    $('#ttb-sdk--sponsor-tos-agree').on('change', TOSAgreeChange);
+    $('#ttb-sdk--sponsor-tos-accept').on('click', authenticateForTOS);
 
-      function TOSAgreeChange() {
-        var isChecked = $(this).prop('checked');
-        $('#ttb-sdk--sponsor-tos-accept').prop('disabled', !isChecked);
-      }
+    // triggering .modal() of bootstrap
+    return $modal.modal({
+      //backdrop: 'static'
+    });
 
-      function TOSAccept(e) {
-        window.TTB._log(['TOSAccept: clicked']);
+    function TOSAgreeChange() {
+      var isChecked = $(this).prop('checked');
+      $('#ttb-sdk--sponsor-tos-accept').prop('disabled', !isChecked);
+    }
 
-        // perform ajax call to the selected sponsor
+    function utilUpdateButton(text, disable) {
+      $('#ttb-sdk--sponsor-tos-accept')
+        .text(text)
+        .prop('disabled', disable);
+    }
 
-        // pass the selectedSponsor to on-select callback if provided.
-        options.onDone &amp;&amp; options.onDone(selectedSponsor);
-      }
+    // sends the flow to host app to perform authentication and then to get the flow back here.
+    function authenticateForTOS() {
+      var authDeferred;
+
+      window.TTB._log(['authenticateForTOS: clicked']);
+
+      // disable accept button.
+      utilUpdateButton('Authenticating...', true);
+
+      authDeferred = $.Deferred();
+
+      // invoke onSelect callback with selectedSponsor and authDeferred for handling auth
+      actions.onSelect &amp;&amp; actions.onSelect(selectedSponsor, authDeferred);
+
+      authDeferred
+        .then(function (res) {
+          window.TTB._log(['authenticateForTOS: success', res]);
+
+          // since login is successful, show TOS modal to let user accept.
+          TOSAccept();
+
+        }, function (reason) {
+
+          window.TTB._log(['authenticateForTOS: error', reason]);
+
+          utilUpdateButton('Accept', false);
+
+          // invoke error callback with reason
+          actions.onError &amp;&amp; actions.onError(reason);
+        });
+    }
+
+    // performs an ajax call to accept selected sponsor TOS.
+    function TOSAccept(e) {
+      var ttb, request;
+
+      window.TTB._log(['TOSAccept: clicked']);
+
+      // get a default instance for internal use, and set the selected sponsor
+      ttb = window.TTB._createDefaultInstance();
+      ttb.setSponsor(selectedSponsor);
+
+      request = {
+        method: 'GET'
+      };
+
+      return ttb._ajax(request, methodsMapping.ACCEPT_SPONSOR_TOS)
+        .done(function (res) {
+          //window.TTB._log(['TOSAccept: complete', res]);
+
+          if (res.response.status === 'OK') {
+            window.TTB._log(['TOSAccept: success', res]);
+
+            // invoke done callback with selectedSponsor
+            actions.onConnect &amp;&amp; actions.onConnect(selectedSponsor);
+
+            utilUpdateButton('Connected !', false);
+
+            // enhance - can prefer some delay to let the connected button update.
+            // auto close/hide the TOS accept modal
+            $modal.modal('hide');
+
+          } else {
+            window.TTB._log(['TOSAccept: error', res]);
+
+            // invoke done callback with selectedSponsor
+            actions.onError &amp;&amp; actions.onError(res.response.data.msg);
+
+            utilUpdateButton('Retry', false);
+          }
+        })
+        .fail(function (reason) {
+          window.TTB._log(['TOSAccept: error', reason]);
+
+          // invoke done callback with selectedSponsor
+          actions.onError &amp;&amp; actions.onError(reason);
+
+          utilUpdateButton('Retry', false);
+        });
     }
   };
 
@@ -2418,7 +2556,10 @@
       o.widgetClass = 'ttb-sdk--connect--container';
       o.widgetTemplate = [
         '&lt;div id="ttb-sdk--connect--connect-section" class="row">',
-        ' &lt;div class="col-xs-12">',
+        ' &lt;div class="col-xs-9">',
+        ' No Sponsor - Please click "Connect" to select one.',
+        ' &lt;/div>',
+        ' &lt;div class="col-xs-3">',
         '  &lt;button class="btn btn-primary pull-right">Connect&lt;/button>',
         ' &lt;/div>',
         '&lt;/div>',
@@ -2522,7 +2663,7 @@
 
         <footer>
             Copyright © 2018 <a href="http://www.benutech.com/" target="_blank" title="Benutech official website">Benutech Inc.</a> All rights reserved.</a>
-           <!-- Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Aug 30 2018 01:10:51 GMT+0500 (PKT) -->
+           <!-- Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat Sep 08 2018 00:07:37 GMT+0500 (PKT) -->
         </footer>
     </div>
 </div>
