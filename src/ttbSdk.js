@@ -909,7 +909,7 @@
           if (res.response.status === 'OK') {
             window.TTB._log(['TOSAccept: success', res]);
 
-            // invoke done callback with selectedSponsor
+            // invoke connect callback with the selectedSponsor
             actions.onConnect && actions.onConnect(selectedSponsor);
 
             utilUpdateButton('Connected !', false);
@@ -2422,13 +2422,14 @@
      *
      * */
     connectWidget: function (options, actions) {
-      var o, ttb;
+      var o, ttb, localName;
 
       ttb = this;
+      localName = 'connect--selected-sponsor';
       actions = actions || {};
 
       o = {};
-      o.selectedSponsor = window.TTB._getLocal('connect--selected-sponsor', o.selectedAction);
+      o.selectedSponsor = window.TTB._getLocal(localName);
       o.widgetClass = 'ttb-sdk--connect--container';
       o.widgetTemplate = [
         '<div id="ttb-sdk--connect--connect-section" class="row">',
@@ -2469,20 +2470,23 @@
         // render the widget template
         .append(o.widgetTemplate);
 
-      // check for any existing connection
+      // check for any existing connection - activate disconnect section UI.
       if (o.selectedSponsor) {
         o.$container
           .find('#ttb-sdk--connect--connect-section').hide()
-          .find('#ttb-sdk--connect--disconnect-section').show()
+          .next('#ttb-sdk--connect--disconnect-section').show()
           .find('#ttb-sdk--connect--company-name').text(o.selectedSponsor.title)
       }
 
       // register handler of connect button to open up a connect modal
       o.$container.find('#ttb-sdk--connect--connect-section button').on('click', onConnect);
+      o.$container.find('#ttb-sdk--connect--disconnect-section button').on('click', onDisconnect);
 
       // opens up the connect modal
       function onConnect() {
         var $modal, modalOptions, iframeOptions;
+
+        ttb._log(['connectWidget: onConnect: init.']);
 
         modalOptions = {
           id: 'ttb-sdk--connect--modal',
@@ -2492,8 +2496,8 @@
         iframeOptions = {
           id: 'ttb-sdk--connect--iframe',
           height: '635px',
-          origin: 'http://ttb-landing-page.herokuapp.com',
-          //origin: 'http://localhost:9001',
+          //origin: 'http://ttb-landing-page.herokuapp.com',
+          origin: 'http://localhost:9001',
           pathname: '/index.html',
           params: {
             stk: options.loginRemotePayload.stk,
@@ -2510,16 +2514,62 @@
         function onMessage(data, event) {
           ttb._log(['connectWidget: onMessage', data, event]);
 
-          // failure -
-          // invoke given callbacks
+          // skip for the unrelated message events
+          if (data.action.indexOf('TTB:SDK::CONNECT_WIDGET') === -1) {
+            return;
+          }
 
+          switch (data.action) {
 
-          // success -
-          // store sponsor
+            // failure - invoke given callbacks
+            case 'TTB:SDK::CONNECT_WIDGET:ERROR':
 
-          // update connect widget
+              // invoke the related action callback.
+              actions.onConnectFailure && actions.onConnectFailure(data.info);
 
+              // close the connect widget modal.
+              $modal.modal('hide');
+              return;
+
+            // success - store sponsor, and update UI
+            case 'TTB:SDK::CONNECT_WIDGET:SUCCESS':
+
+              // store sponsor
+              window.TTB._setLocal(localName, data.info.selectedSponsor);
+
+              // activate disconnect section UI.
+              o.$container
+                .find('#ttb-sdk--connect--connect-section').hide()
+                .next('#ttb-sdk--connect--disconnect-section').show()
+                .find('#ttb-sdk--connect--company-name').text(data.info.selectedSponsor.title);
+
+              // invoke the related action callback.
+              actions.onConnectSuccess && actions.onConnectSuccess(data.info);
+
+              // close the connect widget modal.
+              $modal.modal('hide');
+              return;
+
+            default:
+              ttb._log(['connectWidget: onMessage: unknown action', data.action]);
+              return;
+          }
         }
+      }
+
+      // remove the stored sponsor connection.
+      function onDisconnect() {
+        ttb._log(['connectWidget: onDisconnect: init.']);
+
+        window.TTB._setLocal(localName, null);
+
+        // activate connect section UI.
+        o.$container
+          .find('#ttb-sdk--connect--connect-section').show()
+          .next('#ttb-sdk--connect--disconnect-section').hide()
+          .find('#ttb-sdk--connect--company-name').text('');
+
+        ttb._log(['connectWidget: onDisconnect: disconnected.']);
       }
     }
 
