@@ -434,6 +434,7 @@
    * @alias getSponsors
    * @static
    *
+   * @description
    * This static method provides the list of all available sponsors based on given info.
    *
    * @param {Object} payload - The payload object containing required info against the logged-in user, so that we could suggest the sponsor(s) for it.
@@ -488,6 +489,7 @@
    * @alias showSelectSponsor
    * @static
    *
+   * @description
    * [Updates for coming in 1.x version] This static method provides the list of all available sponsors based on given info.
    *
    * @param {Object} payload - To be used for <code>getSponsors()</code>. Please see payload information [over there]{@link TTB#getSponsors}.
@@ -754,6 +756,7 @@
    * @alias showSponsorTOSModal
    * @static
    *
+   * @description
    * [Coming soon in 1.x version] This static method is used as a helper component inside <code>showSelectSponsor()</code> method.
    * This method shows a "Thank you" modal for handling TOS against the selected sponsor, after user selected it
    * via <code>TTB.showSelectSponsor()</code>.
