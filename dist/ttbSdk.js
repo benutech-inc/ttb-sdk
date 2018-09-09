@@ -2403,13 +2403,10 @@
      * };
      *
      * var actions = {
-     *   onConnectSuccess: function(sponsorName, sponsorInfo) {
+     *   onConnectSuccess: function(info) {
      *     // optional callback - to be called when done.
-     *     // passed argument will be:
-     *     // sponsorName {String} - Name of the sponsor that user selected. e.g. "lead" for Benutech,
-     *     // sponsorInfo {Object} - Complete info object of the sponsor that user selected. (response object of the get_sponsors.json)
-     *
-     *     // required details from sponsorInfo already being written to localStorage as "ttb-sdk--connect--selected-sponsor" by SDK.
+     *     // passed argument will be an "info" object which contains "selectedSponsor" which can be used to set instance sponsor.
+     *     // note: required details from sponsorInfo already being written to localStorage as "ttb-sdk--connect--selected-sponsor" by SDK.
      *   },
      *
      *   onConnectFailure: function(reason) {
