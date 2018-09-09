@@ -88,6 +88,7 @@
 }
 #ttb-sdk--select-sponsor img{
     max-width: 150px;
+    max-height: 70px;
 }
 #ttb-sdk--select-sponsor .selected td, #ttb-sdk--select-sponsor .selected th{
     background: #eff6fc;

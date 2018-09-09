@@ -682,9 +682,9 @@
         if (o.sponsorsZipMarkup.length) {
 
           // add a separator if match type "email" results were added too.
-          if (o.sponsorsEmailMarkup.length) {
-            o.bodyMarkup.push('<hr>');
-          }
+          //if (o.sponsorsEmailMarkup.length) {
+          //  o.bodyMarkup.push('<hr>');
+          //}
 
           o.resultsMessage = 'The following Companies are available Partners in the <strong>{{zipCode}}</strong> zip code.'
             .replace('{{zipCode}}', payload.zipCode);
