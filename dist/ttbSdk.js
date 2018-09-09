@@ -2502,7 +2502,8 @@
           params: {
             stk: options.loginRemotePayload.stk,
             getuser_url: options.loginRemotePayload.getuser_url,
-            partnerKey: ttb.config.partnerKey
+            partnerKey: ttb.config.partnerKey,
+            debug: ttb.debug
           },
           onMessage: onMessage
         };
