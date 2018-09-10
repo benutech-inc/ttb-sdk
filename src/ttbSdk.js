@@ -2372,7 +2372,7 @@
      * @param {Object} options.loginRemotePayload - "stk" and "getuser_url" information to be used for login. please check .loginRemote() documentation for more.
      *
      * @param {Object} [actions] - The actions object contains mapping callbacks to be consumed on success or failure.
-     * @param {Function} [actions.onConnectSuccess] - To be invoked with <code>sponsorName</code>, <code>sponsorInfo</code> on successful connect.
+     * @param {Function} [actions.onConnectSuccess] - To be invoked with <code>info</code> object, which contains <code>selectedSponsor</code> object, on successful connect.
      * @param {Function} [actions.onConnectFailure] - To be invoked with <code>reason</code> on failing connecting.
      *
      * @example
