@@ -272,7 +272,7 @@
    *
    * */
   window.TTB._setLocal = function (key, value) {
-    window.localStorage.setItem(defaults.sdkPrefix + '-' + key, JSON.stringify(value));
+    window.localStorage.setItem(defaults.sdkPrefix + '--' + key, JSON.stringify(value));
   };
 
   /**
@@ -2372,8 +2372,9 @@
      * @param {Object} options.loginRemotePayload - "stk" and "getuser_url" information to be used for login. please check .loginRemote() documentation for more.
      *
      * @param {Object} [actions] - The actions object contains mapping callbacks to be consumed on success or failure.
-     * @param {Function} [actions.onConnectSuccess] - To be invoked with <code>info</code> object, which contains <code>selectedSponsor</code> object, on successful connect.
+     * @param {Function} [actions.onConnectSuccess] - To be invoked with <code>info</code> object, which contains <code>selectedSponsor</code> object, on successful "Connect".
      * @param {Function} [actions.onConnectFailure] - To be invoked with <code>reason</code> on failing connecting.
+     * @param {Function} [actions.onDisconnectSuccess] - To be invoked with <code>info</code> object, which contains <code>selectedSponsor</code> object, on successful "Disconnect".
      *
      * @example
      *
@@ -2411,9 +2412,15 @@
      *
      *   onConnectFailure: function(reason) {
      *     // optional callback - to be called when failed connecting.
-      *    // passed argument will be:
-      *    // reason {String} - Reason of the failure, e.g. "failed" if API did not connect.
-     *   }
+     *    // passed argument will be:
+     *    // reason {String} - Reason of the failure, e.g. "failed" if API did not connect.
+     *   },
+     *
+     *   onDisconnectSuccess: function(info) {
+     *     // optional callback - to be called when done.
+     *     // passed argument will be an "info" object which contains "selectedSponsor" which can be used to set instance sponsor.
+     *     // note: selectedSponsor details "ttb-sdk--connect--selected-sponsor" of localStorage gets destroyed by SDK.
+     *   },
      * };
      *
      * var $ttbConnect = ttb.connectWidget(options, actions);
@@ -2472,10 +2479,7 @@
 
       // check for any existing connection - activate disconnect section UI.
       if (o.selectedSponsor) {
-        o.$container
-          .find('#ttb-sdk--connect--connect-section').hide()
-          .next('#ttb-sdk--connect--disconnect-section').show()
-          .find('#ttb-sdk--connect--company-name').text(o.selectedSponsor.title)
+        activateConnectedMode(o.selectedSponsor);
       }
 
       // register handler of connect button to open up a connect modal
@@ -2496,8 +2500,8 @@
         iframeOptions = {
           id: 'ttb-sdk--connect--iframe',
           height: '635px',
-          origin: 'http://ttb-landing-page.herokuapp.com',
-          //origin: 'http://localhost:9001',
+          //origin: 'http://ttb-landing-page.herokuapp.com',
+          origin: 'http://localhost:9001',
           pathname: '/index.html',
           params: {
             stk: options.loginRemotePayload.stk,
@@ -2539,13 +2543,7 @@
               window.TTB._setLocal(localName, data.info.selectedSponsor);
 
               // activate disconnect section UI.
-              o.$container
-                .find('#ttb-sdk--connect--connect-section').hide()
-                .next('#ttb-sdk--connect--disconnect-section').show()
-                .find('#ttb-sdk--connect--company-name').text(data.info.selectedSponsor.title);
-
-              // invoke the related action callback.
-              actions.onConnectSuccess && actions.onConnectSuccess(data.info);
+              activateConnectedMode(data.info.selectedSponsor);
 
               // close the connect widget modal.
               $modal.modal('hide');
@@ -2565,12 +2563,32 @@
         window.TTB._setLocal(localName, null);
 
         // activate connect section UI.
+        activateDisconnectedMode(ttb.sponsor);
+
+        ttb._log(['connectWidget: onDisconnect: disconnected.']);
+      }
+
+
+      // activate connect section UI.
+      function activateDisconnectedMode(selectedSponsor) {
         o.$container
           .find('#ttb-sdk--connect--connect-section').show()
           .next('#ttb-sdk--connect--disconnect-section').hide()
           .find('#ttb-sdk--connect--company-name').text('');
 
-        ttb._log(['connectWidget: onDisconnect: disconnected.']);
+        // invoke the related action callback.
+        actions.onDisconnectSuccess && actions.onDisconnectSuccess({selectedSponsor: selectedSponsor});
+      }
+
+      // activate disconnect section UI.
+      function activateConnectedMode(selectedSponsor) {
+        o.$container
+          .find('#ttb-sdk--connect--connect-section').hide()
+          .next('#ttb-sdk--connect--disconnect-section').show()
+          .find('#ttb-sdk--connect--company-name').text(selectedSponsor.title);
+
+        // invoke the related action callback.
+        actions.onConnectSuccess && actions.onConnectSuccess({selectedSponsor: selectedSponsor});
       }
     }
 
