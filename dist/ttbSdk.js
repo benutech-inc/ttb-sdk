@@ -2501,7 +2501,8 @@
           id: 'ttb-sdk--connect--iframe',
           height: '635px',
           //origin: 'http://ttb-landing-page.herokuapp.com',
-          origin: 'http://localhost:9001',
+          //origin: 'http://localhost:9001',
+          origin: window.location.port === '9000' ? 'http://localhost:9001' : 'http://ttb-landing-page.herokuapp.com',
           pathname: '/index.html',
           params: {
             stk: options.loginRemotePayload.stk,
