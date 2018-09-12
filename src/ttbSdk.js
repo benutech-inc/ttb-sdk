@@ -54,6 +54,8 @@
     LOGIN_REMOTE: {methodName: 'loginRemote', endpoint: 'webservices/remote_login.json'},
     LOGOUT: {methodName: 'logout', endpoint: 'webservices/logout.json'},
     GET_SPONSORS: {methodName: 'TTB.getSponsors', endpoint: 'webservices/get_sponsors.json'},
+    GET_SPONSOR_SELECTION: {methodName: 'TTB.getSponsorSelection', endpoint: 'webservices/get_sponsor_selection.json'},
+    SAVE_SPONSOR_SELECTION: {methodName: 'TTB.saveSponsorSelection', endpoint: 'webservices/save_sponsor_selection.json'},
     ACCEPT_SPONSOR_TOS: {methodName: 'TTB.getSponsors', endpoint: 'webservices/accept_tos/accept.json'},
     SEARCH_PARCEL: {methodName: 'searchByParcelNumber', endpoint: 'webservices/search_parcel_number.json'},
     SEARCH_PROPERTY: {methodName: 'searchBySiteAddress', endpoint: 'webservices/search_property/ttb.json'},
@@ -220,6 +222,8 @@
    * This static method provides an instance for the internal use for TTB static methods.
    * @private
    *
+   * @param {String} partnerKey - The partner key provided by support team for the consumer site.
+   *
    * @example
    *
    * var defaultTtb = TTB._createDefaultInstance();
@@ -227,9 +231,9 @@
    * @return {Object} instance - instance object created with default configuration.
    *
    * */
-  window.TTB._createDefaultInstance = function () {
+  window.TTB._createDefaultInstance = function (partnerKey) {
     return new TTB({
-      partnerKey: defaults.partnerKey
+      partnerKey: partnerKey || defaults.partnerKey
     });
   };
 
@@ -423,7 +427,7 @@
         return;
       }
 
-      window.TTB._log(['utilIframeModal: receiveMessage: data:', event.data, 'event: ', event]);
+      window.TTB._log(['utilIframeModal: receiveMessage: event: ', event]);
       iframeOptions.onMessage(event.data, event);
     }
   };
@@ -442,8 +446,6 @@
    * @param {String} [payload.zipCode] - The Zip Code of the logged-in user, if user is newly signed-up in TTB system, we list the available sponsors in that region.
    *
    * @example
-   * // No ttb instance needed.
-   * // var ttb = new TTB({ ... });
    *
    * var payload = {
    *   email: 'agent47@domain.com',
@@ -483,6 +485,112 @@
     return ttb._ajax(request, methodsMapping.GET_SPONSORS);
   };
 
+  /**
+   * @memberof TTB
+   * @alias getSponsorSelection
+   * @static
+   * @private
+   *
+   * @description
+   * This static method gets the sponsor selection that user with given credentials, had performed previously.
+   *
+   * @param {String} partnerKey - The partner key provided by support team for the consumer site.
+   * @param {Object} payload - The payload object containing user information for recognising.
+   * @param {String} [payload.email] - The email address of the logged-in user.
+   *
+   * @example
+   *
+   * var partnerKey = ttb.config.partnerKey; // key passed in an instance.
+   * var payload = {
+   *   email: 'agent47@domain.com'
+   * };
+   *
+   * TTB.getSponsorSelection(payload, partnerKey)
+   * .done(function(res) {
+   *   if (res.response.status === 'OK') {
+   *     // your success code here to consume res.response.data
+   *     console.log(res.response.data);
+   *   } else {
+   *     // your failure code here to consume res.response.data
+   *     console.log(res.response.data);
+   *   }
+   * })
+   * .fail(function(err) {
+   *   // your failure code here
+   * })
+   * .always(function() {
+   *  // your on-complete code here as common for both success and failure
+   * });
+   *
+   * @return {Object} promise - Jquery AJAX deferred promise is returned which on-success returns the required info.
+   *
+   * */
+  window.TTB.getSponsorSelection = function (partnerKey, payload) {
+
+    // get a default instance for internal use
+    var ttb = window.TTB._createDefaultInstance(partnerKey);
+
+    var request = {
+      method: 'POST',
+      data: JSON.stringify(payload)
+    };
+
+    return ttb._ajax(request, methodsMapping.GET_SPONSOR_SELECTION);
+  };
+
+  /**
+   * @memberof TTB
+   * @alias saveSponsorSelection
+   * @static
+   * @private
+   *
+   * @description
+   * This static method saves the sponsor selection performed by the user with given credentials.
+   *
+   * @param {String} partnerKey - The partner key provided by support team for the consumer site.
+   * @param {Object} payload - The payload object containing user information for recognising.
+   * @param {String} [payload.email] - The email address of the logged-in user.
+   *
+   * @example
+   *
+   * var partnerKey = ttb.config.partnerKey; // key passed in an instance.
+   * var payload = {
+   *   email: 'agent47@domain.com'
+   * };
+   *
+   * TTB.saveSponsorSelection(payload, partnerKey)
+   * .done(function(res) {
+   *   if (res.response.status === 'OK') {
+   *     // your success code here to consume res.response.data
+   *     console.log(res.response.data);
+   *   } else {
+   *     // your failure code here to consume res.response.data
+   *     console.log(res.response.data);
+   *   }
+   * })
+   * .fail(function(err) {
+   *   // your failure code here
+   * })
+   * .always(function() {
+   *  // your on-complete code here as common for both success and failure
+   * });
+   *
+   * @return {Object} promise - Jquery AJAX deferred promise is returned which on-success returns the required info.
+   *
+   * */
+  window.TTB.saveSponsorSelection = function (partnerKey, payload) {
+
+    // get a default instance for internal use
+    var ttb = window.TTB._createDefaultInstance(partnerKey);
+
+    var request = {
+      method: 'POST',
+      data: JSON.stringify(payload)
+    };
+
+    return ttb._ajax(request, methodsMapping.SAVE_SPONSOR_SELECTION);
+  };
+
 
   /**
    * @memberof TTB
@@ -501,8 +609,6 @@
    * @param {Function} [actions.onError] - The callback to be invoked with <code>error</code> on whatever step it fails.
    *
    * @example
-   * // No ttb instance needed.
-   * // var ttb = new TTB({ ... });
    *
    * var payload = {
    *   email: 'agent47@domain.com',
@@ -770,8 +876,6 @@
    * @param {Function} [actions.onError] - The callback to be invoked with <code>error</code> on whatever step it fails.
    *
    * @example
-   * // No ttb instance needed.
-   * // var ttb = new TTB({ ... });
    *
    * var selectedSponsor = { ... }; // received from options.onSelect of TTB.showSelectSponsor()
    *
@@ -2436,14 +2540,16 @@
       actions = actions || {};
 
       o = {};
+      //o.userProfile = undefined; // later to be filled via getUserProfile( )
+      o.userProfile = {email: 'sandbox@benutech.com'};
       o.selectedSponsor = window.TTB._getLocal(localName);
       o.widgetClass = 'ttb-sdk--connect--container';
       o.widgetTemplate = [
         '<div id="ttb-sdk--connect--connect-section" class="row">',
-        ' <div class="col-xs-9">',
+        ' <div id="ttb-sdk--connect--alert" class="col-xs-9">',
         ' No Sponsor - Please click "Connect" to select one.',
         ' </div>',
-        ' <div class="col-xs-3">',
+        ' <div id="ttb-sdk--connect--connect" class="col-xs-3">',
         '  <button class="btn btn-primary pull-right">Connect</button>',
         ' </div>',
         '</div>',
@@ -2479,7 +2585,7 @@
 
       // check for any existing connection - activate disconnect section UI.
       if (o.selectedSponsor) {
-        activateConnectedMode(o.selectedSponsor);
+        activateConnectedMode(o.selectedSponsor, false);
       }
 
       // register handler of connect button to open up a connect modal
@@ -2516,14 +2622,17 @@
         // render the sponsors TOS content via modal
         $modal = window.TTB.utilIframeModal(modalOptions, iframeOptions);
 
-        // to be invoked when a "message" event is broadcasted from the given iframe site
+        // to be invoked when a "message" event is broadcast from the given iframe site
         function onMessage(data, event) {
-          ttb._log(['connectWidget: onMessage', data, event]);
+          ttb._log(['connectWidget: onMessage', data]);
 
           // skip for the unrelated message events
           if (data.action.indexOf('TTB:SDK::CONNECT_WIDGET') === -1) {
             return;
           }
+
+          // close the connect widget modal.
+          $modal.modal('hide');
 
           switch (data.action) {
 
@@ -2533,22 +2642,14 @@
               // invoke the related action callback.
               actions.onConnectFailure && actions.onConnectFailure(data.info);
 
-              // close the connect widget modal.
-              $modal.modal('hide');
-              return;
+              break;
 
             // success - store sponsor, and update UI
             case 'TTB:SDK::CONNECT_WIDGET:SUCCESS':
 
-              // store sponsor
-              window.TTB._setLocal(localName, data.info.selectedSponsor);
+              onConnectSuccess(data);
 
-              // activate disconnect section UI.
-              activateConnectedMode(data.info.selectedSponsor);
-
-              // close the connect widget modal.
-              $modal.modal('hide');
-              return;
+              break;
 
             default:
               ttb._log(['connectWidget: onMessage: unknown action', data.action]);
@@ -2569,6 +2670,57 @@
         ttb._log(['connectWidget: onDisconnect: disconnected.']);
       }
 
+      // saves the sponsor selection
+      function onConnectSuccess(data) {
+        var payload;
+
+        // leave wait msg for connect UI.
+        updateDisconnectedState('Saving sponsor selection...', true);
+
+        payload = {
+          stk: options.loginRemotePayload.stk,
+          getuser_url: options.loginRemotePayload.getuser_url
+        };
+
+        window.TTB.saveSponsorSelection(ttb.config.partnerKey, payload)
+          .then(function (res) {
+            res = res.response;
+
+            if (res.status === 'OK') {
+
+              // leave success msg for connected.
+              updateDisconnectedState('sponsor selection saved.', false);
+
+              // store sponsor
+              window.TTB._setLocal(localName, data.info.selectedSponsor);
+
+              // activate disconnect section UI.
+              activateConnectedMode(data.info.selectedSponsor, true);
+
+            } else {
+
+              // show error / reason of failure
+              updateDisconnectedState(res.data[0], false);
+
+              // invoke the related action callback.
+              actions.onConnectFailure && actions.onConnectFailure({
+                selectedSponsor: data.info.selectedSponsor,
+                reason: res.data[0]
+              });
+            }
+
+          }, function () {
+
+            // show error / reason of failure
+            updateDisconnectedState('Failed in contacting server.', false);
+
+            // invoke the related action callback.
+            actions.onConnectFailure && actions.onConnectFailure({
+              selectedSponsor: data.info.selectedSponsor,
+              reason: 'Failed in contacting server.'
+            });
+          });
+      }
 
       // activate connect section UI.
       function activateDisconnectedMode(selectedSponsor) {
@@ -2582,14 +2734,24 @@
       }
 
       // activate disconnect section UI.
-      function activateConnectedMode(selectedSponsor) {
+      function activateConnectedMode(selectedSponsor, loggedIn) {
         o.$container
           .find('#ttb-sdk--connect--connect-section').hide()
           .next('#ttb-sdk--connect--disconnect-section').show()
           .find('#ttb-sdk--connect--company-name').text(selectedSponsor.title);
 
         // invoke the related action callback.
-        actions.onConnectSuccess && actions.onConnectSuccess({selectedSponsor: selectedSponsor});
+        actions.onConnectSuccess && actions.onConnectSuccess({
+          selectedSponsor: selectedSponsor,
+          loggedIn: loggedIn
+        });
+      }
+
+      // renders state related messages / errors on connect UI.
+      function updateDisconnectedState(text, disableConnect) {
+        o.$container
+          .find('#ttb-sdk--connect--alert').text(text)
+          .next('#ttb-sdk--connect--connect').prop('disabled', disableConnect);
       }
     }
 
