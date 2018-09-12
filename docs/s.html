@@ -177,6 +177,7 @@
     LOGIN: {methodName: 'login', endpoint: 'webservices/login.json'},
     LOGIN_REMOTE: {methodName: 'loginRemote', endpoint: 'webservices/remote_login.json'},
     LOGOUT: {methodName: 'logout', endpoint: 'webservices/logout.json'},
+    GET_USER_PROFILE: {methodName: 'TTB.getUserProfile', endpoint: 'get_user.json'},
     GET_SPONSORS: {methodName: 'TTB.getSponsors', endpoint: 'webservices/get_sponsors.json'},
     GET_SPONSOR_SELECTION: {methodName: 'TTB.getSponsorSelection', endpoint: 'webservices/get_sponsor_selection.json'},
     SAVE_SPONSOR_SELECTION: {methodName: 'TTB.saveSponsorSelection', endpoint: 'webservices/save_sponsor_selection.json'},
@@ -556,6 +557,61 @@
     }
   };
 
+  /**
+   * @memberof TTB
+   * @alias getUserProfile
+   * @static
+   * @private
+   *
+   * @description
+   * This static method gets the user profile against the given "stk" and "getuser_url".
+   *
+   * @param {Object} payload - The payload object containing required info
+   * @param {String} payload.stk - See more about "stk" from &lt;code>loginRemote()&lt;/code>
+   * @param {String} payload.getuser_url - See more about "getuser_url" from &lt;code>loginRemote()&lt;/code>
+   *
+   * @example
+   *
+   * var payload = {
+   *   email: 'agent47@domain.com'
+   * };
+   *
+   * TTB.getUserProfile(payload)
+   * .done(function(res) {
+   *   if (res.response.status === 'OK') {
+   *     // your success code here to consume res.response.data
+   *     console.log(res.response.data);
+   *   } else {
+   *     // your failure code here to consume res.response.data
+   *     console.log(res.response.data);
+   *   }
+   * })
+   * .fail(function(err) {
+   *   // your failure code here
+   * })
+   * .always(function() {
+   *  // your on-complete code here as common for both success and failure
+   * });
+   *
+   * @return {Object} promise - Jquery AJAX deferred promise is returned which on-success returns the required info.
+   *
+   * */
+  window.TTB.getUserProfile = function (payload) {
+
+    // get a default instance for internal use
+    var ttb = window.TTB._createDefaultInstance();
+
+    var request = {
+      method: 'GET',
+      url: payload.getuser_url || (window.location.origin + '/' + methodsMapping.GET_USER_PROFILE.endpoint)
+    };
+
+    var params = {
+      stk: payload.stk
+    };
+
+    return ttb._ajax(request, methodsMapping.GET_USER_PROFILE, params);
+  };
 
   /**
    * @memberof TTB
@@ -1292,7 +1348,7 @@
       return $.ajax(request)
         .done(function (res) {
 
-          if (typeof res === 'string' || res instanceof Array || res.response.status === 'OK') {
+          if (typeof res === 'string' || res instanceof Array || (res.response || res).status === 'OK') {
             _self._log([defaults.sdkPrefix + ' :', mapping.methodName + '() [', mapping.endpoint , ']', ': success :', res]);
           } else {
             _self._log([defaults.sdkPrefix + ' :', mapping.methodName + '() [', mapping.endpoint , ']', ': error :', res]);
@@ -2708,9 +2764,10 @@
         .append(o.widgetTemplate);
 
       // check for any existing connection - activate disconnect section UI.
-      if (o.selectedSponsor) {
-        activateConnectedMode(o.selectedSponsor, false);
-      }
+      //if (o.selectedSponsor) {
+      //  activateConnectedMode(o.selectedSponsor, false);
+      //}
+      checkForExistingSponsor();
 
       // register handler of connect button to open up a connect modal
       o.$container.find('#ttb-sdk--connect--connect-section button').on('click', onConnect);
@@ -2794,6 +2851,62 @@
         ttb._log(['connectWidget: onDisconnect: disconnected.']);
       }
 
+      // pulls user profile, and checks for last selected sponsor.
+      function checkForExistingSponsor() {
+        var handleError;
+
+        // common handler for error scenarios
+        handleError =  function (message, disableConnect) {
+
+          // leave wait msg for connect UI.
+          updateDisconnectedState(message, disableConnect);
+
+          // invoke the related action callback.
+          actions.onConnectFailure &amp;&amp; actions.onConnectFailure({
+            selectedSponsor: null,
+            reason: message
+          });
+        };
+
+        // leave wait msg for connect UI.
+        updateDisconnectedState('Pulling user profile...', true);
+
+        // get user profile first.
+        window.TTB.getUserProfile(options.loginRemotePayload)
+          .then(function (res) {
+
+            // keep the user profile cached for later connect modal box use.
+            o.userProfile = res.data.User;
+
+            // leave wait msg for connect UI.
+            updateDisconnectedState('Checking current sponsor selection...', true);
+
+            window.TTB.getSponsorSelection(ttb.config.partnerKey, {email: o.userProfile.email})
+              .then(function (res) {
+                res = res.response;
+
+                if (res.status === 'OK') {
+
+                  // activate disconnect section UI.
+                  activateConnectedMode(o.selectedSponsor, false);
+
+                } else {
+
+                  // we keep "connect" enabled here.
+                  handleError(res.data[0], false);
+                }
+
+              }, function (reason) {
+                // we keep "connect" enabled here.
+                handleError('Failed in pulling user profile.', false);
+
+              });
+
+          }, function (reason) {
+            handleError('Failed in pulling user profile.', true);
+          });
+      }
+
       // saves the sponsor selection
       function onConnectSuccess(data) {
         var payload;
@@ -2858,7 +2971,7 @@
       }
 
       // activate disconnect section UI.
-      function activateConnectedMode(selectedSponsor, loggedIn) {
+      function activateConnectedMode(selectedSponsor, loginPerformed) {
         o.$container
           .find('#ttb-sdk--connect--connect-section').hide()
           .next('#ttb-sdk--connect--disconnect-section').show()
@@ -2867,7 +2980,7 @@
         // invoke the related action callback.
         actions.onConnectSuccess &amp;&amp; actions.onConnectSuccess({
           selectedSponsor: selectedSponsor,
-          loggedIn: loggedIn
+          loginPerformed: loginPerformed
         });
       }
 
@@ -2895,7 +3008,7 @@
 
         <footer>
             Copyright © 2018 <a href="http://www.benutech.com/" target="_blank" title="Benutech official website">Benutech Inc.</a> All rights reserved.</a>
-           <!-- Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Sep 13 2018 03:08:53 GMT+0500 (PKT) -->
+           <!-- Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Sep 13 2018 04:33:25 GMT+0500 (PKT) -->
         </footer>
     </div>
 </div>
