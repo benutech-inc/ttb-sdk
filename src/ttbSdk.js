@@ -2842,6 +2842,8 @@
       function activateDisconnectedMode(selectedSponsor) {
         o.$container
           .find('#ttb-sdk--connect--connect-section').show()
+          .find('#ttb-sdk--connect--alert').text('No Sponsor - Please click "Connect" to select one.')
+          .end()
           .next('#ttb-sdk--connect--disconnect-section').hide()
           .find('#ttb-sdk--connect--company-name').text('');
 
@@ -2853,8 +2855,6 @@
       function activateConnectedMode(selectedSponsor, loginPerformed) {
         o.$container
           .find('#ttb-sdk--connect--connect-section').hide()
-          .find('#ttb-sdk--connect--alert').text('No Sponsor - Please click "Connect" to select one.')
-          .end()
           .next('#ttb-sdk--connect--disconnect-section').show()
           .find('#ttb-sdk--connect--company-name').text(selectedSponsor.title);
 
