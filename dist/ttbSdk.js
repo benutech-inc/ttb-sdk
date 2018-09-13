@@ -479,6 +479,9 @@
 
     var request = {
       method: 'GET',
+      xhrFields: {
+        withCredentials: false
+      },
       url: payload.getuser_url || (window.location.origin + '/' + methodsMapping.GET_USER_PROFILE.endpoint)
     };
 
@@ -1216,7 +1219,7 @@
         },
 
         // allow CORS
-        xhrFields: {
+        xhrFields: options.xhrFields || {
           withCredentials: true
         }
       });
@@ -2850,6 +2853,8 @@
       function activateConnectedMode(selectedSponsor, loginPerformed) {
         o.$container
           .find('#ttb-sdk--connect--connect-section').hide()
+          .find('#ttb-sdk--connect--alert').text('No Sponsor - Please click "Connect" to select one.')
+          .end()
           .next('#ttb-sdk--connect--disconnect-section').show()
           .find('#ttb-sdk--connect--company-name').text(selectedSponsor.title);
 
