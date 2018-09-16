@@ -2933,6 +2933,9 @@
                       TOSURL: res.data.TOS_content
                     };
 
+                    // update state for connect UI.
+                    updateDisconnectedState('Sponsor found.', false);
+
                     // activate disconnect section UI.
                     activateConnectedMode(selectedSponsor, false);
 
