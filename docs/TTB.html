@@ -68,6 +68,8 @@
             
                 <li data-name="TTB#connectWidget"><a href="TTB.html#connectWidget">connectWidget</a></li>
             
+                <li data-name="TTB#deactivateSponsorSelection"><a href="TTB.html#deactivateSponsorSelection">deactivateSponsorSelection</a></li>
+            
                 <li data-name="TTB#getSearchFields"><a href="TTB.html#getSearchFields">getSearchFields</a></li>
             
                 <li data-name="TTB#getTypesReport"><a href="TTB.html#getTypesReport">getTypesReport</a></li>
@@ -95,6 +97,8 @@
                 <li data-name="TTB#propertyComps"><a href="TTB.html#propertyComps">propertyComps</a></li>
             
                 <li data-name="TTB#propertyDetails"><a href="TTB.html#propertyDetails">propertyDetails</a></li>
+            
+                <li data-name="TTB#saveSponsorSelection"><a href="TTB.html#saveSponsorSelection">saveSponsorSelection</a></li>
             
                 <li data-name="TTB#searchByOwnerName"><a href="TTB.html#searchByOwnerName">searchByOwnerName</a></li>
             
@@ -175,7 +179,7 @@
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line165">line 165</a>
+            <a href="s.html">s</a>, <a href="s.html#line166">line 166</a>
         </div>
         
     </div>
@@ -334,7 +338,7 @@ and/or <code>baseURLPattern</code> to keep switching to custom <code>baseURL</co
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">Object</span>
 
 
             
@@ -342,8 +346,6 @@ and/or <code>baseURLPattern</code> to keep switching to custom <code>baseURL</co
             
             
                 <td class="default">
-                
-                    "direct"
                 
                 </td>
             
@@ -357,7 +359,7 @@ and/or <code>baseURLPattern</code> to keep switching to custom <code>baseURL</co
                         
                     
                 
-                The Title Company Sponsor name to be used in generating baseURL.
+                The Title Company Sponsor object to be used in generating baseURL. contains name, title, and TOSURL.
 (note - It will be ignored if baseURL is already passed.)</td>
         </tr>
 	
@@ -951,12 +953,12 @@ For details, Please check documentation of <code> new TTB(...) </code> construct
     <div class="nameContainer">
         <h4 class="name" id=".getSponsors">
             
-            <span class="type-signature static">static</span>TTB.getSponsors<span class="signature">(payload)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
+            <span class="type-signature static">static</span>TTB.getSponsors<span class="signature">(payload, partnerKey)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line534">line 534</a>
+            <a href="s.html">s</a>, <a href="s.html#line540">line 540</a>
         </div>
         
     </div>
@@ -1100,6 +1102,29 @@ For details, Please check documentation of <code> new TTB(...) </code> construct
         </tr>
 	
 	
+	
+        <tr>
+            
+                <td class="name"><code>partnerKey</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                The partner key provided by support team for the consumer site.</td>
+        </tr>
+	
+	
 	</tbody>
 </table>
     
@@ -1206,12 +1231,12 @@ TTB.getSponsors(payload)
     <div class="nameContainer">
         <h4 class="name" id=".showSelectSponsor">
             
-            <span class="type-signature static">static</span>TTB.showSelectSponsor<span class="signature">(payload, actions)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
+            <span class="type-signature static">static</span>TTB.showSelectSponsor<span class="signature">(data, actions)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line707">line 707</a>
+            <a href="s.html">s</a>, <a href="s.html#line666">line 666</a>
         </div>
         
     </div>
@@ -1253,7 +1278,7 @@ TTB.getSponsors(payload)
 	
         <tr>
             
-                <td class="name"><code>payload</code></td>
+                <td class="name"><code>data</code></td>
             
             
             <td class="type">
@@ -1269,7 +1294,98 @@ TTB.getSponsors(payload)
             
             <td class="description last">
                 
-                To be used for <code>getSponsors()</code>. Please see payload information over there.</td>
+                Information to be required through the sponsor selection flow.
+                
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>partnerKey</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                The partner key provided by support team for the consumer site.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>getSponsorsPayload</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                To be used for <code>getSponsors()</code>. Please see payload information over TTB.getSponsors().</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>loginRemotePayload</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                To be used for <code>loginRemote()</code>. Please see payload information over <a href="TTB.html#loginRemote">TTB.loginRemote()</a>.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+            </td>
         </tr>
 	
 	
@@ -1483,12 +1599,13 @@ when user is completely connected .ie. done with selecting sponsor and then acce
         
 
     
-    <pre class="prettyprint"><code>var payload = {
-  email: 'agent47@domain.com',
-  zipCode: '12345'
+    <pre class="prettyprint"><code>var data = {
+  partnerKey: '...',
+  getSponsorsPayload: {...}
+  loginRemotePayload: {...}
 };
 
-TTB.showSelectSponsor(payload, {
+actions = {
   onConnect: function(selectedSponsor) {
    // your success code here to wrap things up considering it as a complete callback.
   },
@@ -1513,7 +1630,9 @@ TTB.showSelectSponsor(payload, {
   onError: function(error) {
    // your failure code here
   }
-});</code></pre>
+};
+
+TTB.showSelectSponsor(data, actions);</code></pre>
     
 
     
@@ -1525,12 +1644,12 @@ TTB.showSelectSponsor(payload, {
     <div class="nameContainer">
         <h4 class="name" id=".showSponsorTOSModal">
             
-            <span class="type-signature static">static</span>TTB.showSponsorTOSModal<span class="signature">(selectedSponsor, actions)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
+            <span class="type-signature static">static</span>TTB.showSponsorTOSModal<span class="signature">(selectedSponsor, actions, options)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line971">line 971</a>
+            <a href="s.html">s</a>, <a href="s.html#line947">line 947</a>
         </div>
         
     </div>
@@ -1730,6 +1849,136 @@ when user is completely connected .ie. done with selecting sponsor (via TTB.show
         </tr>
 	
 	
+	
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                The options to perform additional tasks, e.g. login only for now.
+                
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Default</th>
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>performLogin</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    "false"
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                To auto-perform login against the selected sponsor.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>partnerKey</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                The partner key provided by support team for the consumer site.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>loginRemotePayload</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                "stk" and "getuser_url" information to be used for login. please check .loginRemote() documentation for more.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+            </td>
+        </tr>
+	
+	
 	</tbody>
 </table>
     
@@ -1806,7 +2055,7 @@ when user is completely connected .ie. done with selecting sponsor (via TTB.show
     
     <pre class="prettyprint"><code>var selectedSponsor = { ... }; // received from options.onSelect of TTB.showSelectSponsor()
 
-TTB.showSponsorTOSModal(selectedSponsor, {
+var actions = {
  onConnect: function(selectedSponsor) {
    // your success code here to wrap things up considering it as a complete callback.
   },
@@ -1831,7 +2080,15 @@ TTB.showSponsorTOSModal(selectedSponsor, {
   onError: function(error) {
    // your failure code here
   }
-});</code></pre>
+};
+
+var options = {
+ partnerKey: '...',
+ performLogin: true,
+ loginRemotePayload: {...}
+};
+
+TTB.showSponsorTOSModal(selectedSponsor, actions, options);</code></pre>
     
 
     
@@ -1848,7 +2105,7 @@ TTB.showSponsorTOSModal(selectedSponsor, {
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2594">line 2594</a>
+            <a href="s.html">s</a>, <a href="s.html#line2699">line 2699</a>
         </div>
         
     </div>
@@ -2126,6 +2383,36 @@ Widget will pick it up whenever gets rendered.<br>
         </tr>
 	
 	
+	
+        <tr>
+            
+                <td class="name"><code>onDisconnectFailure</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                To be invoked with <code>reason</code> on failing disconnecting.</td>
+        </tr>
+	
+	
 	</tbody>
 </table>
             </td>
@@ -2250,9 +2537,234 @@ var actions = {
     // passed argument will be an "info" object which contains "selectedSponsor" which can be used to set instance sponsor.
     // note: selectedSponsor details "ttb-sdk--connect--selected-sponsor" of localStorage gets destroyed by SDK.
   },
+
+  onDisconnectFailure: function(reason) {
+    // optional callback - to be called when failed connecting.
+   // passed argument will be:
+   // reason {String} - Reason of the failure, e.g. "failed" if API did not connect.
+  },
 };
 
 var $ttbConnect = ttb.connectWidget(options, actions);</code></pre>
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="deactivateSponsorSelection">
+            
+            deactivateSponsorSelection<span class="signature">(payload)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="s.html">s</a>, <a href="s.html#line2213">line 2213</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        [Coming in 1.x.x] This method deactivate the sponsor selection previously performed by the user with given credentials.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>payload</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                The payload object containing required info.
+                
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>email</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                The email address of the user.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+            </td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        Object
+                        
+                    
+            </td>
+            <td class="description last">promise - Jquery AJAX deferred promise is returned which on-success returns the required info.</td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code>var ttb = new TTB({ ... }); // skip if already instantiated.
+
+var payload = {
+  email: "awesomeuser99@domain.com"
+};
+
+ttb.deactivateSponsorSelection(payload)
+.done(function(res) {
+  if (res.response.status === 'OK') {
+    // your success code here to consume res.response.data
+    console.log(res.response.data);
+  } else {
+    // your failure code here to consume res.response.data
+    console.log(res.response.data);
+  }
+})
+.fail(function(err) {
+  // your failure code here
+})
+.always(function() {
+ // your on-complete code here as common for both success and failure
+});</code></pre>
     
 
     
@@ -2269,7 +2781,7 @@ var $ttbConnect = ttb.connectWidget(options, actions);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2121">line 2121</a>
+            <a href="s.html">s</a>, <a href="s.html#line2115">line 2115</a>
         </div>
         
     </div>
@@ -2399,7 +2911,7 @@ ttb.getSearchFields()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2081">line 2081</a>
+            <a href="s.html">s</a>, <a href="s.html#line2075">line 2075</a>
         </div>
         
     </div>
@@ -2524,7 +3036,7 @@ ttb.getTypesReport()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1905">line 1905</a>
+            <a href="s.html">s</a>, <a href="s.html#line1898">line 1898</a>
         </div>
         
     </div>
@@ -3175,7 +3687,7 @@ ttb.globalSearch(payload, queryParams)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1966">line 1966</a>
+            <a href="s.html">s</a>, <a href="s.html#line1959">line 1959</a>
         </div>
         
     </div>
@@ -3368,7 +3880,7 @@ ttb.globalSearchCount(payload, params)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2202">line 2202</a>
+            <a href="s.html">s</a>, <a href="s.html#line2300">line 2300</a>
         </div>
         
     </div>
@@ -3847,7 +4359,7 @@ autocomplete.addListener('place_changed', function () {
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1342">line 1342</a>
+            <a href="s.html">s</a>, <a href="s.html#line1335">line 1335</a>
         </div>
         
     </div>
@@ -3958,7 +4470,7 @@ ttb.handleSponsorTOS(selectedSponsor);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2319">line 2319</a>
+            <a href="s.html">s</a>, <a href="s.html#line2417">line 2417</a>
         </div>
         
     </div>
@@ -4246,7 +4758,7 @@ window.googleInit = function () {
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1459">line 1459</a>
+            <a href="s.html">s</a>, <a href="s.html#line1452">line 1452</a>
         </div>
         
     </div>
@@ -4492,7 +5004,7 @@ ttb.login(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1409">line 1409</a>
+            <a href="s.html">s</a>, <a href="s.html#line1402">line 1402</a>
         </div>
         
     </div>
@@ -4747,7 +5259,7 @@ ttb.remoteLogin(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1496">line 1496</a>
+            <a href="s.html">s</a>, <a href="s.html#line1489">line 1489</a>
         </div>
         
     </div>
@@ -4874,7 +5386,7 @@ ttb.logout()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2014">line 2014</a>
+            <a href="s.html">s</a>, <a href="s.html#line2008">line 2008</a>
         </div>
         
     </div>
@@ -5089,7 +5601,7 @@ ttb.nearbySearch(payload, params)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1686">line 1686</a>
+            <a href="s.html">s</a>, <a href="s.html#line1679">line 1679</a>
         </div>
         
     </div>
@@ -5426,7 +5938,7 @@ ttb.orderReport(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1747">line 1747</a>
+            <a href="s.html">s</a>, <a href="s.html#line1740">line 1740</a>
         </div>
         
     </div>
@@ -5865,7 +6377,7 @@ ttb.propertyComps(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1801">line 1801</a>
+            <a href="s.html">s</a>, <a href="s.html#line1794">line 1794</a>
         </div>
         
     </div>
@@ -6271,6 +6783,311 @@ ttb.propertyDetails(payload, options)
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="saveSponsorSelection">
+            
+            saveSponsorSelection<span class="signature">(payload, <span class="optional">performLogin</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="s.html">s</a>, <a href="s.html#line2165">line 2165</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        [Coming in 1.x.x] This method saves the sponsor selection performed by the user with given credentials.
+Performs an optional login identical to existing method loginRemote()
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Default</th>
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>payload</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                    
+                        
+                    
+                
+                The payload object containing required info.
+                
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>stk</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                    
+                        
+                    
+                
+                pls check loginRemote() for more.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>getuser_url</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                pls check loginRemote() for more.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+            </td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>performLogin</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                To perform a login - identical to loginRemote(),</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        Object
+                        
+                    
+            </td>
+            <td class="description last">promise - Jquery AJAX deferred promise is returned which on-success returns the required info.</td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code>var ttb = new TTB({ ... }); // skip if already instantiated.
+
+var payload = {
+  stk: "unique-token123",
+  getuser_url: '...' // absolute URL to the API
+};
+
+var performLogin = true;
+
+ttb.saveSponsorSelection(payload, performLogin)
+.done(function(res) {
+  if (res.response.status === 'OK') {
+    // your success code here to consume res.response.data
+    console.log(res.response.data);
+  } else {
+    // your failure code here to consume res.response.data
+    console.log(res.response.data);
+  }
+})
+.fail(function(err) {
+  // your failure code here
+})
+.always(function() {
+ // your on-complete code here as common for both success and failure
+});</code></pre>
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="searchByOwnerName">
             
             searchByOwnerName<span class="signature">(payload)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
@@ -6278,7 +7095,7 @@ ttb.propertyDetails(payload, options)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1638">line 1638</a>
+            <a href="s.html">s</a>, <a href="s.html#line1631">line 1631</a>
         </div>
         
     </div>
@@ -6566,7 +7383,7 @@ ttb.searchByOwnerName(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1539">line 1539</a>
+            <a href="s.html">s</a>, <a href="s.html#line1532">line 1532</a>
         </div>
         
     </div>
@@ -6809,7 +7626,7 @@ ttb.searchByParcelNumber(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1592">line 1592</a>
+            <a href="s.html">s</a>, <a href="s.html#line1585">line 1585</a>
         </div>
         
     </div>
@@ -7191,7 +8008,7 @@ ttb.searchBySiteAddress(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1284">line 1284</a>
+            <a href="s.html">s</a>, <a href="s.html#line1277">line 1277</a>
         </div>
         
     </div>
@@ -7442,7 +8259,7 @@ ttb.setSponsor({
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1300">line 1300</a>
+            <a href="s.html">s</a>, <a href="s.html#line1293">line 1293</a>
         </div>
         
     </div>
@@ -7559,7 +8376,7 @@ ttb.showTOS();</code></pre>
 
         <footer>
             Copyright © 2018 <a target="_blank" href="http://www.benutech.com/" target="_blank" title="Benutech official website">Benutech Inc.</a> All rights reserved.</a>
-           <!-- Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Sep 13 2018 05:08:00 GMT+0500 (PKT) -->
+           <!-- Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Sep 17 2018 04:20:19 GMT+0500 (PKT) -->
         </footer>
     </div>
 </div>
