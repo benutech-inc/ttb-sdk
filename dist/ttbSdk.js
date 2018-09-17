@@ -484,9 +484,13 @@
     // get a default instance for internal use
     var ttb = window.TTB._createDefaultInstance(partnerKey);
 
+    var url = payload.getuser_url || (window.location.origin + '/' + methodsMapping.GET_USER_PROFILE.endpoint);
     var request = {
       method: 'GET',
-      url: payload.getuser_url || (window.location.origin + '/' + methodsMapping.GET_USER_PROFILE.endpoint)
+      url: url,
+      xhrFields: {
+        withCredentials: false
+      }
     };
 
     var params = {
@@ -2166,7 +2170,10 @@
 
       var request = {
         method: 'POST',
-        data: JSON.stringify(payload)
+        data: JSON.stringify(payload),
+        xhrFields: {
+          withCredentials: false
+        }
       };
 
       var queryParams = {
