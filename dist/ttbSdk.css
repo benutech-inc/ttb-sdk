@@ -26,6 +26,14 @@
 }
 /* instant lookup widget - ends */
 
+/* ilookup - netsheet widget - starts */
+#ttb-sdk--net-sheet--modal .modal-dialog {
+    max-width: 880px;
+    width: 880px !important;
+    margin: 1.75rem auto;
+}
+/* ilookup - netsheet widget - ends */
+
 /* select-sponsor widget - starts */
 #ttb-sdk--select-sponsor .modal-dialog {
     max-width: 880px;
