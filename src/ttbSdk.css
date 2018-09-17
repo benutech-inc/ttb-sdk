@@ -28,8 +28,8 @@
 
 /* ilookup - netsheet widget - starts */
 #ttb-sdk--net-sheet--modal .modal-dialog {
-    max-width: 880px;
-    width: 880px !important;
+    max-width: 1200px;
+    width: 1200px !important;
     margin: 1.75rem auto;
 }
 /* ilookup - netsheet widget - ends */
