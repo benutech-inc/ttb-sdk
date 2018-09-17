@@ -1052,14 +1052,10 @@
     }
 
     // performs an ajax call to accept selected sponsor TOS.
-    function TOSAccept(e) {
-      var ttb, request;
+    function TOSAccept() {
+      var request;
 
       window.TTB._log(['TOSAccept: clicked']);
-
-      // get a default instance for internal use, and set the selected sponsor
-      ttb = window.TTB._createDefaultInstance();
-      ttb.setSponsor(selectedSponsor);
 
       request = {
         method: 'GET'
@@ -1067,9 +1063,11 @@
 
       return ttb._ajax(request, methodsMapping.ACCEPT_SPONSOR_TOS)
         .done(function (res) {
-          //window.TTB._log(['TOSAccept: complete', res]);
+          res = res.response;
 
-          if (res.response.status === 'OK') {
+          window.TTB._log(['TOSAccept: complete', res]);
+
+          if (res.status === 'OK') {
             window.TTB._log(['TOSAccept: success', res]);
 
             // invoke connect callback with the selectedSponsor
@@ -1085,7 +1083,7 @@
             window.TTB._log(['TOSAccept: error', res]);
 
             // invoke done callback with selectedSponsor
-            actions.onError && actions.onError(res.response.data.msg);
+            actions.onError && actions.onError(res.data.msg); // not data[0]
 
             utilUpdateButton('Retry', false);
           }
@@ -1094,7 +1092,7 @@
           window.TTB._log(['TOSAccept: error', reason]);
 
           // invoke done callback with selectedSponsor
-          actions.onError && actions.onError(reason);
+          actions.onError && actions.onError('Could not connect to server for accepting TOS.');
 
           utilUpdateButton('Retry', false);
         });
