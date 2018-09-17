@@ -956,7 +956,7 @@
     // define modal component templates.
     headingTemplate = [
       'Thank you for choosing <br>{{sponsorTitle}} <br> as your sponsor <br>',
-      '<p>Please read and agree {{sponsorTitle}} <a href="{{sponsorTOSURL}}" target="_blank">Terms and conditions</a></p>'
+      '<p>Please read and agree to {{sponsorTitle}} <a href="{{sponsorTOSURL}}" target="_blank">Terms and conditions</a></p>'
     ].join('');
 
     bodyTemplate = [
@@ -1030,7 +1030,7 @@
 
             // invoke the related action callback.
             actions.onError && actions.onError({
-              selectedSponsor: data.info.selectedSponsor,
+              selectedSponsor: selectedSponsor,
               reason: res.data[0]
             });
           }
@@ -1040,7 +1040,7 @@
 
           // invoke the related action callback.
           actions.onError && actions.onError({
-            selectedSponsor: data.info.selectedSponsor,
+            selectedSponsor: selectedSponsor,
             reason: 'Failed in contacting server.'
           });
 
