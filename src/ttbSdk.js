@@ -2946,7 +2946,7 @@
         updateDisconnectedState('Pulling user profile...', true);
 
         // get user profile first.
-        window.TTB.getUserProfile(options.loginRemotePayload)
+        window.TTB.getUserProfile(options.loginRemotePayload, ttb.config.partnerKey)
           .then(function (res) {
             var payload;
 
