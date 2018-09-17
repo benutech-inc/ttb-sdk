@@ -2454,7 +2454,7 @@
         '  </button>',
 
         '  <ul class="dropdown-menu">',
-        //'  <li><a data-action-name="netSheet" href="javascript:">NetSheet</a></li>',
+        '  <li><a data-action-name="netSheet" href="javascript:">NetSheet</a></li>',
         //'  <li><a data-action-name="generateReport" href="javascript:">Generate Report</a></li>',
         //'  <li role="separator" class="divider"></li>',
         '  <li><a data-action-name="fullProfileReport" href="javascript:">Full Profile Report</a></li>',
@@ -2576,9 +2576,10 @@
               property = res.data[0];
               switch (o.selectedAction.name) {
 
-                //case 'netSheet':
-                //  ttb._log([defaults.sdkPrefix, ' : instantLookupWidget : netSheet - ']);
-                //  break;
+                case 'netSheet':
+                  ttb._log([defaults.sdkPrefix, ' : instantLookupWidget : netSheet - ']);
+                  actionOpenNetSheet(property, enableControls);
+                  break;
 
                 //case 'generateReport':
                 //  ttb._log([defaults.sdkPrefix, ' : instantLookupWidget : generateReport - dev in progress.']);
@@ -2588,23 +2589,7 @@
                 case 'fullProfileReport':
                   ttb._log([defaults.sdkPrefix, ' : instantLookupWidget : fullProfileReport']);
 
-                  ttb.orderReport({
-                      sa_property_id: property.sa_property_id,
-                      state_county_fips: property.mm_fips_state_code + property.mm_fips_muni_code,
-                      report_type: 'property_profile',
-                      output: 'link'
-                    })
-                    .then(function (res) {
-
-                      // open a new tab to get the PDF file.
-                      window.open(res.response.data.report.link);
-
-                    }, function (reason) {
-                      alert('Failed in getting full profile report.');
-                    })
-                    .always(function () {
-                      enableControls();
-                    });
+                  actionOrderReport(property, enableControls);
 
                   break;
 
@@ -2620,6 +2605,60 @@
 
           }, function() {
             selectionActionCb(promise);
+            enableControls();
+          });
+      }
+
+
+      // opens up a net sheet modal against the selected property
+      function actionOpenNetSheet(property, enableControls) {
+        var $modal, modalOptions, iframeOptions;
+
+        modalOptions = {
+          id: 'ttb-sdk--net-sheet--modal',
+          title: 'Net Sheet'
+        };
+
+        iframeOptions = {
+          id: 'ttb-sdk--net-sheet--iframe',
+          height: '635px',
+          //origin: 'http://ttb-landing-page.herokuapp.com',
+          //origin: 'http://localhost:9001',
+          origin: window.location.port === '9000' ? 'http://localhost:9002' : 'http://ttb-export.herokuapp.com',
+          pathname: '/netsheet',
+          params: {
+            partnerKey: ttb.config.partnerKey,
+            verticalName: ttb.sponsor.name,
+            verticalTitle: ttb.sponsor.title,
+            propertyId: property.sa_property_id,
+            propertyAddress: property.v_mail_address,
+            debug: ttb.debug
+          }
+        };
+
+        $modal = window.TTB.utilIframeModal(modalOptions, iframeOptions);
+
+        // enable the controls back.
+        enableControls();
+      }
+
+      // perform order report against the selected property
+      function actionOrderReport(property, enableControls) {
+        ttb.orderReport({
+            sa_property_id: property.sa_property_id,
+            state_county_fips: property.mm_fips_state_code + property.mm_fips_muni_code,
+            report_type: 'property_profile',
+            output: 'link'
+          })
+          .then(function (res) {
+
+            // open a new tab to get the PDF file.
+            window.open(res.response.data.report.link);
+
+          }, function (reason) {
+            alert('Failed in getting full profile report.');
+          })
+          .always(function () {
             enableControls();
           });
       }
