@@ -2168,10 +2168,7 @@
 
       var request = {
         method: 'POST',
-        data: JSON.stringify(payload),
-        xhrFields: {
-          withCredentials: false
-        }
+        data: JSON.stringify(payload)
       };
 
       var queryParams = {
