@@ -57,7 +57,7 @@
     GET_SPONSORS: {methodName: 'TTB.getSponsors', endpoint: 'webservices/get_sponsors.json'},
     GET_SPONSOR_SELECTION: {methodName: 'TTB.getSponsorSelection', endpoint: 'webservices/get_sponsor_selection.json'},
     SAVE_SPONSOR_SELECTION: {methodName: 'saveSponsorSelection', endpoint: 'webservices/save_sponsor_selection.json'},
-    DEACTIVATE_SPONSOR_SELECTION: {methodName: 'deactivateSponsorSelection', endpoint: 'webservices/deactivate_sponsor_selection.json'},
+    CLEAR_SPONSOR_SELECTION: {methodName: 'clearSponsorSelection', endpoint: 'webservices/clear_sponsor_selection.json'},
     ACCEPT_SPONSOR_TOS: {methodName: 'TTB.getSponsors', endpoint: 'webservices/accept_tos/accept.json'},
     SEARCH_PARCEL: {methodName: 'searchByParcelNumber', endpoint: 'webservices/search_parcel_number.json'},
     SEARCH_PROPERTY: {methodName: 'searchBySiteAddress', endpoint: 'webservices/search_property/ttb.json'},
@@ -988,7 +988,7 @@
 
     // registers the click handler for accept sponsor TOS
     $('#ttb-sdk--sponsor-tos-agree').on('change', TOSAgreeChange);
-    $('#ttb-sdk--sponsor-tos-accept').on('click', saveSponsorAndLogin);
+    $('#ttb-sdk--sponsor-tos-accept').on('click', saveSponsor);
 
     // triggering .modal() of bootstrap
     return $modal.modal({
@@ -1006,48 +1006,77 @@
         .prop('disabled', disable);
     }
 
-    // saves the sponsor selection over server, and to pass the control to the caller
-    function saveSponsorAndLogin() {
+    // handles the error by invoking the related action callback.
+    function utilHandleError(reason) {
+      actions.onError && actions.onError({
+        selectedSponsor: selectedSponsor,
+        reason: reason
+      });
+    }
 
-      window.TTB._log(['saveSponsorAndLogin: called']);
+    // saves the sponsor selection over server, and to pass the control to the caller
+    function saveSponsor() {
+
+      window.TTB._log(['saveSponsor: called']);
 
       // invoke onSelect callback with selectedSponsor and authDeferred for handling auth
       actions.onSelect && actions.onSelect(selectedSponsor);
 
       // disable accept button.
-      utilUpdateButton('Authenticating...', true);
+      utilUpdateButton('Selecting...', true);
 
-      ttb.saveSponsorSelection(options.loginRemotePayload, true)
+      //ttb.saveSponsorSelection(options.loginRemotePayload, true)
+      ttb.saveSponsorSelection(options.loginRemotePayload, false)
         .then(function (res) {
           res = res.response;
 
           if (res.status === 'OK') {
 
-            window.TTB._log(['saveSponsorAndLogin: success', res]);
+            window.TTB._log(['saveSponsor: success', res]);
 
             // since login is successful, show TOS modal to let user accept.
             TOSAccept();
 
           } else {
 
-            window.TTB._log(['saveSponsorAndLogin: failed', res]);
-
-            // invoke the related action callback.
-            actions.onError && actions.onError({
-              selectedSponsor: selectedSponsor,
-              reason: res.data[0]
-            });
+            window.TTB._log(['saveSponsor: failed', res]);
+            utilHandleError(res.data[0]);
           }
 
         }, function () {
-          window.TTB._log(['saveSponsorAndLogin: error', res]);
+          window.TTB._log(['saveSponsor: error', res]);
+          utilHandleError('Failed in contacting server for saving sponsor.');
+        });
+    }
 
-          // invoke the related action callback.
-          actions.onError && actions.onError({
-            selectedSponsor: selectedSponsor,
-            reason: 'Failed in contacting server.'
-          });
+    // performs a remote login using given stk, so that to forward with accept TOS
+    function performLogin() {
+      window.TTB._log(['performLogin: called']);
 
+      // show progress on button
+      utilUpdateButton('Authenticating...', true);
+
+      //ttb.saveSponsorSelection(options.loginRemotePayload, true)
+      ttb.loginRemote(options.loginRemotePayload, false)
+        .then(function (res) {
+          res = res.response;
+
+          if (res.status === 'OK') {
+
+            window.TTB._log(['performLogin: success', res]);
+
+            // since login is successful, show TOS modal to let user accept.
+            TOSAccept();
+
+          } else {
+
+            window.TTB._log(['performLogin: failed', res]);
+            utilHandleError(res.data[0]);
+          }
+
+        }, function () {
+          window.TTB._log(['performLogin: error', res]);
+          utilHandleError('Failed in contacting server for login.');
         });
     }
 
@@ -1055,14 +1084,17 @@
     function TOSAccept() {
       var request;
 
-      window.TTB._log(['TOSAccept: clicked']);
+      window.TTB._log(['TOSAccept: called']);
+
+      // show progress on button
+      utilUpdateButton('Accepting Terms...', true);
 
       request = {
         method: 'GET'
       };
 
       return ttb._ajax(request, methodsMapping.ACCEPT_SPONSOR_TOS)
-        .done(function (res) {
+        .then(function (res) {
           res = res.response;
 
           window.TTB._log(['TOSAccept: complete', res]);
@@ -1074,27 +1106,16 @@
             actions.onConnect && actions.onConnect(selectedSponsor);
 
             utilUpdateButton('Connected !', false);
-
-            // enhance - can prefer some delay to let the connected button update.
-            // auto close/hide the TOS accept modal
-            $modal.modal('hide');
-
           } else {
-            window.TTB._log(['TOSAccept: error', res]);
 
+            window.TTB._log(['TOSAccept: failed', res]);
             // invoke done callback with selectedSponsor
             actions.onError && actions.onError(res.data.msg); // not data[0]
-
-            utilUpdateButton('Retry', false);
           }
-        })
-        .fail(function (reason) {
+
+        }, function (reason) {
           window.TTB._log(['TOSAccept: error', reason]);
-
-          // invoke done callback with selectedSponsor
-          actions.onError && actions.onError('Could not connect to server for accepting TOS.');
-
-          utilUpdateButton('Retry', false);
+          utilHandleError('Failed in contacting server for accepting Terms.');
         });
     }
   };
@@ -2192,7 +2213,7 @@
      *   email: "awesomeuser99@domain.com"
      * };
      *
-     * ttb.deactivateSponsorSelection(payload)
+     * ttb.clearSponsorSelection(payload)
      * .done(function(res) {
      *   if (res.response.status === 'OK') {
      *     // your success code here to consume res.response.data
@@ -2212,7 +2233,7 @@
      * @return {Object} promise - Jquery AJAX deferred promise is returned which on-success returns the required info.
      *
      * */
-    deactivateSponsorSelection: function (payload) {
+    clearSponsorSelection: function (payload) {
 
       var request = {
         method: 'POST',
@@ -2223,7 +2244,7 @@
       //  perform_logout: !!performLogout
       //};
 
-      return this._ajax(request, methodsMapping.DEACTIVATE_SPONSOR_SELECTION);
+      return this._ajax(request, methodsMapping.CLEAR_SPONSOR_SELECTION);
     },
 
 
@@ -2674,9 +2695,11 @@
      * @param {Object} options.loginRemotePayload - "stk" and "getuser_url" information to be used for login. please check .loginRemote() documentation for more.
      *
      * @param {Object} [actions] - The actions object contains mapping callbacks to be consumed on success or failure.
-     * @param {Function} [actions.onConnectSuccess] - To be invoked with <code>info</code> object, which contains <code>selectedSponsor</code> object, on successful "Connect".
+     * @param {Function} [actions.onConnectSuccess] - To be invoked with <code>info</code> object,
+     * which on successful "Connect", contains <code>selectedSponsor</code> object, and <code>loginPerformed</code> flag (to be "true" when user gets auto logged in from widget modal)
      * @param {Function} [actions.onConnectFailure] - To be invoked with <code>reason</code> on failing connecting.
-     * @param {Function} [actions.onDisconnectSuccess] - To be invoked with <code>info</code> object, which contains <code>selectedSponsor</code> object, on successful "Disconnect".
+     * @param {Function} [actions.onDisconnectSuccess] - To be invoked with <code>info</code> object,
+     * which on successful "Disconnect", contains <code>selectedSponsor</code> object, and <code>loginPerformed</code> flag.
      * @param {Function} [actions.onDisconnectFailure] - To be invoked with <code>reason</code> on failing disconnecting.
      *
      * @example
@@ -2847,7 +2870,10 @@
             case 'TTB:SDK::CONNECT_WIDGET:ERROR':
 
               // invoke the related action callback.
-              actions.onConnectFailure && actions.onConnectFailure(data.info);
+              actions.onConnectFailure && actions.onConnectFailure(data.info.reason);
+
+              // leave wait/error msg for connect UI.
+              updateDisconnectedState(data.info.reason, false);
 
               break;
 
@@ -2855,7 +2881,6 @@
             case 'TTB:SDK::CONNECT_WIDGET:SUCCESS':
 
               onConnectSuccess(data);
-
               break;
 
             default:
@@ -2867,19 +2892,18 @@
 
       // remove the stored sponsor connection.
       function onDisconnect() {
-        var payload, handleError;
+        var payload, utilHandleError;
 
         ttb._log(['connectWidget: onDisconnect: init.']);
 
         // common handler for error scenarios
-        handleError =  function (message, disableDisconnect) {
+        utilHandleError =  function (message, disableDisconnect) {
 
           // update the state on disconnect UI
           updateConnectedState(message, disableDisconnect);
 
           // invoke the related action callback.
           actions.onDisconnectFailure && actions.onDisconnectFailure({
-            selectedSponsor: ttb.sponsor,
             reason: message
           });
         };
@@ -2887,12 +2911,12 @@
         // update the state on disconnect UI
         updateConnectedState('Disconnecting...', true);
 
-        // perform deactivate sponsor selection API
+        // perform clear sponsor selection API
         payload = {
           email: o.userProfile.email
         };
 
-        ttb.deactivateSponsorSelection(payload, true)
+        ttb.clearSponsorSelection(payload, true)
           .then(function (res) {
             res = res.response;
 
@@ -2912,30 +2936,29 @@
             } else {
 
               ttb._log(['connectWidget: onDisconnect: failed.', res.data[0]]);
-              handleError(res.data[0], false);
+              utilHandleError(res.data[0], false);
             }
 
           }, function (reason) {
 
             ttb._log(['connectWidget: onDisconnect: error.', reason]);
-            handleError('Failed in contacting server.', false);
+            utilHandleError('Failed in contacting server.', false);
           });
       }
 
       // pulls user profile, and checks for last selected sponsor.
       function checkForExistingSponsor() {
-        var handleError;
+        var utilHandleError;
 
         // common handler for error scenarios
-        handleError =  function (message, disableConnect) {
+        utilHandleError =  function (reason, disableConnect) {
 
-          // leave wait msg for connect UI.
-          updateDisconnectedState(message, disableConnect);
+          // leave wait/error msg for connect UI.
+          updateDisconnectedState(reason, disableConnect);
 
           // invoke the related action callback.
           actions.onConnectFailure && actions.onConnectFailure({
-            selectedSponsor: null,
-            reason: message
+            reason: reason
           });
         };
 
@@ -2975,7 +2998,7 @@
                     };
 
                     // update state for connect UI.
-                    updateDisconnectedState('Sponsor found.', false);
+                    updateDisconnectedState('Sponsor selection found.', false);
 
                     // activate disconnect section UI.
                     activateConnectedMode(selectedSponsor, false);
@@ -2983,21 +3006,20 @@
                   } else {
 
                     // we keep "connect" enabled here.
-                    handleError(res.data[0], false);
+                    utilHandleError(res.data[0], false);
                   }
 
                 }, function (reason) {
                   // we keep "connect" enabled here.
-                  handleError('Error in contacting server for pulling sponsor selection.', false);
-
+                  utilHandleError('Error in contacting server for pulling sponsor selection.', false);
                 });
 
             } else {
-              handleError('Failed in pulling user profile.', true);
+              utilHandleError('Failed in pulling user profile.', true);
             }
 
           }, function (reason) {
-            handleError('Error in contacting server for pulling user profile.', true);
+            utilHandleError('Error in contacting server for pulling user profile.', true);
           });
       }
 
