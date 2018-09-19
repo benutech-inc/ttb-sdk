@@ -16,13 +16,19 @@ gulp.task('del', function () {
   return $.del([settings.PATH_DOCS, settings.PATH_BUILD]);
 });
 
+gulp.task('copy-scoped-bootstrap', ['del'], function () {
+  //console.log('task: copy-scoped-bootstrap');
+  return gulp.src(['src/scoped-bootstrap/*.css'])
+    .pipe(gulp.dest(settings.PATH_BUILD));
+});
+
 gulp.task('copy-docs-assets', ['del'], function () {
   //console.log('task: copy-docs-assets');
   return gulp.src(['src/docs-assets/**/*.*'])
     .pipe(gulp.dest(settings.PATH_DOCS));
 });
 
-gulp.task('docs', ['copy-docs-assets'], function () {
+gulp.task('docs', ['copy-docs-assets', 'copy-scoped-bootstrap'], function () {
   //console.log('task: doc');
   return gulp.src(['something-ignored.source'])
     .pipe($.jsdoc3(jsdocConfig));
