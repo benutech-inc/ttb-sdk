@@ -1034,8 +1034,11 @@
 
             window.TTB._log(['saveSponsor: success', res]);
 
+            // authenticate user before request for TOS.
+            performLogin();
+
             // since login is successful, show TOS modal to let user accept.
-            TOSAccept();
+            //TOSAccept();
 
           } else {
 
