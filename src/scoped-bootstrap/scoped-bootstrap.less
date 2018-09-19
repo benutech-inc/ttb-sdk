@@ -1,0 +1,27 @@
+/*
+* Solution provided by Benutech Inc. with the help of many open-source solutions.
+* This module to be used for non-bootstrap sites, where with original bootstrap, conflicts may happen.
+* This file produces namespace-ed version of bootstrap with .bootstrap-scope as parent class.
+* Bootstrap version used is 3.3.7
+*/
+
+/*
+* Solution is the combination of:
+* files taken from: https://formden.com/blog/isolate-bootstrap
+* technique : https://stackoverflow.com/a/13977230
+* missed tweaks: https://stackoverflow.com/a/21929419
+*/
+
+/*
+* Task steps:
+* 1 - install LESS
+* 2 - run command "lessc scoped-bootstrap.less scoped-bootstrap.css"
+* 3 - find "scoped-bootstrap html" in and replace it with "scoped-bootstrap--html"
+* 4 - find "scoped-bootstrap body" and replace it with "scoped-bootstrap--body"
+* 5 - "scoped-bootstrap.css" can be used now.
+* 6 - don't forget to include it into the dist by running gulp task "doc-dev".
+*/
+
+.scoped-bootstrap {
+  @import (less) '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
+}
