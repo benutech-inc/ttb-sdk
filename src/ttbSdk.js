@@ -815,7 +815,7 @@
           //}
 
           o.resultsMessage = 'The following Companies are available Partners in the <strong>{{zipCode}}</strong> zip code.'
-            .replace('{{zipCode}}', data.zipCode);
+            .replace('{{zipCode}}', data.getSponsorsPayload.zipCode);
 
           o.bodyMarkup.push(o.bodyTemplate
             .replace('{{resultsMessage}}', o.resultsMessage)
@@ -832,7 +832,7 @@
               'There is currently not a Company as a participating Partner in Zip Code <strong>{{zipCode}}</strong>. ',
               'The Data will be proudly supplied by Benutech Inc.'
             ].join('')
-            .replace('{{zipCode}}', data.zipCode);
+            .replace('{{zipCode}}', data.getSponsorsPayload.zipCode);
 
           } else {
             o.resultsMessage = 'The following Companies are available Partners.';
