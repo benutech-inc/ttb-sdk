@@ -1026,7 +1026,7 @@
       utilUpdateButton('Selecting...', true);
 
       //ttb.saveSponsorSelection(options.loginRemotePayload, true)
-      ttb.saveSponsorSelection(options.loginRemotePayload, true)
+      ttb.saveSponsorSelection(options.loginRemotePayload, false)
         .then(function (res) {
           res = res.response;
 
@@ -1046,6 +1046,37 @@
         }, function () {
           window.TTB._log(['saveSponsor: error', res]);
           utilHandleError('Failed in contacting server for saving sponsor.');
+        });
+    }
+
+    // performs a remote login using given stk, so that to forward with accept TOS
+    function performLogin() {
+      window.TTB._log(['performLogin: called']);
+
+      // show progress on button
+      utilUpdateButton('Authenticating...', true);
+
+      //ttb.saveSponsorSelection(options.loginRemotePayload, true)
+      ttb.loginRemote(options.loginRemotePayload, false)
+        .then(function (res) {
+          res = res.response;
+
+          if (res.status === 'OK') {
+
+            window.TTB._log(['performLogin: success', res]);
+
+            // since login is successful, show TOS modal to let user accept.
+            TOSAccept();
+
+          } else {
+
+            window.TTB._log(['performLogin: failed', res]);
+            utilHandleError(res.data[0]);
+          }
+
+        }, function () {
+          window.TTB._log(['performLogin: error', res]);
+          utilHandleError('Failed in contacting server for login.');
         });
     }
 
