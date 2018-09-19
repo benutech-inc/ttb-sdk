@@ -1,7 +1,7 @@
 /**
  * Copyright © 2018 Benutech Inc. All rights reserved.
  * http://www.benutech.com - help@benutech.com
- * version: 0.11.0
+ * version: 1.0.0
  * https://github.com/benutech-inc/ttb-sdk
  * For latest release, please check - https://github.com/benutech-inc/ttb-sdk/releases
  * */
@@ -19,6 +19,10 @@
       TOSURL: 'https://direct.api.titletoolbox.com/pages/tos/direct_tos'
     },
     baseURLPattern: 'https://{{sponsorName}}.api.titletoolbox.com/',
+    scopedBootstrap: false,
+    classScopedBootstrap: 'scoped-bootstrap',
+    classScopedBootstrapHtml: 'scoped-bootstrap--html',
+    classScopedBootstrapBody: 'scoped-bootstrap--body',
     debug: false,
     sdkPrefix: 'ttb-sdk',
     autoFillAttr: 'data-ttb-field',
@@ -86,8 +90,12 @@
    *
    * <p>
    * <strong>Bootstrap</strong> - For modals, and rendering widgets, SDK uses bootstrap UI and script. <br/>
+   * <code> &lt;script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">&lt;/script> </code><br>
+   * Official CSS: <br>
    * <code> &lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> </code> <br/>
-   * <code> &lt;script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">&lt;/script> </code>
+   * Scoped Bootstrap version: <br>
+   * Having non-bootstrap based site ? please use the following scoped-bootstrap version to limit bootstrap styles to SDK widgets only. (bootstrap v3.3.7 used.)<br>
+   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.0.0/dist/scoped-bootstrap.min.css​"> </code>
    * </p>
    *
    * <p>
@@ -99,9 +107,9 @@
    * <p>
    * <strong>TitleToolBox SDK </strong> files (1 script, and 1 style), can be pulled via our public repo link:
    * <i>(keep the [latest version]{@link https://github.com/benutech-inc/ttb-sdk/releases})</i><br>
-   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.11.0/dist/ttbSdk.min.css​"> </code>
-   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/0.11.0/dist/ttbSdk.min.js​">&lt;/script> </code>
-   * <br><br>OR via<strong> Bower</strong> using <code>bower install ttb-sdk --save</code>
+   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.0.0/dist/ttbSdk.min.css​"> </code>
+   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.0.0/dist/ttbSdk.min.js​">&lt;/script> </code>
+   * <br><br>OR via<strong> Bower </strong> using <code>bower install ttb-sdk --save</code>
    * <br><br>
    *
    * <i style="font-size: 13px;">SDK's <strong>NPM</strong> package will be released soon...</i>
@@ -136,6 +144,9 @@
    * - For example: &lt;input type="text" <code>data-ttb-field="GeneralInfo.Bedrooms"</code> />
    * or &lt;input type="text" <code>data-ttb-field="GeneralInfo['Year Built']"</code> />
    *
+   * @param {String} [config.scopedBootstrap=false] - Whether the scoped bootstrap version is used.
+   * (recommended when non-bootstrap sites faces styles conflicts with official bootstrap CSS)
+   *
    * @param {String} [config.debug=true] - SDK debug mode flag useful for logs, etc.
    *
    * @return {Object} ttb - The instance associated with the provided configuration.
@@ -160,7 +171,8 @@
    *   partnerKey: '{your partner key}',
    *   baseURLPattern: 'https://customdomain.com/api/{{sponsorName}}',
    *   sponsor: {...} // switchable later via ttb.setSponsor(),
-   *   autoFillAttr: 'data-model'
+   *   autoFillAttr: 'data-model',
+   *   scopedBootstrap: true
    * });
    * */
   window.TTB = function (config) {
@@ -177,7 +189,12 @@
     this.sponsor = config.sponsor || defaults.sponsor;
     this.baseURL = config.baseURL || this.setSponsor(this.sponsor);
     this.autoFillAttr = config.autoFillAttr || defaults.autoFillAttr;
+    this.scopedBootstrap = config.scopedBootstrap || defaults.scopedBootstrap;
     this.debug = config.debug || defaults.debug;
+
+    /* exporting flags to main class for static methods */
+    // scoped bootstrap to be true if at least one instance contains the flag.
+    window.TTB.scopedBootstrap = !window.TTB.scopedBootstrap ? this.scopedBootstrap : window.TTB.scopedBootstrap;
 
     this._log(['TTB SDK instantiated. | version: ', window.TTB.version]);
   };
@@ -190,7 +207,7 @@
    * @description The version of the SDK being used.
    * @type String
    * */
-  window.TTB.version = '0.11.0';
+  window.TTB.version = '1.0.0';
 
   /**
    * @memberof TTB
@@ -324,9 +341,13 @@
     //return $(document.body).append(modalTemplate);
     $modal = $(modalTemplate).appendTo(document.body);
 
-    options.onBeforeShow && $modal.on('show.bs.modal', options.onBeforeShow);
+    //options.onBeforeShow && $modal.on('show.bs.modal', options.onBeforeShow);
     options.onShown && $modal.on('shown.bs.modal', options.onShown);
-    options.onBeforeClose && $modal.on('hide.bs.modal', options.onBeforeClose);
+    //options.onBeforeClose && $modal.on('hide.bs.modal', options.onBeforeClose);
+    //options.onClose && $modal.on('hide.bs.modal', options.onClose);
+
+    $modal.on('show.bs.modal', onBeforeShowModal);
+    $modal.on('hide.bs.modal', onBeforeCloseModal);
 
     // to auto destroy, always listen to close event
     if (options.autoDestroy) {
@@ -345,6 +366,32 @@
     }
 
     return $modal;
+
+    // to be invoked before showing the modal. Adds bootstrap classes
+    function onBeforeShowModal() {
+
+      // remove scoped bootstrap related classes
+      if (window.TTB.scopedBootstrap) {
+        $('html').addClass(defaults.classScopedBootstrapHtml);
+        $('body').addClass(defaults.classScopedBootstrapBody);
+      }
+
+      // invoked the given callback
+      options.onBeforeShow && options.onBeforeShow();
+    }
+
+    // to be invoked before closing the modal. Removes bootstrap classes
+    function onBeforeCloseModal() {
+
+      // remove scoped bootstrap related classes
+      if (window.TTB.scopedBootstrap) {
+        $('html').removeClass(defaults.classScopedBootstrapHtml);
+        $('body').removeClass(defaults.classScopedBootstrapBody);
+      }
+
+      // invoked the given callback
+      options.onBeforeClose && options.onBeforeClose();
+    }
   };
 
   /**
@@ -352,7 +399,7 @@
    * @alias utilIframeModal
    * @static
    *
-   * [Coming soon in 1.x version] Shows a modal having an iframe with given information, loaded. provide a subscription to "message" event of window, listening that iframe site origin.
+   * Shows a modal having an iframe with given information, loaded. provide a subscription to "message" event of window, listening that iframe site origin.
    * @private
    *
    * @param {Object} modalOptions - configuration options for the modal. Please check TTB._modal for parameters information.
@@ -614,7 +661,7 @@
    * @static
    *
    * @description
-   * [Updates for coming in 1.x version] This static method provides the list of all available sponsors based on given info.
+   * This static method provides the list of all available sponsors based on given info.
    *
    * @param {Object} data - Information to be required through the sponsor selection flow.
    * @param {Object} data.partnerKey - The partner key provided by support team for the consumer site.
@@ -889,7 +936,7 @@
    * @static
    *
    * @description
-   * [Coming soon in 1.x version] This static method is used as a helper component inside <code>showSelectSponsor()</code> method.
+   * This static method is used as a helper component inside <code>showSelectSponsor()</code> method.
    * This method shows a "Thank you" modal for handling TOS against the selected sponsor, after user selected it
    * via <code>TTB.showSelectSponsor()</code>.
    *
@@ -2149,7 +2196,7 @@
 
     /**
      * @description
-     * [Coming in 1.x.x] This method saves the sponsor selection performed by the user with given credentials.
+     * This method saves the sponsor selection performed by the user with given credentials.
      * Performs an optional login identical to existing method loginRemote()
      *
      * @param {Object} payload - The payload object containing required info.
@@ -2204,7 +2251,7 @@
 
     /**
      * @description
-     * [Coming in 1.x.x] This method deactivate the sponsor selection previously performed by the user with given credentials.
+     * This method deactivate the sponsor selection previously performed by the user with given credentials.
      *
      * @param {Object} payload - The payload object containing required info.
      * @param {String} payload.email - The email address of the user.
@@ -2499,6 +2546,11 @@
         // render the widget template
         .append(o.widgetTemplate);
 
+      // for scope bootstrap instances.
+      if (window.TTB.scopedBootstrap) {
+        o.$container.addClass(defaults.classScopedBootstrap);
+      }
+
       // check for google autocomplete first
       try {
         var test = google.maps.places.Autocomplete;
@@ -2684,7 +2736,7 @@
     },
 
     /**
-     * [Coming soon in 1.x version] This method renders a widget includes a connect button to open up the TTB integration modal which contains an <code>iframe</code> controlled by TTB. <br>
+     * This method renders a widget includes a connect button to open up the TTB integration modal which contains an <code>iframe</code> controlled by TTB. <br>
      * <br>
      * It uses <strong>localStorage</strong> of the host origin, to store the selected sponsor info as <code>ttb-sdk--connect--selected-sponsor</code>,
      * It is a good gate for host sites to persist the user's sponsor selection over their servers, by reading/writing from/to it.
@@ -2813,6 +2865,11 @@
 
         // render the widget template
         .append(o.widgetTemplate);
+
+      // for scope bootstrap instances.
+      if (window.TTB.scopedBootstrap) {
+        o.$container.addClass(defaults.classScopedBootstrap);
+      }
 
       // check for any existing connection - activate disconnect section UI.
       //if (o.selectedSponsor) {
