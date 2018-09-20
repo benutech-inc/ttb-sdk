@@ -2548,7 +2548,9 @@
 
       // for scope bootstrap instances.
       if (window.TTB.scopedBootstrap) {
-        o.$container.addClass(defaults.classScopedBootstrap);
+        o.$container
+          .addClass(defaults.classScopedBootstrap)
+          .addClass(defaults.classScopedBootstrapBody);
       }
 
       // check for google autocomplete first
@@ -2868,7 +2870,9 @@
 
       // for scope bootstrap instances.
       if (window.TTB.scopedBootstrap) {
-        o.$container.addClass(defaults.classScopedBootstrap);
+        o.$container
+          .addClass(defaults.classScopedBootstrap)
+          .addClass(defaults.classScopedBootstrapBody);
       }
 
       // check for any existing connection - activate disconnect section UI.
