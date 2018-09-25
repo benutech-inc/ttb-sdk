@@ -1890,10 +1890,10 @@
      * on successful call, check for <code>data.phone_status</code> and <code>data.email_status</code> flags.
      * value "completed" means that the requested contact field is ready, and so .getFarm() should be called again to fetch the farm.
      * "ordered" means the order is made, but it is in progress on the backend. orders usually takes up to ~2 minutes.
-     * <br>
+     * <br><br>
      * Note: The farm is supposed to be ordered/made via .globalSearch() method.
      *
-     * @param {String} farmId - The <code>farm_id<code> of the target farm to be checked.
+     * @param {String} farmId - The <code>farm_id</code> of the target farm to be checked.
      *
      * @example
      * var ttb = new TTB({ ... }); // skip if already instantiated.
@@ -1932,10 +1932,10 @@
 
     /**
      * This method is used to fetch the given farm. i.e. to fetch all the properties/records​ of the given farm.
-     * <br>
+     * <br><br>
      * Note: The farm is supposed to be ordered/made via .globalSearch() method.
      *
-     * @param {String} farmId - The <code>farm_id<code> of the target farm to be fetched.
+     * @param {String} farmId - The <code>farm_id</code> of the target farm to be fetched.
      *
      * @example
      * var ttb = new TTB({ ... }); // skip if already instantiated.
@@ -1974,7 +1974,7 @@
 
     /**
      * This method is used to fetch the list of all the farms that were bought by the user.
-     * <br>
+     * <br><br>
      * Note: The farm is supposed to be ordered/made via .globalSearch() method.
      *
      * @example
