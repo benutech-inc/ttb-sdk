@@ -1,7 +1,7 @@
 /**
  * Copyright © 2018 Benutech Inc. All rights reserved.
  * http://www.benutech.com - help@benutech.com
- * version: 1.0.1
+ * version: 1.1.0
  * https://github.com/benutech-inc/ttb-sdk
  * For latest release, please check - https://github.com/benutech-inc/ttb-sdk/releases
  * */
@@ -69,6 +69,9 @@
     ORDER_REPORT: {methodName: 'orderReport', endpoint: 'webservices/order_report.json'},
     PROPERTY_COMPS: {methodName: 'propertyComps', endpoint: 'webservices/property_comps.json'},
     PROPERTY_DETAILS: {methodName: 'propertyDetails', endpoint: 'webservices/property_details.json'},
+    FARMS_PE_CHECK_STATUS: {methodName: 'checkPEFarmStatus', endpoint: 'webservices/pe_farm_status/{{farmId}}.json'},
+    FARMS_GET_FARM: {methodName: 'getFarmProperties', endpoint: 'webservices/get_farm/{{farmId}}.json'},
+    FARMS_GET_FARMS_LIST: {methodName: 'getFarmsList', endpoint: 'webservices/get_farm_metainfo.json'},
     GLOBAL_SEARCH: {methodName: 'globalSearch', endpoint: 'webservices/global_search.json'},
     GLOBAL_SEARCH_COUNT: {methodName: 'globalSearchCount', endpoint: 'webservices/global_search_count.json'},
     GET_TYPES_REPORT: {methodName: 'getTypesReport', endpoint: 'webservices/types_report.json'},
@@ -95,7 +98,7 @@
    * <code> &lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> </code> <br/>
    * Scoped Bootstrap version: <br>
    * Having non-bootstrap based site ? please use the following scoped-bootstrap version to limit bootstrap styles to SDK widgets only. (bootstrap v3.3.7 used.)<br>
-   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.0.1/dist/scoped-bootstrap.min.css​"> </code>
+   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.1.0/dist/scoped-bootstrap.min.css​"> </code>
    * </p>
    *
    * <p>
@@ -107,8 +110,8 @@
    * <p>
    * <strong>TitleToolBox SDK </strong> files (1 script, and 1 style), can be pulled via our public repo link:
    * <i>(keep the [latest version]{@link https://github.com/benutech-inc/ttb-sdk/releases})</i><br>
-   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.0.1/dist/ttbSdk.min.css​"> </code>
-   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.0.1/dist/ttbSdk.min.js​">&lt;/script> </code>
+   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.1.0/dist/ttbSdk.min.css​"> </code>
+   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.1.0/dist/ttbSdk.min.js​">&lt;/script> </code>
    * <br><br>OR via<strong> Bower </strong> using <code>bower install ttb-sdk --save</code>
    * <br><br>
    *
@@ -207,7 +210,7 @@
    * @description The version of the SDK being used.
    * @type String
    * */
-  window.TTB.version = '1.0.1';
+  window.TTB.version = '1.1.0';
 
   /**
    * @memberof TTB
@@ -1880,6 +1883,128 @@
           options.autoFillContext && _self._fillFields(options.autoFillContext, res.response.data, options.autoFillClearExisting, options.autoFillDelay);
           return res;
         });
+    },
+
+    /**
+     * This method is used to check for the status on phone and/or email fields order for the properties of the given farm.
+     * on successful call, check for <code>data.phone_status</code> and <code>data.email_status</code> flags.
+     * value "completed" means that the requested contact field is ready, and so .getFarm() should be called again to fetch the farm.
+     * "ordered" means the order is made, but it is in progress on the backend. orders usually takes up to ~2 minutes.
+     * <br>
+     * Note: The farm is supposed to be ordered/made via .globalSearch() method.
+     *
+     * @param {String} farmId - The <code>farm_id<code> of the target farm to be checked.
+     *
+     * @example
+     * var ttb = new TTB({ ... }); // skip if already instantiated.
+     *
+     * var farmId = 123;
+     *
+     * ttb.checkPEFarmStatus(farmId)
+     * .done(function(res) {
+     *   if (res.response.status === 'OK') {
+     *     // your success code here to consume res.response.data
+     *     console.log(res.response.data);
+     *   } else {
+     *     // your failure code here to consume res.response.data
+     *     console.log(res.response.data);
+     *   }
+     * })
+     * .fail(function(err) {
+     *   // your failure code here
+     * })
+     * .always(function() {
+     *  // your on-complete code here as common for both success and failure
+     * });
+     *
+     * @return {Object} promise - Jquery AJAX deferred promise is returned which on-success returns the required info.
+     * */
+    checkPEFarmStatus: function (farmId) {
+      var url = (this.baseURL + methodsMapping.FARMS_PE_CHECK_STATUS.endpoint).replace('{{farmId}}', farmId);
+
+      var request = {
+        method: 'GET',
+        url: url
+      };
+
+      return this._ajax(request, methodsMapping.FARMS_PE_CHECK_STATUS);
+    },
+
+    /**
+     * This method is used to fetch the given farm. i.e. to fetch all the properties/records​ of the given farm.
+     * <br>
+     * Note: The farm is supposed to be ordered/made via .globalSearch() method.
+     *
+     * @param {String} farmId - The <code>farm_id<code> of the target farm to be fetched.
+     *
+     * @example
+     * var ttb = new TTB({ ... }); // skip if already instantiated.
+     *
+     * var farmId = 123;
+     *
+     * ttb.getFarmProperties(farmId)
+     * .done(function(res) {
+     *   if (res.response.status === 'OK') {
+     *     // your success code here to consume res.response.data
+     *     console.log(res.response.data);
+     *   } else {
+     *     // your failure code here to consume res.response.data
+     *     console.log(res.response.data);
+     *   }
+     * })
+     * .fail(function(err) {
+     *   // your failure code here
+     * })
+     * .always(function() {
+     *  // your on-complete code here as common for both success and failure
+     * });
+     *
+     * @return {Object} promise - Jquery AJAX deferred promise is returned which on-success returns the required info.
+     * */
+    getFarmProperties: function (farmId) {
+      var url = (this.baseURL + methodsMapping.FARMS_GET_FARM.endpoint).replace('{{farmId}}', farmId);
+
+      var request = {
+        method: 'GET',
+        url: url
+      };
+
+      return this._ajax(request, methodsMapping.FARMS_GET_FARM);
+    },
+
+    /**
+     * This method is used to fetch the list of all the farms that were bought by the user.
+     * <br>
+     * Note: The farm is supposed to be ordered/made via .globalSearch() method.
+     *
+     * @example
+     * var ttb = new TTB({ ... }); // skip if already instantiated.
+     *
+     * ttb.getFarmsList()
+     * .done(function(res) {
+     *   if (res.response.status === 'OK') {
+     *     // your success code here to consume res.response.data
+     *     console.log(res.response.data);
+     *   } else {
+     *     // your failure code here to consume res.response.data
+     *     console.log(res.response.data);
+     *   }
+     * })
+     * .fail(function(err) {
+     *   // your failure code here
+     * })
+     * .always(function() {
+     *  // your on-complete code here as common for both success and failure
+     * });
+     *
+     * @return {Object} promise - Jquery AJAX deferred promise is returned which on-success returns the required info.
+     * */
+    getFarmsList: function () {
+      var request = {
+        method: 'GET'
+      };
+
+      return this._ajax(request, methodsMapping.FARMS_GET_FARMS_LIST);
     },
 
     /**
