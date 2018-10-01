@@ -135,7 +135,7 @@
             <pre class="prettyprint source "><code>/**
  * Copyright © 2018 Benutech Inc. All rights reserved.
  * http://www.benutech.com - help@benutech.com
- * version: 1.1.0
+ * version: 1.1.1
  * https://github.com/benutech-inc/ttb-sdk
  * For latest release, please check - https://github.com/benutech-inc/ttb-sdk/releases
  * */
@@ -232,7 +232,7 @@
    * &lt;code> &amp;lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> &lt;/code> &lt;br/>
    * Scoped Bootstrap version: &lt;br>
    * Having non-bootstrap based site ? please use the following scoped-bootstrap version to limit bootstrap styles to SDK widgets only. (bootstrap v3.3.7 used.)&lt;br>
-   * &lt;code> &amp;lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.1.0/dist/scoped-bootstrap.min.css​"> &lt;/code>
+   * &lt;code> &amp;lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.1.1/dist/scoped-bootstrap.min.css​"> &lt;/code>
    * &lt;/p>
    *
    * &lt;p>
@@ -244,8 +244,8 @@
    * &lt;p>
    * &lt;strong>TitleToolBox SDK &lt;/strong> files (1 script, and 1 style), can be pulled via our public repo link:
    * &lt;i>(keep the [latest version]{@link https://github.com/benutech-inc/ttb-sdk/releases})&lt;/i>&lt;br>
-   * &lt;code> &amp;lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.1.0/dist/ttbSdk.min.css​"> &lt;/code>
-   * &lt;code> &amp;lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.1.0/dist/ttbSdk.min.js​">&amp;lt;/script> &lt;/code>
+   * &lt;code> &amp;lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.1.1/dist/ttbSdk.min.css​"> &lt;/code>
+   * &lt;code> &amp;lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.1.1/dist/ttbSdk.min.js​">&amp;lt;/script> &lt;/code>
    * &lt;br>&lt;br>OR via&lt;strong> Bower &lt;/strong> using &lt;code>bower install ttb-sdk --save&lt;/code>
    * &lt;br>&lt;br>
    *
@@ -344,7 +344,7 @@
    * @description The version of the SDK being used.
    * @type String
    * */
-  window.TTB.version = '1.1.0';
+  window.TTB.version = '1.1.1';
 
   /**
    * @memberof TTB
@@ -809,7 +809,7 @@
    * @param {Function} [actions.onConnect] - The callback to be invoked with
    * when user is completely connected .ie. done with selecting sponsor and then accepting the their TOS.
    * @param {Function} [actions.onSelect] - The callback to be invoked with &lt;code>selectedSponsor&lt;/code> when user selects the sponsor.
-   * @param {Function} [actions.onError] - The callback to be invoked with &lt;code>error&lt;/code> on whatever step it fails.
+   * @param {Function} [actions.onError] - The callback to be invoked with &lt;code>error&lt;/code> {String} message, against whatever step it fails.
    *
    * @example
    *
@@ -842,7 +842,7 @@
    *    // on successful TOS actions.onConnect gets called.
    *   },
    *   onError: function(error) {
-   *    // your failure code here
+   *    // your failure code here consume error / reason {String}
    *   }
    * };
    *
@@ -896,7 +896,7 @@
           $modal.find('.modal-body').html(errorMessage);
 
           // pass the error response to error callback if provided.
-          actions.onError &amp;&amp; actions.onError(res);
+          actions.onError &amp;&amp; actions.onError(res.response.data[0]);
           return;
         }
 
@@ -1058,7 +1058,7 @@
         $modal.find('.modal-body').html(errorMessage);
 
         // pass the error to error callback if provided.
-        actions.onError &amp;&amp; actions.onError(err);
+        actions.onError &amp;&amp; actions.onError(errorMessage);
       });
 
     // triggering .modal() of bootstrap
@@ -1083,7 +1083,7 @@
    * @param {Function} [actions.onConnect] - The callback to be invoked with
    * when user is completely connected .ie. done with selecting sponsor (via TTB.showSelectSponsor()) and then accepting the their TOS.
    * @param {Function} [actions.onSelect] - The callback to be invoked with &lt;code>selectedSponsor&lt;/code> when user selects the sponsor.
-   * @param {Function} [actions.onError] - The callback to be invoked with &lt;code>error&lt;/code> on whatever step it fails.
+   * @param {Function} [actions.onError] - The callback to be invoked with &lt;code>error&lt;/code> {String} message, against whatever step it fails.
    *
    * @param {Object} options - The options to perform additional tasks, e.g. login only for now.
    * @param {Object} options.performLogin="false" - To auto-perform login against the selected sponsor.
@@ -1192,10 +1192,7 @@
 
     // handles the error by invoking the related action callback.
     function utilHandleError(reason) {
-      actions.onError &amp;&amp; actions.onError({
-        selectedSponsor: selectedSponsor,
-        reason: reason
-      });
+      actions.onError &amp;&amp; actions.onError(reason);
     }
 
     // saves the sponsor selection over server, and to pass the control to the caller
@@ -3013,10 +3010,10 @@
      * @param {Object} [actions] - The actions object contains mapping callbacks to be consumed on success or failure.
      * @param {Function} [actions.onConnectSuccess] - To be invoked with &lt;code>info&lt;/code> object,
      * which on successful "Connect", contains &lt;code>selectedSponsor&lt;/code> object, and &lt;code>loginPerformed&lt;/code> flag (to be "true" when user gets auto logged in from widget modal)
-     * @param {Function} [actions.onConnectFailure] - To be invoked with &lt;code>reason&lt;/code> on failing connecting.
+     * @param {Function} [actions.onConnectFailure] - To be invoked with &lt;code>reason&lt;/code> {String} message on failing connecting.
      * @param {Function} [actions.onDisconnectSuccess] - To be invoked with &lt;code>info&lt;/code> object,
      * which on successful "Disconnect", contains &lt;code>selectedSponsor&lt;/code> object, and &lt;code>loginPerformed&lt;/code> flag.
-     * @param {Function} [actions.onDisconnectFailure] - To be invoked with &lt;code>reason&lt;/code> on failing disconnecting.
+     * @param {Function} [actions.onDisconnectFailure] - To be invoked with &lt;code>reason&lt;/code> {String} message on failing disconnecting.
      *
      * @example
      *
@@ -3084,8 +3081,7 @@
       actions = actions || {};
 
       o = {};
-      //o.userProfile = undefined; // later to be filled via getUserProfile( )
-      o.userProfile = {email: 'sandbox@benutech.com'};
+      o.userProfile = undefined; // later to be filled via getUserProfile( )
       o.selectedSponsor = window.TTB._getLocal(localName);
       o.widgetClass = 'ttb-sdk--connect--container';
       o.widgetTemplate = [
@@ -3226,9 +3222,7 @@
           updateConnectedState(message, disableDisconnect);
 
           // invoke the related action callback.
-          actions.onDisconnectFailure &amp;&amp; actions.onDisconnectFailure({
-            reason: message
-          });
+          actions.onDisconnectFailure &amp;&amp; actions.onDisconnectFailure(message);
         };
 
         // update the state on disconnect UI
@@ -3280,9 +3274,7 @@
           updateDisconnectedState(reason, disableConnect);
 
           // invoke the related action callback.
-          actions.onConnectFailure &amp;&amp; actions.onConnectFailure({
-            reason: reason
-          });
+          actions.onConnectFailure &amp;&amp; actions.onConnectFailure(reason);
         };
 
         // leave wait msg for connect UI.
@@ -3420,7 +3412,7 @@
 
         <footer>
             Copyright © 2018 <a href="http://www.benutech.com/" target="_blank" title="Benutech official website">Benutech Inc.</a> All rights reserved.</a>
-           <!-- Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Sep 26 2018 02:52:11 GMT+0500 (PKT) -->
+           <!-- Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Oct 01 2018 16:16:06 GMT+0500 (PKT) -->
         </footer>
     </div>
 </div>
