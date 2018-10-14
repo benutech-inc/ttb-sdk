@@ -87,7 +87,7 @@
    *
    * <p><strong id="dependencies">Dependencies:</strong></p>
    * <p>
-   * <strong>JQuery</strong> - version <code>1.x</code> or <code>2.x</code> any would work. We recommend the latest version <code>3.x</code> <br/>
+   * <strong>JQuery</strong> - version <code>1.9.x</code> or higher should work. We recommend the latest version <code>3.x</code> <br/>
    * <code> &lt;script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">&lt;/script> </code>
    * </p>
    *
@@ -1052,7 +1052,7 @@
 
     function utilUpdateButton(text, disable) {
       $('#ttb-sdk--sponsor-tos-accept')
-        .text(text)
+        .text(text || '')
         .prop('disabled', disable);
     }
 
@@ -1093,8 +1093,8 @@
             utilHandleError(res.data[0]);
           }
 
-        }, function () {
-          window.TTB._log(['saveSponsor: error', res]);
+        }, function (reason) {
+          window.TTB._log(['saveSponsor: error', reason]);
           utilHandleError('Failed in contacting server for saving sponsor.');
         });
     }
@@ -1124,8 +1124,8 @@
             utilHandleError(res.data[0]);
           }
 
-        }, function () {
-          window.TTB._log(['performLogin: error', res]);
+        }, function (reason) {
+          window.TTB._log(['performLogin: error', reason]);
           utilHandleError('Failed in contacting server for login.');
         });
     }
@@ -2717,7 +2717,7 @@
         o.selectedAction.name = $(evt.target).data('action-name');
         o.selectedAction.label = $(evt.target).text();
 
-        o.$selectedAction.text(o.selectedAction.label);
+        o.$selectedAction.text(o.selectedAction.label || '');
         window.TTB._setLocal('selectedAction', o.selectedAction);
       }
 
@@ -3236,7 +3236,7 @@
         o.$container
           .find('#ttb-sdk--connect--connect-section').hide()
           .next('#ttb-sdk--connect--disconnect-section').show()
-          .find('#ttb-sdk--connect--company-name').text(selectedSponsor.title);
+          .find('#ttb-sdk--connect--company-name').text(selectedSponsor.title || '');
 
         // invoke the related action callback.
         actions.onConnectSuccess && actions.onConnectSuccess({
@@ -3248,7 +3248,7 @@
       // renders state related messages / errors on connect UI.
       function updateDisconnectedState(text, disableConnect) {
         o.$container
-          .find('#ttb-sdk--connect--alert').text(text)
+          .find('#ttb-sdk--connect--alert').text(text || '')
           .next('#ttb-sdk--connect--connect')
           .find('button').prop('disabled', disableConnect);
       }
@@ -3256,7 +3256,7 @@
       // renders state related messages / errors on disconnect UI.
       function updateConnectedState(text, disableDisconnect) {
         o.$container
-          .find('#ttb-sdk--connect--company-name').text(text)
+          .find('#ttb-sdk--connect--company-name').text(text || '')
           .next('#ttb-sdk--connect--disconnect')
           .find('button').prop('disabled', disableDisconnect);
       }
