@@ -87,7 +87,7 @@
    *
    * <p><strong id="dependencies">Dependencies:</strong></p>
    * <p>
-   * <strong>JQuery</strong> - version <code>1.x</code> or <code>2.x</code> any would work. We recommend the latest version <code>3.x</code> <br/>
+   * <strong>JQuery</strong> - version <code>1.9.x</code> or higher should work. We recommend the latest version <code>3.x</code> <br/>
    * <code> &lt;script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">&lt;/script> </code>
    * </p>
    *
@@ -1093,8 +1093,8 @@
             utilHandleError(res.data[0]);
           }
 
-        }, function () {
-          window.TTB._log(['saveSponsor: error', res]);
+        }, function (reason) {
+          window.TTB._log(['saveSponsor: error', reason]);
           utilHandleError('Failed in contacting server for saving sponsor.');
         });
     }
@@ -1124,8 +1124,8 @@
             utilHandleError(res.data[0]);
           }
 
-        }, function () {
-          window.TTB._log(['performLogin: error', res]);
+        }, function (reason) {
+          window.TTB._log(['performLogin: error', reason]);
           utilHandleError('Failed in contacting server for login.');
         });
     }
