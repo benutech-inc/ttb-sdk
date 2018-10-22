@@ -12,6 +12,8 @@
   var defaults, methodsMapping;
 
   defaults = {
+    protocol: window.location.protocol,
+    devPort: '9000',
     partnerKey: '1-234-567-890',
     sponsor: {
       name: 'direct',
@@ -2807,19 +2809,21 @@
 
       // opens up a net sheet modal against the selected property
       function actionOpenNetSheet(property, enableControls) {
-        var $modal, modalOptions, iframeOptions;
+        var $modal, modalOptions, iframeOptions, origin;
 
         modalOptions = {
           id: 'ttb-sdk--net-sheet--modal',
           title: 'Net Sheet'
         };
 
+        // dev vs prod destination, plus handling https-https protocols.
+        origin = window.location.port === defaults.devPort ? '{{protocol}}//localhost:9002' : '{{protocol}}//ttb-export.herokuapp.com';
+        origin = origin.replace('{{protocol}}', defaults.protocol);
+
         iframeOptions = {
           id: 'ttb-sdk--net-sheet--iframe',
           height: '635px',
-          //origin: 'http://ttb-landing-page.herokuapp.com',
-          //origin: 'http://localhost:9001',
-          origin: window.location.port === '9000' ? 'http://localhost:9002' : 'http://ttb-export.herokuapp.com',
+          origin: origin,
           pathname: '/netsheet',
           params: {
             partnerKey: ttb.config.partnerKey,
@@ -3008,7 +3012,7 @@
 
       // opens up the connect modal
       function onConnect() {
-        var $connectModal, modalOptions, iframeOptions;
+        var $connectModal, modalOptions, iframeOptions, origin;
 
         ttb._log(['connectWidget: onConnect: init.']);
 
@@ -3017,12 +3021,14 @@
           title: 'Connect with TitleToolbox'
         };
 
+        // dev vs prod destination, plus handling https-https protocols.
+        origin = window.location.port === defaults.devPort ? '{{protocol}}//localhost:9001' : '{{protocol}}//ttb-landing-page.herokuapp.com';
+        origin = origin.replace('{{protocol}}', defaults.protocol);
+
         iframeOptions = {
           id: 'ttb-sdk--connect--iframe',
           height: '635px',
-          //origin: 'http://ttb-landing-page.herokuapp.com',
-          //origin: 'http://localhost:9001',
-          origin: window.location.port === '9000' ? 'http://localhost:9001' : 'http://ttb-landing-page.herokuapp.com',
+          origin: origin,
           pathname: '/index.html',
           params: {
             stk: options.loginRemotePayload.stk,
