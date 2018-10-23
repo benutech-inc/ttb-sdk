@@ -9,15 +9,18 @@
 (function () {
   'use strict';
 
-  var defaults, methodsMapping;
+  var defaults, methodsMapping, siteProtocol;
 
+  //siteProtocol = window.location.protocol;
+  siteProtocol = 'https:';
   defaults = {
-    protocol: window.location.protocol,
+    protocol: siteProtocol,
     devPort: '9000',
     partnerKey: '1-234-567-890',
     sponsor: {
       name: 'direct',
       title: 'Benutech',
+      site: 'https://direct.titletoolbox.com/',
       TOSURL: 'https://direct.api.titletoolbox.com/pages/tos/direct_tos'
     },
     baseURLPattern: 'https://{{sponsorName}}.api.titletoolbox.com/',
@@ -688,7 +691,7 @@
    * };
    *
    * actions = {
-   *   onConnect: function(selectedSponsor) {
+   *   onConnect: function(selectedSponsor, loginRemotePayload) {
    *    // your success code here to wrap things up considering it as a complete callback.
    *   },
    *   onSelect: function(selectedSponsor, authPromise) {
@@ -709,7 +712,7 @@
    *    // since the TOS acceptance feature waits on this promise to be fulfilled to proceed with an AJAX call.
    *    // on successful TOS actions.onConnect gets called.
    *   },
-   *   onError: function(error) {
+   *   onError: function(error, $sponsorModal) {
    *    // your failure code here consume error / reason {String}
    *   }
    * };
@@ -764,7 +767,7 @@
           $modal.find('.modal-body').html(errorMessage);
 
           // pass the error response to error callback if provided.
-          actions.onError && actions.onError(res.response.data[0]);
+          actions.onError && actions.onError(res.response.data[0], $modal);
           return;
         }
 
@@ -782,7 +785,7 @@
           ' <td>{{name}}</td>',
           ' <td><a href="{{website}}" target="_blank">{{website}}</a></td>',
           ' <td class="text-center">',
-          '  <button class="btn btn-primary" data-sponsor-name="{{sponsorName}}" data-sponsor-title="{{sponsorTitle}}" data-sponsor-tos="{{sponsorTOSURL}}">',
+          '  <button class="btn btn-primary" data-sponsor-name="{{sponsorName}}" data-sponsor-title="{{sponsorTitle}}" data-sponsor-site="{{sponsorSite}}" data-sponsor-tos="{{sponsorTOSURL}}">',
           '   Select',
           '  </button>',
           ' </td>',
@@ -816,6 +819,7 @@
             .replace(/(\{\{website}})/g, sponsor.company_info.company_website)
             .replace('{{sponsorName}}', sponsor.vertical_name)
             .replace('{{sponsorTitle}}', sponsor.company_info.company_name)
+            .replace('{{sponsorSite}}', sponsor.site_url)
             .replace('{{sponsorTOSURL}}', sponsor.TOS_content);
 
           // set the target list with respect to match.type
@@ -904,14 +908,16 @@
           var selectedSponsor = {
             name: $(this).attr('data-sponsor-name'),
             title: $(this).attr('data-sponsor-title'),
+            site: $(this).attr('data-sponsor-site'),
             TOSURL: $(this).attr('data-sponsor-tos')
           };
 
           // present TOS modal
           window.TTB.showSponsorTOSModal(selectedSponsor, actions, {
             performLogin: true,
-            loginRemotePayload: data.loginRemotePayload,
-            partnerKey: data.partnerKey
+            userProfile: data.userProfile,
+            partnerKey: data.partnerKey,
+            loginRemotePayload: data.loginRemotePayload
           });
 
           // auto close/hide the select-sponsor modal
@@ -926,7 +932,7 @@
         $modal.find('.modal-body').html(errorMessage);
 
         // pass the error to error callback if provided.
-        actions.onError && actions.onError(errorMessage);
+        actions.onError && actions.onError(errorMessage, $modal);
       });
 
     // triggering .modal() of bootstrap
@@ -963,7 +969,7 @@
    * var selectedSponsor = { ... }; // received from options.onSelect of TTB.showSelectSponsor()
    *
    * var actions = {
-   *  onConnect: function(selectedSponsor) {
+   *  onConnect: function(selectedSponsor, loginRemotePayload) {
    *    // your success code here to wrap things up considering it as a complete callback.
    *   },
    *   onSelect: function(selectedSponsor) {
@@ -984,7 +990,7 @@
    *    // since the TOS acceptance feature waits on this promise to be fulfilled to proceed with an AJAX call.
    *    // on successful TOS actions.onConnect gets called.
    *   },
-   *   onError: function(error) {
+   *   onError: function(error, $sponsorModal) {
    *    // your failure code here
    *   }
    * };
@@ -1060,11 +1066,12 @@
 
     // handles the error by invoking the related action callback.
     function utilHandleError(reason) {
-      actions.onError && actions.onError(reason);
+      actions.onError && actions.onError(reason, $modal);
     }
 
     // saves the sponsor selection over server, and to pass the control to the caller
     function saveSponsor() {
+      var payload;
 
       window.TTB._log(['saveSponsor: called']);
 
@@ -1074,14 +1081,27 @@
       // disable accept button.
       utilUpdateButton('Selecting...', true);
 
+      // handle SAML flow, where we don't have the stk yet.
+      payload = !options.userProfile ? options.loginRemotePayload : {
+        data: {
+          User: options.userProfile
+        }
+      };
+
       //ttb.saveSponsorSelection(options.loginRemotePayload, true)
-      ttb.saveSponsorSelection(options.loginRemotePayload, false)
+      ttb.saveSponsorSelection(payload, false)
         .then(function (res) {
           res = res.response;
 
           if (res.status === 'OK') {
 
             window.TTB._log(['saveSponsor: success', res]);
+
+            // handle SAML flow - fill up the loginRemotePayload
+            if (options.userProfile) {
+              options.loginRemotePayload.stk = res.data.stk;
+              options.loginRemotePayload.getuser_url = res.data.getuser_url;
+            }
 
             // authenticate user before request for TOS.
             performLogin();
@@ -1155,14 +1175,14 @@
             window.TTB._log(['TOSAccept: success', res]);
 
             // invoke connect callback with the selectedSponsor
-            actions.onConnect && actions.onConnect(selectedSponsor);
+            actions.onConnect && actions.onConnect(selectedSponsor, options.loginRemotePayload);
 
             utilUpdateButton('Connected !', false);
           } else {
 
             window.TTB._log(['TOSAccept: failed', res]);
             // invoke done callback with selectedSponsor
-            actions.onError && actions.onError(res.data.msg); // not data[0]
+            utilHandleError(res.data.msg); // not data[0]
           }
 
         }, function (reason) {
@@ -3181,6 +3201,7 @@
                     selectedSponsor = {
                       name: res.data.vertical_name,
                       title: res.data.company_info.company_name,
+                      site: res.data.vertical_site,
                       TOSURL: res.data.TOS_content
                     };
 
