@@ -62,7 +62,7 @@
     LOGIN: {methodName: 'login', endpoint: 'webservices/login.json'},
     LOGIN_REMOTE: {methodName: 'loginRemote', endpoint: 'webservices/remote_login.json'},
     LOGOUT: {methodName: 'logout', endpoint: 'webservices/logout.json'},
-    GET_USER_PROFILE: {methodName: 'TTB.getUserProfile', endpoint: 'get_user.json'},
+    GET_USER_PROFILE: {methodName: 'TTB.getUserProfile', endpoint: 'webservices/get_vendor_user.json'},
     GET_SPONSORS: {methodName: 'TTB.getSponsors', endpoint: 'webservices/get_sponsors.json'},
     GET_SPONSOR_SELECTION: {methodName: 'TTB.getSponsorSelection', endpoint: 'webservices/get_sponsor_selection.json'},
     SAVE_SPONSOR_SELECTION: {methodName: 'saveSponsorSelection', endpoint: 'webservices/save_sponsor_selection.json'},
@@ -509,7 +509,7 @@
    * @example
    *
    * var payload = {
-   *   email: 'agent47@domain.com'
+   *   stk: "unique-token123"
    * };
    *
    * var partnerKey = '...';
@@ -539,20 +539,15 @@
     // get a default instance for internal use
     var ttb = window.TTB._createDefaultInstance(partnerKey);
 
-    var url = payload.getuser_url || (window.location.origin + '/' + methodsMapping.GET_USER_PROFILE.endpoint);
     var request = {
-      method: 'GET',
-      url: url,
+      method: 'POST',
+      data: JSON.stringify(payload),
       xhrFields: {
         withCredentials: false
       }
     };
 
-    var params = {
-      stk: payload.stk
-    };
-
-    return ttb._ajax(request, methodsMapping.GET_USER_PROFILE, params);
+    return ttb._ajax(request, methodsMapping.GET_USER_PROFILE);
   };
 
   /**
@@ -2837,8 +2832,7 @@
         };
 
         // dev vs prod destination, plus handling https-https protocols.
-        origin = window.location.port === defaults.devPort ? '{{protocol}}//localhost:9002' : '{{protocol}}//ttb-export.herokuapp.com';
-        origin = origin.replace('{{protocol}}', defaults.protocol);
+        origin = window.location.port === defaults.devPort ? 'http://localhost:9002' : 'https://ttb-export.herokuapp.com';
 
         iframeOptions = {
           id: 'ttb-sdk--net-sheet--iframe',
@@ -3042,8 +3036,7 @@
         };
 
         // dev vs prod destination, plus handling https-https protocols.
-        origin = window.location.port === defaults.devPort ? '{{protocol}}//localhost:9001' : '{{protocol}}//ttb-landing-page.herokuapp.com';
-        origin = origin.replace('{{protocol}}', defaults.protocol);
+        origin = window.location.port === defaults.devPort ? 'http://localhost:9001' : 'https://ttb-landing-page.herokuapp.com';
 
         iframeOptions = {
           id: 'ttb-sdk--connect--iframe',
@@ -3201,7 +3194,7 @@
                     selectedSponsor = {
                       name: res.data.vertical_name,
                       title: res.data.company_info.company_name,
-                      site: res.data.vertical_site,
+                      site: res.data.site_url,
                       TOSURL: res.data.TOS_content
                     };
 
