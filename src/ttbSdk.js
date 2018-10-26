@@ -673,7 +673,7 @@
 
    * @param {Object} actions - The callbacks options to retrieve success and failure info.
    * @param {Function} [actions.onConnect] - The callback to be invoked with
-   * when user is completely connected .ie. done with selecting sponsor and then accepting the their TOS.
+   * when user is completely connected .ie. done with selecting sponsor *and then accepting their TOS.
    * @param {Function} [actions.onSelect] - The callback to be invoked with <code>selectedSponsor</code> when user selects the sponsor.
    * @param {Function} [actions.onError] - The callback to be invoked with <code>error</code> {String} message, against whatever step it fails.
    *
@@ -950,7 +950,7 @@
 
    * @param {Object} actions - The callbacks options to retrieve success and failure info.
    * @param {Function} [actions.onConnect] - The callback to be invoked with
-   * when user is completely connected .ie. done with selecting sponsor (via TTB.showSelectSponsor()) and then accepting the their TOS.
+   * when user is completely connected .ie. done with selecting sponsor (via TTB.showSelectSponsor()) *and then accepting their TOS.
    * @param {Function} [actions.onSelect] - The callback to be invoked with <code>selectedSponsor</code> when user selects the sponsor.
    * @param {Function} [actions.onError] - The callback to be invoked with <code>error</code> {String} message, against whatever step it fails.
    *
@@ -1013,15 +1013,15 @@
     // define modal component templates.
     headingTemplate = [
       'Thank you for choosing <br>{{sponsorTitle}} <br> as your sponsor <br>',
-      '<p>Please read and agree to {{sponsorTitle}} <a href="{{sponsorTOSURL}}" target="_blank">Terms and conditions</a></p>'
+      '<p id="ttb-sdk--sponsor-tos-message">Please read and agree to {{sponsorTitle}} <a href="{{sponsorTOSURL}}" target="_blank">Terms and conditions</a></p>'
     ].join('');
 
     bodyTemplate = [
-      '<div class="form-group form-check">',
+      '<div class="form-group form-check" id="ttb-sdk--sponsor-tos-check">',
       ' <input id="ttb-sdk--sponsor-tos-agree" type="checkbox" class="form-check-input">',
       ' <label class="form-check-label" for="ttb-sdk--sponsor-tos-agree">I hereby agree</label>',
       '</div>',
-      '<button id="ttb-sdk--sponsor-tos-accept" type="button" class="btn btn-success btn-block" disabled>Finish</button>'
+      '<button id="ttb-sdk--sponsor-selection-finish" type="button" class="btn btn-success btn-block" disabled>Finish</button>'
     ].join('');
 
     headingMarkup = headingTemplate
@@ -1041,7 +1041,18 @@
 
     // registers the click handler for accept sponsor TOS
     $('#ttb-sdk--sponsor-tos-agree').on('change', TOSAgreeChange);
-    $('#ttb-sdk--sponsor-tos-accept').on('click', saveSponsor);
+    $('#ttb-sdk--sponsor-selection-finish').on('click', saveSponsor);
+
+    // handle SAML flow - only select sponsor, and redirect to the vertical site for login and TOS.
+    if (options.userProfile) {
+
+      // hide TOS message, and check.
+      $('#ttb-sdk--sponsor-tos-message').hide();
+      $('#ttb-sdk--sponsor-tos-check').hide();
+
+      // enable finish button without TOS agree check
+      $('#ttb-sdk--sponsor-selection-finish').prop('disabled', false);
+    }
 
     // triggering .modal() of bootstrap
     return $modal.modal({
@@ -1050,11 +1061,11 @@
 
     function TOSAgreeChange() {
       var isChecked = $(this).prop('checked');
-      $('#ttb-sdk--sponsor-tos-accept').prop('disabled', !isChecked);
+      $('#ttb-sdk--sponsor-selection-finish').prop('disabled', !isChecked);
     }
 
     function utilUpdateButton(text, disable) {
-      $('#ttb-sdk--sponsor-tos-accept')
+      $('#ttb-sdk--sponsor-selection-finish')
         .text(text || '')
         .prop('disabled', disable);
     }
@@ -1070,11 +1081,8 @@
 
       window.TTB._log(['saveSponsor: called']);
 
-      // invoke onSelect callback with selectedSponsor and authDeferred for handling auth
-      actions.onSelect && actions.onSelect(selectedSponsor);
-
       // disable accept button.
-      utilUpdateButton('Selecting...', true);
+      utilUpdateButton('Saving Selection...', true);
 
       // handle SAML flow, where we don't have the stk yet.
       payload = !options.userProfile ? options.loginRemotePayload : {
@@ -1092,17 +1100,25 @@
 
             window.TTB._log(['saveSponsor: success', res]);
 
-            // handle SAML flow - fill up the loginRemotePayload
+            // handle SAML flow - fill up the loginRemotePayload, and bypass login, and TOS, to take user to vertical site.
             if (options.userProfile) {
+
+              utilUpdateButton('Selection Saved! Redirecting...', true);
+
               options.loginRemotePayload.stk = res.data.stk;
               options.loginRemotePayload.getuser_url = res.data.getuser_url;
+
+              // invoke onSelect callback with selectedSponsor and authDeferred for handling auth
+              actions.onSelect && actions.onSelect(selectedSponsor, options.loginRemotePayload);
+
+            } else {
+
+              // invoke onSelect callback with selectedSponsor and authDeferred for handling auth
+              actions.onSelect && actions.onSelect(selectedSponsor, options.loginRemotePayload);
+
+              // authenticate user before request for TOS.
+              performLogin();
             }
-
-            // authenticate user before request for TOS.
-            performLogin();
-
-            // since login is successful, show TOS modal to let user accept.
-            //TOSAccept();
 
           } else {
 
