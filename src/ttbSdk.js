@@ -1,7 +1,7 @@
 /**
  * Copyright © 2018 Benutech Inc. All rights reserved.
  * http://www.benutech.com - help@benutech.com
- * version: 1.2.0
+ * version: 1.3.0
  * https://github.com/benutech-inc/ttb-sdk
  * For latest release, please check - https://github.com/benutech-inc/ttb-sdk/releases
  * */
@@ -103,7 +103,7 @@
    * <code> &lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> </code> <br/>
    * Scoped Bootstrap version: <br>
    * Having non-bootstrap based site ? please use the following scoped-bootstrap version to limit bootstrap styles to SDK widgets only. (bootstrap v3.3.7 used.)<br>
-   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.2.0/dist/scoped-bootstrap.min.css​"> </code>
+   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.3.0/dist/scoped-bootstrap.min.css​"> </code>
    * </p>
    *
    * <p>
@@ -115,8 +115,8 @@
    * <p>
    * <strong>TitleToolBox SDK </strong> files (1 script, and 1 style), can be pulled via our public repo link:
    * <i>(keep the [latest version]{@link https://github.com/benutech-inc/ttb-sdk/releases})</i><br>
-   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.2.0/dist/ttbSdk.min.css​"> </code>
-   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.2.0/dist/ttbSdk.min.js​">&lt;/script> </code>
+   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.3.0/dist/ttbSdk.min.css​"> </code>
+   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.3.0/dist/ttbSdk.min.js​">&lt;/script> </code>
    * <br><br>OR via<strong> Bower </strong> using <code>bower install ttb-sdk --save</code>
    * <br><br>
    *
@@ -215,7 +215,7 @@
    * @description The version of the SDK being used.
    * @type String
    * */
-  window.TTB.version = '1.2.0';
+  window.TTB.version = '1.3.0';
 
   /**
    * @memberof TTB
@@ -689,7 +689,7 @@
    *   onConnect: function(selectedSponsor, loginRemotePayload) {
    *    // your success code here to wrap things up considering it as a complete callback.
    *   },
-   *   onSelect: function(selectedSponsor, authPromise) {
+   *   onSelect: function(selectedSponsor, loginRemotePayload) {
    *    // your success code here to consume "selectedSponsor"
    *
    *    // you can instantiate the TTB sdk against the selected sponsor.
@@ -701,11 +701,6 @@
    *
    *    // OR you can update the sponsor of already instantiated TTB sdk
    *    // ttb.setSponsor(selectedSponsor);
-   *
-   *    // must do your login here via loginRemote()
-   *    // and then call the authPromise.resolve(), or authPromise.reject()
-   *    // since the TOS acceptance feature waits on this promise to be fulfilled to proceed with an AJAX call.
-   *    // on successful TOS actions.onConnect gets called.
    *   },
    *   onError: function(error, $sponsorModal) {
    *    // your failure code here consume error / reason {String}
@@ -967,7 +962,7 @@
    *  onConnect: function(selectedSponsor, loginRemotePayload) {
    *    // your success code here to wrap things up considering it as a complete callback.
    *   },
-   *   onSelect: function(selectedSponsor) {
+   *   onSelect: function(selectedSponsor, loginRemotePayload) {
    *    // your success code here to consume "selectedSponsor"
    *
    *    // you can instantiate the TTB sdk against the selected sponsor.
@@ -979,11 +974,6 @@
    *
    *    // OR you can update the sponsor of already instantiated TTB sdk
    *    // ttb.setSponsor(selectedSponsor);
-   *
-   *    // must do your login here via loginRemote()
-   *    // and then call the authPromise.resolve(), or authPromise.reject()
-   *    // since the TOS acceptance feature waits on this promise to be fulfilled to proceed with an AJAX call.
-   *    // on successful TOS actions.onConnect gets called.
    *   },
    *   onError: function(error, $sponsorModal) {
    *    // your failure code here
@@ -1103,22 +1093,18 @@
             // handle SAML flow - fill up the loginRemotePayload, and bypass login, and TOS, to take user to vertical site.
             if (options.userProfile) {
 
-              utilUpdateButton('Selection Saved! Redirecting...', true);
+              utilUpdateButton('Selection Saved!', true);
 
               options.loginRemotePayload.stk = res.data.stk;
               options.loginRemotePayload.getuser_url = res.data.getuser_url;
-
-              // invoke onSelect callback with selectedSponsor and authDeferred for handling auth
-              actions.onSelect && actions.onSelect(selectedSponsor, options.loginRemotePayload);
-
-            } else {
-
-              // invoke onSelect callback with selectedSponsor and authDeferred for handling auth
-              actions.onSelect && actions.onSelect(selectedSponsor, options.loginRemotePayload);
-
-              // authenticate user before request for TOS.
-              performLogin();
             }
+
+            // invoke onSelect callback with selectedSponsor and loginRemotePayload info.
+            // for SAMLflow - script is interrupted and user is taken to the vertical site to continue.
+            actions.onSelect && actions.onSelect(selectedSponsor, options.loginRemotePayload);
+
+            // authenticate user before request for TOS.
+            options.performLogin && performLogin();
 
           } else {
 
