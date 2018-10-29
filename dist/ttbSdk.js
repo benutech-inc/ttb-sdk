@@ -667,9 +667,11 @@
    * This static method provides the list of all available sponsors based on given info.
    *
    * @param {Object} data - Information to be required through the sponsor selection flow.
+   * @param {Object} [data.performLogin="true"] - To auto-perform login against the selected sponsor.
    * @param {Object} data.partnerKey - The partner key provided by support team for the consumer site.
    * @param {Object} data.getSponsorsPayload - To be used for <code>getSponsors()</code>. Please see payload information over [TTB.getSponsors()]{@link TTB#.getSponsors}.
    * @param {Object} data.loginRemotePayload - To be used for <code>loginRemote()</code>. Please see payload information over [TTB.loginRemote()]{@link TTB#loginRemote}.
+   * @param {Object} [data.userProfile] - Alternate way to pass user profile, [Not recommended] (TTB Internal use only).
 
    * @param {Object} actions - The callbacks options to retrieve success and failure info.
    * @param {Function} [actions.onConnect] - The callback to be invoked with
@@ -904,7 +906,7 @@
 
           // present TOS modal
           window.TTB.showSponsorTOSModal(selectedSponsor, actions, {
-            performLogin: true,
+            performLogin: data.performLogin === undefined ? true : data.performLogin,
             userProfile: data.userProfile,
             partnerKey: data.partnerKey,
             loginRemotePayload: data.loginRemotePayload
@@ -950,10 +952,11 @@
    * @param {Function} [actions.onError] - The callback to be invoked with <code>error</code> {String} message, against whatever step it fails.
    *
    * @param {Object} options - The options to perform additional tasks, e.g. login only for now.
-   * @param {Object} options.performLogin="false" - To auto-perform login against the selected sponsor.
+   * @param {Object} [options.performLogin="false"] - To auto-perform login against the selected sponsor.
    * @param {Object} options.partnerKey - The partner key provided by support team for the consumer site.
    * @param {Object} options.loginRemotePayload - "stk" and "getuser_url" information to be used for login. please check .loginRemote() documentation for more.
-   *
+   * @param {Object} [options.userProfile] - Alternate way to pass user profile, [Not recommended] (TTB Internal use only).
+
    * @example
    *
    * var selectedSponsor = { ... }; // received from options.onSelect of TTB.showSelectSponsor()

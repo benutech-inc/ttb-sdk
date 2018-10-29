@@ -1284,7 +1284,7 @@ TTB.getSponsors(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line715">line 715</a>
+            <a href="s.html">s</a>, <a href="s.html#line717">line 717</a>
         </div>
         
     </div>
@@ -1355,12 +1355,50 @@ TTB.getSponsors(payload)
 		<th>Type</th>
 		
 		
+		<th>Default</th>
+		
 		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
 	
 	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>performLogin</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    "true"
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                To auto-perform login against the selected sponsor.</td>
+        </tr>
+	
 	
 	
         <tr>
@@ -1378,8 +1416,17 @@ TTB.getSponsors(payload)
             </td>
             
             
+                <td class="default">
+                
+                </td>
+            
             
             <td class="description last">
+                
+                    
+                    
+                        
+                    
                 
                 The partner key provided by support team for the consumer site.</td>
         </tr>
@@ -1401,8 +1448,17 @@ TTB.getSponsors(payload)
             </td>
             
             
+                <td class="default">
+                
+                </td>
+            
             
             <td class="description last">
+                
+                    
+                    
+                        
+                    
                 
                 To be used for <code>getSponsors()</code>. Please see payload information over TTB.getSponsors().</td>
         </tr>
@@ -1424,10 +1480,53 @@ TTB.getSponsors(payload)
             </td>
             
             
+                <td class="default">
+                
+                </td>
+            
             
             <td class="description last">
                 
+                    
+                    
+                        
+                    
+                
                 To be used for <code>loginRemote()</code>. Please see payload information over <a href="TTB.html#loginRemote">TTB.loginRemote()</a>.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>userProfile</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                Alternate way to pass user profile, [Not recommended] (TTB Internal use only).</td>
         </tr>
 	
 	
@@ -1692,7 +1791,7 @@ TTB.showSelectSponsor(data, actions);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line994">line 994</a>
+            <a href="s.html">s</a>, <a href="s.html#line997">line 997</a>
         </div>
         
     </div>
@@ -1958,6 +2057,13 @@ when user is completely connected .ie. done with selecting sponsor (via TTB.show
             
             <td class="description last">
                 
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
                 To auto-perform login against the selected sponsor.</td>
         </tr>
 	
@@ -1984,6 +2090,11 @@ when user is completely connected .ie. done with selecting sponsor (via TTB.show
             
             
             <td class="description last">
+                
+                    
+                    
+                        
+                    
                 
                 The partner key provided by support team for the consumer site.</td>
         </tr>
@@ -2012,7 +2123,46 @@ when user is completely connected .ie. done with selecting sponsor (via TTB.show
             
             <td class="description last">
                 
+                    
+                    
+                        
+                    
+                
                 "stk" and "getuser_url" information to be used for login. please check .loginRemote() documentation for more.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>userProfile</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                Alternate way to pass user profile, [Not recommended] (TTB Internal use only).</td>
         </tr>
 	
 	
@@ -2143,7 +2293,7 @@ TTB.showSponsorTOSModal(selectedSponsor, actions, options);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1938">line 1938</a>
+            <a href="s.html">s</a>, <a href="s.html#line1941">line 1941</a>
         </div>
         
     </div>
@@ -2320,7 +2470,7 @@ ttb.checkPEFarmStatus(farmId)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2427">line 2427</a>
+            <a href="s.html">s</a>, <a href="s.html#line2430">line 2430</a>
         </div>
         
     </div>
@@ -2539,7 +2689,7 @@ ttb.clearSponsorSelection(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2962">line 2962</a>
+            <a href="s.html">s</a>, <a href="s.html#line2965">line 2965</a>
         </div>
         
     </div>
@@ -2998,7 +3148,7 @@ var $ttbConnect = ttb.connectWidget(options, actions);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1980">line 1980</a>
+            <a href="s.html">s</a>, <a href="s.html#line1983">line 1983</a>
         </div>
         
     </div>
@@ -3172,7 +3322,7 @@ ttb.getFarmProperties(farmId)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2018">line 2018</a>
+            <a href="s.html">s</a>, <a href="s.html#line2021">line 2021</a>
         </div>
         
     </div>
@@ -3299,7 +3449,7 @@ ttb.getFarmsList()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2329">line 2329</a>
+            <a href="s.html">s</a>, <a href="s.html#line2332">line 2332</a>
         </div>
         
     </div>
@@ -3429,7 +3579,7 @@ ttb.getSearchFields()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2289">line 2289</a>
+            <a href="s.html">s</a>, <a href="s.html#line2292">line 2292</a>
         </div>
         
     </div>
@@ -3554,7 +3704,7 @@ ttb.getTypesReport()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2112">line 2112</a>
+            <a href="s.html">s</a>, <a href="s.html#line2115">line 2115</a>
         </div>
         
     </div>
@@ -4205,7 +4355,7 @@ ttb.globalSearch(payload, queryParams)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2173">line 2173</a>
+            <a href="s.html">s</a>, <a href="s.html#line2176">line 2176</a>
         </div>
         
     </div>
@@ -4398,7 +4548,7 @@ ttb.globalSearchCount(payload, params)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2514">line 2514</a>
+            <a href="s.html">s</a>, <a href="s.html#line2517">line 2517</a>
         </div>
         
     </div>
@@ -4877,7 +5027,7 @@ autocomplete.addListener('place_changed', function () {
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1427">line 1427</a>
+            <a href="s.html">s</a>, <a href="s.html#line1430">line 1430</a>
         </div>
         
     </div>
@@ -4988,7 +5138,7 @@ ttb.handleSponsorTOS(selectedSponsor);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2631">line 2631</a>
+            <a href="s.html">s</a>, <a href="s.html#line2634">line 2634</a>
         </div>
         
     </div>
@@ -5276,7 +5426,7 @@ window.googleInit = function () {
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1544">line 1544</a>
+            <a href="s.html">s</a>, <a href="s.html#line1547">line 1547</a>
         </div>
         
     </div>
@@ -5522,7 +5672,7 @@ ttb.login(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1494">line 1494</a>
+            <a href="s.html">s</a>, <a href="s.html#line1497">line 1497</a>
         </div>
         
     </div>
@@ -5777,7 +5927,7 @@ ttb.remoteLogin(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1581">line 1581</a>
+            <a href="s.html">s</a>, <a href="s.html#line1584">line 1584</a>
         </div>
         
     </div>
@@ -5904,7 +6054,7 @@ ttb.logout()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2222">line 2222</a>
+            <a href="s.html">s</a>, <a href="s.html#line2225">line 2225</a>
         </div>
         
     </div>
@@ -6119,7 +6269,7 @@ ttb.nearbySearch(payload, params)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1771">line 1771</a>
+            <a href="s.html">s</a>, <a href="s.html#line1774">line 1774</a>
         </div>
         
     </div>
@@ -6456,7 +6606,7 @@ ttb.orderReport(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1832">line 1832</a>
+            <a href="s.html">s</a>, <a href="s.html#line1835">line 1835</a>
         </div>
         
     </div>
@@ -6895,7 +7045,7 @@ ttb.propertyComps(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1886">line 1886</a>
+            <a href="s.html">s</a>, <a href="s.html#line1889">line 1889</a>
         </div>
         
     </div>
@@ -7308,7 +7458,7 @@ ttb.propertyDetails(payload, options)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2379">line 2379</a>
+            <a href="s.html">s</a>, <a href="s.html#line2382">line 2382</a>
         </div>
         
     </div>
@@ -7613,7 +7763,7 @@ ttb.saveSponsorSelection(payload, performLogin)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1723">line 1723</a>
+            <a href="s.html">s</a>, <a href="s.html#line1726">line 1726</a>
         </div>
         
     </div>
@@ -7901,7 +8051,7 @@ ttb.searchByOwnerName(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1624">line 1624</a>
+            <a href="s.html">s</a>, <a href="s.html#line1627">line 1627</a>
         </div>
         
     </div>
@@ -8144,7 +8294,7 @@ ttb.searchByParcelNumber(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1677">line 1677</a>
+            <a href="s.html">s</a>, <a href="s.html#line1680">line 1680</a>
         </div>
         
     </div>
@@ -8526,7 +8676,7 @@ ttb.searchBySiteAddress(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1369">line 1369</a>
+            <a href="s.html">s</a>, <a href="s.html#line1372">line 1372</a>
         </div>
         
     </div>
@@ -8777,7 +8927,7 @@ ttb.setSponsor({
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1385">line 1385</a>
+            <a href="s.html">s</a>, <a href="s.html#line1388">line 1388</a>
         </div>
         
     </div>
@@ -8894,7 +9044,7 @@ ttb.showTOS();</code></pre>
 
         <footer>
             Copyright © 2018 <a target="_blank" href="http://www.benutech.com/" target="_blank" title="Benutech official website">Benutech Inc.</a> All rights reserved.</a>
-           <!-- Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Oct 29 2018 06:29:34 GMT+0500 (PKT) -->
+           <!-- Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Oct 29 2018 06:55:59 GMT+0500 (PKT) -->
         </footer>
     </div>
 </div>
