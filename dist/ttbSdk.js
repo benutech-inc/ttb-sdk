@@ -1036,8 +1036,8 @@
     $('#ttb-sdk--sponsor-tos-agree').on('change', TOSAgreeChange);
     $('#ttb-sdk--sponsor-selection-finish').on('click', saveSponsor);
 
-    // handle SAML flow - only select sponsor, and redirect to the vertical site for login and TOS.
-    if (options.userProfile) {
+    // handle login-free flow; redirect user to the vertical site for login and TOS.
+    if (!options.performLogin) {
 
       // hide TOS message, and check.
       $('#ttb-sdk--sponsor-tos-message').hide();
@@ -1093,17 +1093,17 @@
 
             window.TTB._log(['saveSponsor: success', res]);
 
+            utilUpdateButton('Selection Saved!', true);
+
             // handle SAML flow - fill up the loginRemotePayload, and bypass login, and TOS, to take user to vertical site.
             if (options.userProfile) {
-
-              utilUpdateButton('Selection Saved!', true);
 
               options.loginRemotePayload.stk = res.data.stk;
               options.loginRemotePayload.getuser_url = res.data.getuser_url;
             }
 
             // invoke onSelect callback with selectedSponsor and loginRemotePayload info.
-            // for SAMLflow - script is interrupted and user is taken to the vertical site to continue.
+            // for SAMLflow - from onSelect callback, user is taken to the vertical site to continue.
             actions.onSelect && actions.onSelect(selectedSponsor, options.loginRemotePayload);
 
             // authenticate user before request for TOS.
