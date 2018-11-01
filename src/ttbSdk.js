@@ -1355,6 +1355,7 @@
      * @param {Object} sponsor - Information to be retrieved via <code>options.onSelect()</code> of <code>TTB.getSponsors()</code>
      * @param {String} sponsor.title - The <code>company_info.company_name</code> field value of sponsor object retrieved.
      * @param {String} sponsor.name - The <code>vertical_name</code> field value of sponsor object retrieved. (to be used in generating baseURL)
+     * @param {String} sponsor.site - The <code>site_url</code> field value of sponsor object retrieved.
      * @param {String} sponsor.TOSURL - The <code>TOS_content</code> field value of sponsor object retrieved.
      *
      * @return {String} baseURL - The newly generated <code>baseURL</code>.
