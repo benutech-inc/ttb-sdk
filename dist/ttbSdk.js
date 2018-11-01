@@ -1005,7 +1005,7 @@
 
     // define modal component templates.
     headingTemplate = [
-      'Thank you for choosing <br>{{sponsorTitle}} <br> as your sponsor <br>',
+      'Thank you for choosing <br>{{sponsorTitle}} <br> as your partner. <br>',
       '<p id="ttb-sdk--sponsor-tos-message">Please read and agree to {{sponsorTitle}} <a href="{{sponsorTOSURL}}" target="_blank">Terms and conditions</a></p>'
     ].join('');
 
@@ -1117,7 +1117,7 @@
 
         }, function (reason) {
           window.TTB._log(['saveSponsor: error', reason]);
-          utilHandleError('Failed in contacting server for saving sponsor.');
+          utilHandleError('Failed in contacting server for saving partner.');
         });
     }
 
@@ -2978,7 +2978,7 @@
       o.widgetTemplate = [
         '<div id="ttb-sdk--connect--connect-section" class="row">',
         ' <div id="ttb-sdk--connect--alert" class="col-xs-9">',
-        ' No Sponsor - Please click "Connect" to select one.',
+        ' No Partner - Please click "Connect" to select one.',
         ' </div>',
         ' <div id="ttb-sdk--connect--connect" class="col-xs-3">',
         '  <button type="button" class="btn btn-primary pull-right">Connect</button>',
@@ -3184,7 +3184,7 @@
               o.userProfile = res.data.User;
 
               // leave wait msg for connect UI.
-              updateDisconnectedState('Checking current sponsor selection...', true);
+              updateDisconnectedState('Checking current partner selection...', true);
 
               payload = {
                 email: o.userProfile.email
@@ -3206,7 +3206,7 @@
                     };
 
                     // update state for connect UI.
-                    updateDisconnectedState('Sponsor selection found.', false);
+                    updateDisconnectedState('Partner selection found.', false);
 
                     // activate disconnect section UI.
                     activateConnectedMode(selectedSponsor, false);
@@ -3219,7 +3219,7 @@
 
                 }, function (reason) {
                   // we keep "connect" enabled here.
-                  utilHandleError('Error in contacting server for pulling sponsor selection.', false);
+                  utilHandleError('Error in contacting server for pulling partner selection.', false);
                 });
 
             } else {
@@ -3249,7 +3249,7 @@
       function activateDisconnectedMode(selectedSponsor) {
         o.$container
           .find('#ttb-sdk--connect--connect-section').show()
-          .find('#ttb-sdk--connect--alert').text('No Sponsor - Please click "Connect" to select one.')
+          .find('#ttb-sdk--connect--alert').text('No Partner - Please click "Connect" to select one.')
           .end()
           .next('#ttb-sdk--connect--disconnect-section').hide()
           .find('#ttb-sdk--connect--company-name').text('');
