@@ -1104,7 +1104,7 @@
 
             // invoke onSelect callback with selectedSponsor and loginRemotePayload info.
             // for SAMLflow - from onSelect callback, user is taken to the vertical site to continue.
-            actions.onSelect && actions.onSelect(selectedSponsor, options.loginRemotePayload);
+            actions.onSelect && actions.onSelect(selectedSponsor, options.loginRemotePayload, $modal);
 
             // authenticate user before request for TOS.
             options.performLogin && performLogin();
@@ -1175,7 +1175,7 @@
             window.TTB._log(['TOSAccept: success', res]);
 
             // invoke connect callback with the selectedSponsor
-            actions.onConnect && actions.onConnect(selectedSponsor, options.loginRemotePayload);
+            actions.onConnect && actions.onConnect(selectedSponsor, options.loginRemotePayload, $modal);
 
             utilUpdateButton('Connected !', false);
           } else {
