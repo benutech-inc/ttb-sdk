@@ -2788,6 +2788,7 @@
               // if multiple records found, cancel and alert user.
               if (res.data.length > 1) {
                 alert('Multiple records found, please refine your search to make it more specific.');
+                enableControls();
                 return res;
               }
 
