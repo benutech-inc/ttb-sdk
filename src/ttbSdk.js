@@ -16,7 +16,7 @@
   defaults = {
     protocol: siteProtocol,
     devPort: '9000',
-    partnerKey: '1-234-567-890',
+    //partnerKey: '1-234-567-890', // no key by default.
     sponsor: {
       name: 'direct',
       title: 'Benutech',
