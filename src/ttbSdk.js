@@ -625,7 +625,7 @@
    *   email: 'agent47@domain.com'
    * };
    *
-   * TTB.getSponsorSelection(payload, partnerKey)
+   * TTB.getSponsorSelection(partnerKey, payload)
    * .done(function(res) {
    *   if (res.response.status === 'OK') {
    *     // your success code here to consume res.response.data
