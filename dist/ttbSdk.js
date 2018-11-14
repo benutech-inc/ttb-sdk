@@ -510,7 +510,7 @@
    * @example
    *
    * var payload = {
-   *   stk: "unique-token123"
+   *   stk: "xxxxxxxxxxxxxxx"
    * };
    *
    * var partnerKey = '...';
@@ -1535,7 +1535,7 @@
      * var ttb = new TTB({ ... }); // skip if already instantiated.
      *
      * var payload = {
-     *   stk: "unique-token123"
+     *   stk: "xxxxxxxxxxxxxxx"
      * };
      *
      * ttb.remoteLogin(payload)
@@ -2417,7 +2417,7 @@
      * var ttb = new TTB({ ... }); // skip if already instantiated.
      *
      * var payload = {
-     *   stk: "unique-token123",
+     *   stk: "xxxxxxxxxxxxxxx",
      *   getuser_url: 'https://www.yoursite.com/webservices/getuser.json' // absolute URL to the API
      * };
      *
@@ -2977,7 +2977,7 @@
      * var options = {
      *   elementSelector: '#ttb-connect-wrapper',
      *   loginRemotePayload: {
-     *     stk: '1234567890'
+     *     stk: 'xxxxxxxxxxxxxxx'
      *   }
      * };
      *
@@ -2991,7 +2991,7 @@
      * var options = {
      *   elementSelector: '#ttb-connect-wrapper'
      *   loginRemotePayload: {
-     *     stk: '1234567890',
+     *     stk: 'xxxxxxxxxxxxxxx',
      *     getuser_url: 'https://www.yoursite.com/webservices/getuser.json'
      *   }
      * };
