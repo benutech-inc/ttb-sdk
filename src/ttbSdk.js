@@ -23,6 +23,7 @@
       site: 'https://direct.titletoolbox.com/',
       TOSURL: 'https://direct.api.titletoolbox.com/pages/tos/direct_tos'
     },
+    enabledFeatures: 'iLookupWidget',
     baseURLPattern: 'https://{{sponsorName}}.api.titletoolbox.com/',
     scopedBootstrap: false,
     classScopedBootstrap: 'scoped-bootstrap',
@@ -1192,6 +1193,68 @@
     }
   };
 
+  /**
+   * @memberof TTB
+   * @alias renderLogoWidget
+   * @static
+   *
+   * @description
+   * This static method is used to render a logo link on vendors's sites, clicking which can take user to the landing page for TTB powered widgets.
+   *
+   * @param {String} elementSelector - DOM element selector where the widget needs to be rendered.
+   * <code>#lorem</code> or <code>.ipsum</code> etc.
+   *
+   * @param {Object} info - The information regarding vendor, and it's user.
+   * @param {String} info.stk - The session token from existing login at 3rd-party app.
+   * @param {String} info.getuser_url - The URL to hit to get the user information against the given stk.
+   * @param {Object} info.partnerKey - The partner key provided by support team for the consumer site.
+
+   * @example
+   *
+   * var elementSelector = '#ttb--render-logo-wrapper';
+   *
+   * var info = {
+   *  stk: "...",
+   *  getuser_url: '...'
+   *  partnerKey: '...'
+   * };
+   *
+   * TTB.renderLogoWidget(elementSelector, info);
+   *
+   * @return {Object} wrapperEL - DOM Node reference to the rendered widget's wrapper.
+   *
+   * */
+  window.TTB.renderLogoWidget = function (elementSelector, info) {
+    var generatedURL, template, markup, wrapperEL;
+
+    generatedURL = window.location.port === defaults.devPort ? 'http://localhost:9001' : 'https://ttb-landing-page.herokuapp.com';
+    generatedURL += '/?stk={{stk}}&getuser_url={{getuser_url}}&partnerKey={{partnerKey}}&enabled_features={{enabled_features}}&debug={{debug}}'
+      .replace('{{stk}}', info.stk)
+      .replace('{{getuser_url}}', encodeURIComponent(info.getuser_url))
+      .replace('{{partnerKey}}', info.partnerKey)
+      .replace('{{enabled_features}}', defaults.enabledFeatures)
+      .replace('{{debug}}', window.TTB.debug);
+
+    template = [
+      '<a class="ttb-sdk--render-logo--link" target="_blank" href="{{generatedURL}}" title="Title ToolBox - Full Profile and Net Sheet Report Lookup">',
+      ' <img class="ttb-sdk--render-logo--image" src="https://demo.titletoolbox.com/assets/images/logo_in.png" style="background-color: #389ae5;">',
+      '</a>'
+    ].join('');
+
+    markup = template
+      .replace('{{generatedURL}}', generatedURL);
+
+    // we do not use jquery, to lose our dependency for this widget.
+    wrapperEL = document.querySelector(elementSelector);
+
+    // keep existing markup, just extend it.
+    wrapperEL.innerHTML += markup;
+
+    // return the reference for any further usage of element.
+    return wrapperEL;
+  };
+
+
   /** @lends TTB.prototype */
   window.TTB.prototype = {
 
@@ -1466,7 +1529,7 @@
      *
      * @param {Object} payload - The payload object containing required info
      * @param {String} payload.stk - The session token from existing login at 3rd-party app.
-     * @param {String} [payload.getuser_url] - The URL to hit to get the user information against the given stk.
+     * @param {String} payload.getuser_url - The URL to hit to get the user information against the given stk.
      *
      * @example
      * var ttb = new TTB({ ... }); // skip if already instantiated.

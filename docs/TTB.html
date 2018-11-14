@@ -62,6 +62,8 @@
             
                 <li data-name="TTB.getSponsors"><a href="TTB.html#.getSponsors">getSponsors</a></li>
             
+                <li data-name="TTB.renderLogoWidget"><a href="TTB.html#.renderLogoWidget">renderLogoWidget</a></li>
+            
                 <li data-name="TTB.showSelectSponsor"><a href="TTB.html#.showSelectSponsor">showSelectSponsor</a></li>
             
                 <li data-name="TTB.showSponsorTOSModal"><a href="TTB.html#.showSponsorTOSModal">showSponsorTOSModal</a></li>
@@ -189,7 +191,7 @@ Having non-bootstrap based site ? please use the following scoped-bootstrap vers
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line186">line 186</a>
+            <a href="s.html">s</a>, <a href="s.html#line187">line 187</a>
         </div>
         
     </div>
@@ -1006,7 +1008,7 @@ For details, Please check documentation of <code> new TTB(...) </code> construct
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line594">line 594</a>
+            <a href="s.html">s</a>, <a href="s.html#line595">line 595</a>
         </div>
         
     </div>
@@ -1277,6 +1279,282 @@ TTB.getSponsors(payload)
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id=".renderLogoWidget">
+            
+            <span class="type-signature static">static</span>TTB.renderLogoWidget<span class="signature">(elementSelector, info)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="s.html">s</a>, <a href="s.html#line1227">line 1227</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        This static method is used to render a logo link on vendors's sites, clicking which can take user to the landing page for TTB powered widgets.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>elementSelector</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                DOM element selector where the widget needs to be rendered.
+<code>#lorem</code> or <code>.ipsum</code> etc.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>info</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                The information regarding vendor, and it's user.
+                
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>stk</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                The session token from existing login at 3rd-party app.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>getuser_url</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                The URL to hit to get the user information against the given stk.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>partnerKey</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                The partner key provided by support team for the consumer site.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+            </td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        Object
+                        
+                    
+            </td>
+            <td class="description last">wrapperEL - DOM Node reference to the rendered widget's wrapper.</td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code>var elementSelector = '#ttb--render-logo-wrapper';
+
+var info = {
+ stk: "...",
+ getuser_url: '...'
+ partnerKey: '...'
+};
+
+TTB.renderLogoWidget(elementSelector, info);</code></pre>
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id=".showSelectSponsor">
             
             <span class="type-signature static">static</span>TTB.showSelectSponsor<span class="signature">(data, actions)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
@@ -1284,7 +1562,7 @@ TTB.getSponsors(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line717">line 717</a>
+            <a href="s.html">s</a>, <a href="s.html#line718">line 718</a>
         </div>
         
     </div>
@@ -1791,7 +2069,7 @@ TTB.showSelectSponsor(data, actions);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line997">line 997</a>
+            <a href="s.html">s</a>, <a href="s.html#line998">line 998</a>
         </div>
         
     </div>
@@ -2293,7 +2571,7 @@ TTB.showSponsorTOSModal(selectedSponsor, actions, options);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1942">line 1942</a>
+            <a href="s.html">s</a>, <a href="s.html#line2005">line 2005</a>
         </div>
         
     </div>
@@ -2470,7 +2748,7 @@ ttb.checkPEFarmStatus(farmId)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2431">line 2431</a>
+            <a href="s.html">s</a>, <a href="s.html#line2494">line 2494</a>
         </div>
         
     </div>
@@ -2689,7 +2967,7 @@ ttb.clearSponsorSelection(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2967">line 2967</a>
+            <a href="s.html">s</a>, <a href="s.html#line3030">line 3030</a>
         </div>
         
     </div>
@@ -3148,7 +3426,7 @@ var $ttbConnect = ttb.connectWidget(options, actions);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1984">line 1984</a>
+            <a href="s.html">s</a>, <a href="s.html#line2047">line 2047</a>
         </div>
         
     </div>
@@ -3322,7 +3600,7 @@ ttb.getFarmProperties(farmId)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2022">line 2022</a>
+            <a href="s.html">s</a>, <a href="s.html#line2085">line 2085</a>
         </div>
         
     </div>
@@ -3449,7 +3727,7 @@ ttb.getFarmsList()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2333">line 2333</a>
+            <a href="s.html">s</a>, <a href="s.html#line2396">line 2396</a>
         </div>
         
     </div>
@@ -3579,7 +3857,7 @@ ttb.getSearchFields()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2293">line 2293</a>
+            <a href="s.html">s</a>, <a href="s.html#line2356">line 2356</a>
         </div>
         
     </div>
@@ -3704,7 +3982,7 @@ ttb.getTypesReport()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2116">line 2116</a>
+            <a href="s.html">s</a>, <a href="s.html#line2179">line 2179</a>
         </div>
         
     </div>
@@ -4355,7 +4633,7 @@ ttb.globalSearch(payload, queryParams)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2177">line 2177</a>
+            <a href="s.html">s</a>, <a href="s.html#line2240">line 2240</a>
         </div>
         
     </div>
@@ -4548,7 +4826,7 @@ ttb.globalSearchCount(payload, params)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2518">line 2518</a>
+            <a href="s.html">s</a>, <a href="s.html#line2581">line 2581</a>
         </div>
         
     </div>
@@ -5027,7 +5305,7 @@ autocomplete.addListener('place_changed', function () {
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1431">line 1431</a>
+            <a href="s.html">s</a>, <a href="s.html#line1494">line 1494</a>
         </div>
         
     </div>
@@ -5138,7 +5416,7 @@ ttb.handleSponsorTOS(selectedSponsor);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2635">line 2635</a>
+            <a href="s.html">s</a>, <a href="s.html#line2698">line 2698</a>
         </div>
         
     </div>
@@ -5426,7 +5704,7 @@ window.googleInit = function () {
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1548">line 1548</a>
+            <a href="s.html">s</a>, <a href="s.html#line1611">line 1611</a>
         </div>
         
     </div>
@@ -5672,7 +5950,7 @@ ttb.login(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1498">line 1498</a>
+            <a href="s.html">s</a>, <a href="s.html#line1561">line 1561</a>
         </div>
         
     </div>
@@ -5769,11 +6047,6 @@ ttb.login(payload)
             
             <td class="description last">
                 
-                    
-                    
-                        
-                    
-                
                 The session token from existing login at 3rd-party app.</td>
         </tr>
 	
@@ -5796,13 +6069,6 @@ ttb.login(payload)
             
             
             <td class="description last">
-                
-                    
-                        <span class="optional">optional</span>
-                    
-                    
-                        
-                    
                 
                 The URL to hit to get the user information against the given stk.</td>
         </tr>
@@ -5927,7 +6193,7 @@ ttb.remoteLogin(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1585">line 1585</a>
+            <a href="s.html">s</a>, <a href="s.html#line1648">line 1648</a>
         </div>
         
     </div>
@@ -6054,7 +6320,7 @@ ttb.logout()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2226">line 2226</a>
+            <a href="s.html">s</a>, <a href="s.html#line2289">line 2289</a>
         </div>
         
     </div>
@@ -6269,7 +6535,7 @@ ttb.nearbySearch(payload, params)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1775">line 1775</a>
+            <a href="s.html">s</a>, <a href="s.html#line1838">line 1838</a>
         </div>
         
     </div>
@@ -6606,7 +6872,7 @@ ttb.orderReport(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1836">line 1836</a>
+            <a href="s.html">s</a>, <a href="s.html#line1899">line 1899</a>
         </div>
         
     </div>
@@ -7045,7 +7311,7 @@ ttb.propertyComps(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1890">line 1890</a>
+            <a href="s.html">s</a>, <a href="s.html#line1953">line 1953</a>
         </div>
         
     </div>
@@ -7458,7 +7724,7 @@ ttb.propertyDetails(payload, options)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2383">line 2383</a>
+            <a href="s.html">s</a>, <a href="s.html#line2446">line 2446</a>
         </div>
         
     </div>
@@ -7763,7 +8029,7 @@ ttb.saveSponsorSelection(payload, performLogin)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1727">line 1727</a>
+            <a href="s.html">s</a>, <a href="s.html#line1790">line 1790</a>
         </div>
         
     </div>
@@ -8051,7 +8317,7 @@ ttb.searchByOwnerName(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1628">line 1628</a>
+            <a href="s.html">s</a>, <a href="s.html#line1691">line 1691</a>
         </div>
         
     </div>
@@ -8294,7 +8560,7 @@ ttb.searchByParcelNumber(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1681">line 1681</a>
+            <a href="s.html">s</a>, <a href="s.html#line1744">line 1744</a>
         </div>
         
     </div>
@@ -8676,7 +8942,7 @@ ttb.searchBySiteAddress(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1373">line 1373</a>
+            <a href="s.html">s</a>, <a href="s.html#line1436">line 1436</a>
         </div>
         
     </div>
@@ -8950,7 +9216,7 @@ ttb.setSponsor({
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1389">line 1389</a>
+            <a href="s.html">s</a>, <a href="s.html#line1452">line 1452</a>
         </div>
         
     </div>
@@ -9067,7 +9333,7 @@ ttb.showTOS();</code></pre>
 
         <footer>
             Copyright © 2018 <a target="_blank" href="http://www.benutech.com/" target="_blank" title="Benutech official website">Benutech Inc.</a> All rights reserved.</a>
-           <!-- Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Nov 08 2018 19:00:57 GMT+0500 (PKT) -->
+           <!-- Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Nov 15 2018 01:36:11 GMT+0500 (PKT) -->
         </footer>
     </div>
 </div>
