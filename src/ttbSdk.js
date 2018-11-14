@@ -163,13 +163,13 @@
    * @example
    * // With basic and minimum requirement.
    * var ttb = new TTB({
-   *   partnerKey: '{your partner key}',
+   *   partnerKey: 'xxxxxxxxxxxxxxx',
    * });
    *
    * @example
    * // With advanced configuration for custom baseURL, and logs for debug mode.
    * var ttb = new TTB({
-   *   partnerKey: '{your partner key}',
+   *   partnerKey: 'xxxxxxxxxxxxxxx',
    *   baseURL: 'https://direct.api.titletoolbox.com/',
    *   debug: true
    * });
@@ -177,7 +177,7 @@
    * @example
    * // With advanced configuration for custom <code>baseURLPattern</code> and <code>sponsor</code>, and custom auto-fill attributes.
    * var ttb = new TTB({
-   *   partnerKey: '{your partner key}',
+   *   partnerKey: 'xxxxxxxxxxxxxxx',
    *   baseURLPattern: 'https://customdomain.com/api/{{sponsorName}}',
    *   sponsor: {...} // switchable later via ttb.setSponsor(),
    *   autoFillAttr: 'data-model',
@@ -683,7 +683,7 @@
    * @example
    *
    * var data = {
-   *   partnerKey: '...',
+   *   partnerKey: 'xxxxxxxxxxxxxxx',
    *   getSponsorsPayload: {...}
    *   loginRemotePayload: {...}
    * };
@@ -985,7 +985,7 @@
    * };
    *
    * var options = {
-   *  partnerKey: '...',
+   *  partnerKey: 'xxxxxxxxxxxxxxx',
    *  performLogin: true,
    *  loginRemotePayload: {...}
    * };
