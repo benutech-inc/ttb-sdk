@@ -1214,9 +1214,9 @@
    * var elementSelector = '#ttb--render-logo-wrapper';
    *
    * var info = {
-   *  stk: "...",
-   *  getuser_url: '...'
-   *  partnerKey: '...'
+   *  stk: "xxxxxxxxxxxxxxx",
+   *  getuser_url: 'https://www.yoursite.com/webservices/getuser.json'
+   *  partnerKey: 'xxxxxxxxxxxxxxxxx'
    * };
    *
    * TTB.renderLogoWidget(elementSelector, info);
@@ -2418,7 +2418,7 @@
      *
      * var payload = {
      *   stk: "unique-token123",
-     *   getuser_url: '...' // absolute URL to the API
+     *   getuser_url: 'https://www.yoursite.com/webservices/getuser.json' // absolute URL to the API
      * };
      *
      * var performLogin = true;
