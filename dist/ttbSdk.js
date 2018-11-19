@@ -65,6 +65,7 @@
     LOGIN_REMOTE: {methodName: 'loginRemote', endpoint: 'webservices/remote_login.json'},
     LOGOUT: {methodName: 'logout', endpoint: 'webservices/logout.json'},
     GET_USER_PROFILE: {methodName: 'TTB.getUserProfile', endpoint: 'webservices/get_vendor_user.json'},
+    GET_VENDOR_PROFILE: {methodName: 'TTB.getVendorProfile', endpoint: 'webservices/get_vendor/{{partnerKey}}.json'},
     GET_SPONSORS: {methodName: 'TTB.getSponsors', endpoint: 'webservices/get_sponsors.json'},
     GET_SPONSOR_SELECTION: {methodName: 'TTB.getSponsorSelection', endpoint: 'webservices/get_sponsor_selection.json'},
     SAVE_SPONSOR_SELECTION: {methodName: 'saveSponsorSelection', endpoint: 'webservices/save_sponsor_selection.json'},
@@ -534,7 +535,7 @@
    *   stk: "xxxxxxxxxxxxxxx"
    * };
    *
-   * var partnerKey = '...';
+   * var partnerKey = 'xxxxxxxxxxxxxxxx';
    *
    * TTB.getUserProfile(payload, partnerKey)
    * .done(function(res) {
@@ -570,6 +571,59 @@
     };
 
     return ttb._ajax(request, methodsMapping.GET_USER_PROFILE);
+  };
+
+  /**
+   * @memberof TTB
+   * @alias getVendorProfile
+   * @static
+   * @private
+   *
+   * @description
+   * This static method gets the vendor profile against the given "partnerKey".
+   *
+   * @param {String} partnerKey - The partner key provided by support team for the consumer site.
+   *
+   * @example
+   *
+   * var partnerKey = 'xxxxxxxxxxxxxxxxx';
+   *
+   * TTB.getVendorProfile(partnerKey)
+   * .done(function(res) {
+   *   if (res.response.status === 'OK') {
+   *     // your success code here to consume res.response.data
+   *     console.log(res.response.data);
+   *   } else {
+   *     // your failure code here to consume res.response.data
+   *     console.log(res.response.data);
+   *   }
+   * })
+   * .fail(function(err) {
+   *   // your failure code here
+   * })
+   * .always(function() {
+   *  // your on-complete code here as common for both success and failure
+   * });
+   *
+   * @return {Object} promise - Jquery AJAX deferred promise is returned which on-success returns the required info.
+   *
+   * */
+  window.TTB.getVendorProfile = function (partnerKey) {
+
+    // get a default instance for internal use
+    var ttb = window.TTB._createDefaultInstance(partnerKey);
+
+    var url = (ttb.baseURL + methodsMapping.GET_VENDOR_PROFILE.endpoint).replace('{{partnerKey}}', partnerKey);
+
+    var request = {
+      url: url,
+      method: 'GET',
+      xhrFields: {
+        withCredentials: false
+      }
+    };
+
+    return ttb._ajax(request, methodsMapping.GET_VENDOR_PROFILE);
   };
 
   /**
@@ -641,7 +695,7 @@
    *
    * @example
    *
-   * var partnerKey = ttb.config.partnerKey; // key passed in an instance.
+   * var partnerKey = 'xxxxxxxxxx';
    *
    * var payload = {
    *   email: 'agent47@domain.com'
