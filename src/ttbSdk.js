@@ -21,6 +21,7 @@
       name: 'direct',
       title: 'Benutech',
       site: 'https://direct.titletoolbox.com/',
+      logoURL: 'https://s3-us-west-1.amazonaws.com/titletoolbox/company+logos/Benutech/Benute+Logo.png',
       TOSURL: 'https://direct.api.titletoolbox.com/pages/tos/direct_tos'
     },
     enabledFeatures: 'iLookupWidget',
@@ -132,7 +133,7 @@
    * @param {String} [config.baseURL="https://direct.api.titletoolbox.com/"] - The Base URL to be used for APIs calls. (note - we can alternatively use <code>sponsor</code>
    * and/or <code>baseURLPattern</code> to keep switching to custom <code>baseURL</code> on the fly.)
    *
-   * @param {Object} [config.sponsor] - The Title Company Sponsor object to be used in generating baseURL. contains name, title, and TOSURL.
+   * @param {Object} [config.sponsor] - The Title Company Sponsor object to be used in generating baseURL. contains name, title, site, logoURL, and TOSURL.
    * (note - It will be ignored if baseURL is already passed.)
    *
    * @param {String} [config.baseURLPattern="https://{{sponsorName}}.api.titletoolbox.com/"] - The URL pattern to be used
@@ -494,6 +495,26 @@
 
   /**
    * @memberof TTB
+   * @alias utilBuildSponsorInfo
+   * @static
+   * @description Build up the sponsor object for setting new sponsor on TTB instance via setSponsor().
+   *
+   * @param {Object} sponsorMeta - sponsor meta object retrieved from response of getSponsors().
+   *
+   * @return {Object} sponsorInfo - object contains name, title, site, etc.
+   * */
+  window.TTB.utilBuildSponsorInfo = function (sponsorMeta) {
+    return {
+      name: sponsorMeta.vertical_name,
+      title: sponsorMeta.company_info.company_name,
+      site: sponsorMeta.site_url,
+      logoURL: sponsorMeta.company_info.logo_url,
+      TOSURL: sponsorMeta.TOS_content
+    };
+  };
+
+  /**
+   * @memberof TTB
    * @alias getUserProfile
    * @static
    * @private
@@ -778,7 +799,8 @@
           ' <td>{{name}}</td>',
           ' <td><a href="{{website}}" target="_blank">{{website}}</a></td>',
           ' <td class="text-center">',
-          '  <button class="btn btn-primary" data-sponsor-name="{{sponsorName}}" data-sponsor-title="{{sponsorTitle}}" data-sponsor-site="{{sponsorSite}}" data-sponsor-tos="{{sponsorTOSURL}}">',
+          '  <button class="btn btn-primary"',
+          '  data-sponsor-name="{{sponsorName}}" data-sponsor-title="{{sponsorTitle}}" data-sponsor-site="{{sponsorSite}}" data-sponsor-logo="{{sponsorLogoURL}} data-sponsor-tos="{{sponsorTOSURL}}">',
           '   Select',
           '  </button>',
           ' </td>',
@@ -813,6 +835,7 @@
             .replace('{{sponsorName}}', sponsor.vertical_name)
             .replace('{{sponsorTitle}}', sponsor.company_info.company_name)
             .replace('{{sponsorSite}}', sponsor.site_url)
+            .replace('{{sponsorLogoURL}}', sponsor.company_info.logo_url)
             .replace('{{sponsorTOSURL}}', sponsor.TOS_content);
 
           // set the target list with respect to match.type
@@ -902,6 +925,7 @@
             name: $(this).attr('data-sponsor-name'),
             title: $(this).attr('data-sponsor-title'),
             site: $(this).attr('data-sponsor-site'),
+            logoURL: $(this).attr('data-sponsor-logo'),
             TOSURL: $(this).attr('data-sponsor-tos')
           };
 
@@ -1419,6 +1443,7 @@
      * @param {String} sponsor.title - The <code>company_info.company_name</code> field value of sponsor object retrieved.
      * @param {String} sponsor.name - The <code>vertical_name</code> field value of sponsor object retrieved. (to be used in generating baseURL)
      * @param {String} sponsor.site - The <code>site_url</code> field value of sponsor object retrieved.
+     * @param {String} sponsor.logoURL - The <code>company_info.logo_url</code> field value of sponsor object retrieved.
      * @param {String} sponsor.TOSURL - The <code>TOS_content</code> field value of sponsor object retrieved.
      *
      * @return {String} baseURL - The newly generated <code>baseURL</code>.
@@ -1429,6 +1454,8 @@
      * ttb.setSponsor({
      *  name: 'direct',
      *  title: 'Benutech',
+     *  site: 'http://leads.titletoolbox.com',
+     *  logoURL: 'https://s3-us-west-1.amazonaws.com/titletoolbox/company+logos/Benutech/Benute+Logo.png',
      *  TOSURL: 'https://direct.api.titletoolbox.com/pages/tos/direct_tos'
      * });
      *
@@ -3260,13 +3287,7 @@
 
                   if (res.status === 'OK') {
 
-                    // TODO refactor to use Util method to extract info from one place
-                    selectedSponsor = {
-                      name: res.data.vertical_name,
-                      title: res.data.company_info.company_name,
-                      site: res.data.site_url,
-                      TOSURL: res.data.TOS_content
-                    };
+                    selectedSponsor = window.TTB.utilBuildSponsorInfo(res.data);
 
                     // update state for connect UI.
                     updateDisconnectedState('Partner selection found.', false);
