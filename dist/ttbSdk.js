@@ -2874,6 +2874,9 @@
       // on address select, store the address components for later use when action is clicked.
       autoComplete.instance.addListener('place_changed', function() {
 
+        // reset previous attempt results
+        resetSuccessAlert();
+
         // fill the address form fields
         o.selectedAddressInfo = ttb.googleBuildAddress(autoComplete.instance);
       });
@@ -2886,7 +2889,7 @@
 
       // reset success alert bar used for e.g. full profile report link.
       function resetSuccessAlert() {
-        console.log('resetSuccessAlert called.');
+        //console.log('resetSuccessAlert called.');
 
         $('#ttb-sdk--instant-lookup--alert')
         .hide()
@@ -2894,12 +2897,14 @@
         .attr('href', 'javascript:');
       }
 
+      // to be called from dropdown, selects the action, and auto-invokes it.
       function setAndInvokeAction(evt) {
         //console.log('setAndInvokeAction:');
         setActionSelection(evt);
         invokeSelectedAction();
       }
 
+      // sets the clicked dropdown-action as selected.
       function setActionSelection(evt) {
         //console.log('setActionSelection:', evt);
 
@@ -2910,9 +2915,13 @@
         window.TTB._setLocal('selectedAction', o.selectedAction);
       }
 
+      // to be called on click of selected action button, or any other dropdown action.
       function invokeSelectedAction() {
         var promise, selectionActionCb, enableControls;
         //console.log('invokeSelectedAction');
+
+        // reset previous attempt results
+        resetSuccessAlert();
 
         // if no address was selected / fetched via autocomplete
         if (!o.selectedAddressInfo) {
