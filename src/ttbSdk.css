@@ -33,6 +33,9 @@
     text-align: left;
     width: 240px;
 }
+#ttb-sdk--instant-lookup--alert {
+    display: none;
+}
 .ttb-sdk--instant-lookup--footer {
     margin-top: 15px;
 }

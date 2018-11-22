@@ -2820,6 +2820,12 @@
         ' </div>',
         '</div>',
 
+        '<div id="ttb-sdk--instant-lookup--alert" class="col-xs-12 text-center">',
+        ' <div class="alert alert-success">',
+        ' Looks like you have not allowed popups for our site, yet. You can click <a href="javascript:" target="_blank">here</a> to get your report.',
+        ' </div>',
+        '</div>',
+
         '<div class="col-xs-12 ttb-sdk--instant-lookup--footer text-center">',
         ' Your report will automatically be created and displayed for you.',
         '</div>'
@@ -2877,6 +2883,16 @@
       // bind selected actions click handlers
       o.$selectedAction.on('click', invokeSelectedAction);
       o.$container.find('#ttb-sdk--instant-lookup--actions ul').on('click', setAndInvokeAction);
+
+      // reset success alert bar used for e.g. full profile report link.
+      function resetSuccessAlert() {
+        console.log('resetSuccessAlert called.');
+
+        $('#ttb-sdk--instant-lookup--alert')
+        .hide()
+        .find('a')
+        .attr('href', 'javascript:');
+      }
 
       function setAndInvokeAction(evt) {
         //console.log('setAndInvokeAction:');
@@ -3021,9 +3037,22 @@
             output: 'link'
           })
           .then(function (res) {
+            var popup, reportLink;
 
-            // open a new tab to get the PDF file.
-            window.open(res.response.data.report.link);
+            reportLink = res.response.data.report.link;
+
+            // try auto-open a new tab to get the PDF file automatically.
+            popup = window.open(reportLink);
+
+            // for blocked-popups users, show and alert bar for the report link
+            if (!popup) {
+
+              // render the link to the success alert, and show it.
+              $('#ttb-sdk--instant-lookup--alert')
+                .show()
+                .find('a')
+                .attr('href', reportLink);
+            }
 
           }, function (reason) {
             alert('Failed in getting full profile report.');
