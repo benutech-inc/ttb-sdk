@@ -8,21 +8,33 @@
 
 /* widgets styles */
 /* instant lookup widget - starts */
-.ttb-sdk--instant-lookup--container{
-    padding: 5px 0;
+.ttb-sdk--instant-lookup--container {
+    padding: 15px 0;
     background: #eeeeee; /* should be customized for 3party site theme */
     border: 1px solid #e0e0e0;
     border-radius: 5px;
 }
-#ttb-sdk--instant-lookup--selected-action{
-    text-align: left;
-    width: 147px;
-}
 #ttb-sdk--instant-lookup--address{
-    padding-right: 2px;
+    margin-bottom: 15px;
 }
 #ttb-sdk--instant-lookup--actions{
-    padding-left: 0;
+    margin-bottom: 15px;
+}
+.ttb-sdk--instant-lookup--auto-complete-wrapper {
+    padding-left: 20px;
+}
+#ttb-sdk--instant-lookup--actions .btn-group {
+    padding-left: 20px;
+}
+#ttb-sdk--instant-lookup--actions .dropdown-menu {
+    left: 20px;
+}
+#ttb-sdk--instant-lookup--selected-action {
+    text-align: left;
+    width: 240px;
+}
+.ttb-sdk--instant-lookup--footer {
+    margin-top: 15px;
 }
 /* instant lookup widget - ends */
 
