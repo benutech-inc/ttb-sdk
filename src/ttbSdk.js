@@ -2705,8 +2705,9 @@
           (addressInfo.site_route || '');
       }
 
-      // replace extra suffix by google for county for some addresses.
-      addressInfo.site_county = addressInfo.site_county.replace(' County', '');
+      // replace "County" suffix by google for county for some addresses.
+      // Handle missing county field for some addresses
+      addressInfo.site_county = addressInfo.site_county ? addressInfo.site_county.replace(' County', '') : undefined;
         
       //addressInfo.site_address = addressInfo.site_street_number + ' ' + addressInfo.site_route;
 
@@ -2787,15 +2788,17 @@
       o.widgetClass = 'ttb-sdk--instant-lookup--container';
       o.widgetTemplate = [
         '<!-- the google autocomplete address lookup -->',
-        '<div id="ttb-sdk--instant-lookup--address" class="col-xs-7">',
+        '<div id="ttb-sdk--instant-lookup--address" class="col-xs-12 col-sm-7">',
+        ' <div class="">1 - Type in and select the property address below</div>',
         ' <div class="">',
         '  <input type="text" class="form-control" id="ttb-sdk--instant-lookup--auto-complete" name="ttb-sdk--instant-lookup--auto-complete" placeholder="Search for an address...">',
         ' </div>',
         '</div>',
 
         '<!-- actions menu -->',
-        '<div id="ttb-sdk--instant-lookup--actions" class="col-xs-5">',
+        '<div id="ttb-sdk--instant-lookup--actions" class="col-xs-12 col-sm-5">',
         ' <i class="async loading spinner"></i>',
+        ' <div class="">2 - Select the type of report you want below</div>',
 
         ' <!-- Split button -->',
         ' <div class="btn-group" dropdown="">',
