@@ -2801,12 +2801,12 @@
         ' <div class="">2 - Select the type of report you want below</div>',
 
         ' <!-- Split button -->',
-        ' <div class="btn-group" dropdown="">',
+        ' <div class="btn-group col-xs-12 col-sm-10" dropdown="">',
 
         '  <!-- dynamic placeholder to contain last selected action -->',
-        '  <button type="button" id="ttb-sdk--instant-lookup--selected-action" class="btn btn-default">{{selectedActionLabel}}</button>',
+        '  <button type="button" id="ttb-sdk--instant-lookup--selected-action" class="btn btn-default col-xs-10">{{selectedActionLabel}}</button>',
 
-        '  <button type="button" class="btn btn-default dropdown-toggle" data-dropdown-toggle="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">',
+        '  <button type="button" class="btn btn-default dropdown-toggle col-xs-2" data-dropdown-toggle="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">',
         '  <span class="caret"></span>',
         '  <span class="sr-only">Toggle Dropdown</span>',
         '  </button>',

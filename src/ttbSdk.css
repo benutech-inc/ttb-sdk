@@ -31,7 +31,9 @@
 }
 #ttb-sdk--instant-lookup--selected-action {
     text-align: left;
-    width: 240px;
+}
+#ttb-sdk--instant-lookup--selected-action .btn-group{
+    padding-right: 0;
 }
 #ttb-sdk--instant-lookup--alert {
     display: none;
