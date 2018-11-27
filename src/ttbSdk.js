@@ -863,18 +863,20 @@
 
         o.bodyTemplate = [
           '<h3>{{resultsMessage}}</h3>',
-          '<table class="table">',
-          ' <thead>',
-          '  <tr>',
-          '   <th scope="col" width="80" class="text-center">#</th>',
-          '   <th scope="col" width="80" class="text-center">Logo</th>',
-          '   <th scope="col" width="80" class="text-center">Name</th>',
-          '   <th scope="col" width="80" class="text-center">Website</th>',
-          '   <th scope="col" width="80" class="text-center"></th>',
-          '  </tr>',
-          ' <thead>',
-          ' <tbody class="align-items-center">{{sponsorsMarkup}}</tbody>',
-          '</table>'
+          '<div style="overflow-x: auto">',
+            '<table class="table">',
+            ' <thead>',
+            '  <tr>',
+            '   <th scope="col" width="80" class="text-center">#</th>',
+            '   <th scope="col" width="80" class="text-center">Logo</th>',
+            '   <th scope="col" width="80" class="text-center">Name</th>',
+            '   <th scope="col" width="80" class="text-center">Website</th>',
+            '   <th scope="col" width="80" class="text-center"></th>',
+            '  </tr>',
+            ' <thead>',
+            ' <tbody class="align-items-center">{{sponsorsMarkup}}</tbody>',
+            '</table>',
+          '</div>'
         ].join('');
 
         // iterate over the list and generate the available options
