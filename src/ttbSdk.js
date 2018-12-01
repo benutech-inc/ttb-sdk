@@ -2823,12 +2823,13 @@
         '</div>',
 
         '<div id="ttb-sdk--instant-lookup--alert" class="col-xs-12 text-center">',
-        ' <div class="alert alert-success">',
+        ' <div class="alert alert-success" style="border: 1px solid;">',
         ' Looks like you have not allowed popups for our site, yet. You can click <a href="javascript:" target="_blank">here</a> to get your report.',
         ' </div>',
         '</div>',
 
         '<div class="col-xs-12 ttb-sdk--instant-lookup--footer text-center">',
+        '<i class="icon-exclamation-sign"></i>',
         ' Your report will automatically be created and displayed for you.',
         '</div>'
       ].join('')
