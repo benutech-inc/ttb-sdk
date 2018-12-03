@@ -10,7 +10,7 @@
 /* instant lookup widget - starts */
 .ttb-sdk--instant-lookup--container {
     padding: 15px 0;
-    /*background: #eeeeee; !* should be customized for 3party site theme *!*/
+    background: #f5f7f7; /* should be customized for 3party site theme */
     border: 1px solid #e0e0e0;
     border-radius: 5px;
 }
@@ -21,22 +21,23 @@
 /*iLookup- icons*/
 .icon-widget-info{
     background: url(https://i.ibb.co/CQkv0D1/352432-48.png) no-repeat center;
-    background-size: 20px 20px;
+    background-size: 18px 18px;
     display: inline-block;
     background-position-y: 2px;
     width: 20px;
     height: 20px;
+    margin-bottom: -4px;
 }
 .icon-widget-right-arrow{
     background: url(https://i.ibb.co/tZmYzL1/right-arrow.png) no-repeat center;
-    background-size: 20px 20px;
+    background-size: 18px 18px;
     display: inline-block;
     background-position-y: 2px;
     width: 20px;
     height: 20px;
     position: absolute;
     right: -20px;
-    bottom: 8px;
+    bottom: 7px;
 }
 /*ends*/
 
