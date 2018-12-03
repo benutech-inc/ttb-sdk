@@ -2790,7 +2790,7 @@
       o.widgetClass = 'ttb-sdk--instant-lookup--container';
       o.widgetTemplate = [
         '<!-- the google autocomplete address lookup -->',
-        '<div id="ttb-sdk--instant-lookup--address" class="col-xs-12 col-sm-7">',
+        '<div id="ttb-sdk--instant-lookup--address" class="col-xs-12 col-md-7">',
         ' <div class="">1 - Type in and select the property address below</div>',
         ' <div class="ttb-sdk--instant-lookup--auto-complete-wrapper">',
         '  <input type="text" class="form-control" id="ttb-sdk--instant-lookup--auto-complete" name="ttb-sdk--instant-lookup--auto-complete" placeholder="Search for an address...">',
@@ -2799,12 +2799,12 @@
         '</div>',
 
         '<!-- actions menu -->',
-        '<div id="ttb-sdk--instant-lookup--actions" class="col-xs-12 col-sm-5">',
+        '<div id="ttb-sdk--instant-lookup--actions" class="col-xs-12 col-md-5">',
         ' <i class="async loading spinner"></i>',
         ' <div class="">2 - Select the type of report you want below</div>',
 
         ' <!-- Split button -->',
-        ' <div class="btn-group col-xs-12 col-sm-10" dropdown="">',
+        ' <div class="btn-group col-xs-12" dropdown="">',
 
         '  <!-- dynamic placeholder to contain last selected action -->',
         '  <button type="button" id="ttb-sdk--instant-lookup--selected-action" class="btn btn-default col-xs-10">{{selectedActionLabel}}</button>',
