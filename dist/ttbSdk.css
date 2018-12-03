@@ -9,35 +9,63 @@
 /* widgets styles */
 /* instant lookup widget - starts */
 .ttb-sdk--instant-lookup--container {
-    padding: 15px 0;
-    background: #eeeeee; /* should be customized for 3party site theme */
+    padding: 15px;
+    background: #f5f7f7; /* should be customized for 3party site theme */
     border: 1px solid #e0e0e0;
     border-radius: 5px;
 }
 #ttb-sdk--instant-lookup--address{
     margin-bottom: 15px;
 }
+
+/*iLookup- icons*/
+.icon-widget-info{
+    background: url(http://dev-ttb-landing-page.herokuapp.com/images/info.png) no-repeat center;
+    background-size: 18px 18px;
+    display: inline-block;
+    background-position-y: 2px;
+    width: 20px;
+    height: 20px;
+    margin-bottom: -4px;
+}
+.icon-widget-right-arrow{
+    background: url(http://dev-ttb-landing-page.herokuapp.com/images/right-arrow.png) no-repeat center;
+    background-size: 18px 18px;
+    display: inline-block;
+    background-position-y: 2px;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    right: -10px;
+    bottom: 7px;
+}
+/*ends*/
+
 #ttb-sdk--instant-lookup--actions{
     margin-bottom: 15px;
 }
 .ttb-sdk--instant-lookup--auto-complete-wrapper {
-    padding-left: 20px;
+    padding-left: 0;
 }
 #ttb-sdk--instant-lookup--actions .btn-group {
-    padding-left: 20px;
+    padding-left: 0;
+    padding-right: 0;
 }
 #ttb-sdk--instant-lookup--actions .dropdown-menu {
-    left: 20px;
+    width: 100%;
 }
 #ttb-sdk--instant-lookup--selected-action {
     text-align: left;
-    width: 240px;
+}
+#ttb-sdk--instant-lookup--selected-action .btn-group{
+    padding-right: 0;
 }
 #ttb-sdk--instant-lookup--alert {
     display: none;
 }
 .ttb-sdk--instant-lookup--footer {
     margin-top: 15px;
+    font-style: oblique;
 }
 /* instant lookup widget - ends */
 
@@ -52,7 +80,7 @@
 /* select-sponsor widget - starts */
 #ttb-sdk--select-sponsor .modal-dialog {
     max-width: 880px;
-    width: 880px !important;
+    /*width: 880px !important;*/
     margin: 1.75rem auto;
 }
 #ttb-sdk--select-sponsor .modal-header, #ttb-sdk--select-sponsor .modal-header{
@@ -137,3 +165,26 @@
 }
 
 /* sponsor-tos-modal widget - ends */
+
+
+@media screen and (max-width: 991px) {
+    /* start of large tablet styles */
+    #ttb-sdk--instant-lookup--address {
+        margin-bottom: 30px;
+    }
+    .icon-widget-right-arrow{
+        transform: rotate(90deg);
+        left: 48%;
+        bottom: -28px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    /* start of medium tablet styles */
+
+}
+
+@media screen and (max-width: 479px) {
+    /* start of phone styles */
+
+}

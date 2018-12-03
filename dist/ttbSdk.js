@@ -863,18 +863,20 @@
 
         o.bodyTemplate = [
           '<h3>{{resultsMessage}}</h3>',
-          '<table class="table">',
-          ' <thead>',
-          '  <tr>',
-          '   <th scope="col" width="80" class="text-center">#</th>',
-          '   <th scope="col" width="80" class="text-center">Logo</th>',
-          '   <th scope="col" width="80" class="text-center">Name</th>',
-          '   <th scope="col" width="80" class="text-center">Website</th>',
-          '   <th scope="col" width="80" class="text-center"></th>',
-          '  </tr>',
-          ' <thead>',
-          ' <tbody class="align-items-center">{{sponsorsMarkup}}</tbody>',
-          '</table>'
+          '<div style="overflow-x: auto">',
+            '<table class="table">',
+            ' <thead>',
+            '  <tr>',
+            '   <th scope="col" width="80" class="text-center">#</th>',
+            '   <th scope="col" width="80" class="text-center">Logo</th>',
+            '   <th scope="col" width="80" class="text-center">Name</th>',
+            '   <th scope="col" width="80" class="text-center">Website</th>',
+            '   <th scope="col" width="80" class="text-center"></th>',
+            '  </tr>',
+            ' <thead>',
+            ' <tbody class="align-items-center">{{sponsorsMarkup}}</tbody>',
+            '</table>',
+          '</div>'
         ].join('');
 
         // iterate over the list and generate the available options
@@ -2788,25 +2790,26 @@
       o.widgetClass = 'ttb-sdk--instant-lookup--container';
       o.widgetTemplate = [
         '<!-- the google autocomplete address lookup -->',
-        '<div id="ttb-sdk--instant-lookup--address" class="col-xs-12 col-sm-7">',
+        '<div id="ttb-sdk--instant-lookup--address" class="col-xs-12 col-md-7">',
         ' <div class="">1 - Type in and select the property address below</div>',
         ' <div class="ttb-sdk--instant-lookup--auto-complete-wrapper">',
         '  <input type="text" class="form-control" id="ttb-sdk--instant-lookup--auto-complete" name="ttb-sdk--instant-lookup--auto-complete" placeholder="Search for an address...">',
         ' </div>',
+        '<i class="icon-widget-right-arrow"></i>',
         '</div>',
 
         '<!-- actions menu -->',
-        '<div id="ttb-sdk--instant-lookup--actions" class="col-xs-12 col-sm-5">',
+        '<div id="ttb-sdk--instant-lookup--actions" class="col-xs-12 col-md-5">',
         ' <i class="async loading spinner"></i>',
         ' <div class="">2 - Select the type of report you want below</div>',
 
         ' <!-- Split button -->',
-        ' <div class="btn-group" dropdown="">',
+        ' <div class="btn-group col-xs-12" dropdown="">',
 
         '  <!-- dynamic placeholder to contain last selected action -->',
-        '  <button type="button" id="ttb-sdk--instant-lookup--selected-action" class="btn btn-default">{{selectedActionLabel}}</button>',
+        '  <button type="button" id="ttb-sdk--instant-lookup--selected-action" class="btn btn-default col-xs-10">{{selectedActionLabel}}</button>',
 
-        '  <button type="button" class="btn btn-default dropdown-toggle" data-dropdown-toggle="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">',
+        '  <button type="button" class="btn btn-default dropdown-toggle col-xs-2" data-dropdown-toggle="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">',
         '  <span class="caret"></span>',
         '  <span class="sr-only">Toggle Dropdown</span>',
         '  </button>',
@@ -2821,12 +2824,13 @@
         '</div>',
 
         '<div id="ttb-sdk--instant-lookup--alert" class="col-xs-12 text-center">',
-        ' <div class="alert alert-success">',
+        ' <div class="alert alert-warning" style="border: 1px solid;">',
         ' Looks like you have not allowed popups for our site, yet. You can click <a href="javascript:" target="_blank">here</a> to get your report.',
         ' </div>',
         '</div>',
 
         '<div class="col-xs-12 ttb-sdk--instant-lookup--footer text-center">',
+        '<i class="icon-widget-info"></i>',
         ' Your report will automatically be created and displayed for you.',
         '</div>'
       ].join('')
