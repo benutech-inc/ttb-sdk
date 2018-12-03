@@ -2824,7 +2824,7 @@
         '</div>',
 
         '<div id="ttb-sdk--instant-lookup--alert" class="col-xs-12 text-center">',
-        ' <div class="alert alert-success" style="border: 1px solid;">',
+        ' <div class="alert alert-warning" style="border: 1px solid;">',
         ' Looks like you have not allowed popups for our site, yet. You can click <a href="javascript:" target="_blank">here</a> to get your report.',
         ' </div>',
         '</div>',
