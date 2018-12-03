@@ -17,6 +17,29 @@
 #ttb-sdk--instant-lookup--address{
     margin-bottom: 15px;
 }
+
+/*iLookup- icons*/
+.icon-widget-info{
+    background: url(https://i.ibb.co/CQkv0D1/352432-48.png) no-repeat center;
+    background-size: 20px 20px;
+    display: inline-block;
+    background-position-y: 2px;
+    width: 20px;
+    height: 20px;
+}
+.icon-widget-right-arrow{
+    background: url(https://i.ibb.co/tZmYzL1/right-arrow.png) no-repeat center;
+    background-size: 20px 20px;
+    display: inline-block;
+    background-position-y: 2px;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    right: -20px;
+    bottom: 8px;
+}
+/*ends*/
+
 #ttb-sdk--instant-lookup--actions{
     margin-bottom: 15px;
 }

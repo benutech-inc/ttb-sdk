@@ -2795,6 +2795,7 @@
         ' <div class="ttb-sdk--instant-lookup--auto-complete-wrapper">',
         '  <input type="text" class="form-control" id="ttb-sdk--instant-lookup--auto-complete" name="ttb-sdk--instant-lookup--auto-complete" placeholder="Search for an address...">',
         ' </div>',
+        '<i class="icon-widget-right-arrow"></i>',
         '</div>',
 
         '<!-- actions menu -->',
@@ -2829,7 +2830,7 @@
         '</div>',
 
         '<div class="col-xs-12 ttb-sdk--instant-lookup--footer text-center">',
-        '<i class="icon-exclamation-sign"></i>',
+        '<i class="icon-widget-info"></i>',
         ' Your report will automatically be created and displayed for you.',
         '</div>'
       ].join('')
