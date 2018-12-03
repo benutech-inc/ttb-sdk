@@ -20,7 +20,7 @@ Coming soon...
 ```js
 // instantiate the TTB SDK class with minimum info required
 var ttb = new TTB({
-  partnerKey: '{your partner key}',
+  partnerKey: 'your-partner-key-here',
 });
 
 // build up your payload
