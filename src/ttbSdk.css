@@ -49,6 +49,7 @@
 }
 #ttb-sdk--instant-lookup--actions .btn-group {
     padding-left: 20px;
+    padding-right: 0;
 }
 #ttb-sdk--instant-lookup--actions .dropdown-menu {
     left: 20px;
