@@ -2727,8 +2727,8 @@
      *
      * @param {Object} [actions] - The actions object contains mapping callbacks to be consumed when any action is clicked.
      * (only one action available currently.)
-     * @param {Function} [actions.fullProfileReport] - To be invoked with a promise as argument, when user selects an address
-     * from the autocomplete and then clicks the action "Full Profile Report". This promise can be used for handling success and failure.
+     * @param {Function} [actions.fullProfileReport] - To be invoked with an info object (info.success, info.data) as argument, when user selects an address
+     * from the autocomplete and then clicks the action "Full Profile Report". This info can be used for handling success and failure.
      *
      * @example
      *
@@ -2751,25 +2751,15 @@
      * window.googleInit = function () {
      *
      *  var actions = {
-     *   fullProfileReport: function(promise) {
-     *
-     *    promise
-     *    .done(function(res){
-     *      if (res.response.status === 'OK') {
-     *        // your success code here to consume res.response.data
-     *        console.log(res.response.data);
-     *      } else {
-     *        // your failure code here to consume res.response.data
-     *        console.log(res.response.data);
-     *      }
-     *    })
-     *    .fail(function(err) {
-     *      // your failure code here
-     *    })
-     *    .always(function() {
-     *     // your on-complete code here as common for both success and failure
-     *    });
-     *   }
+     *   fullProfileReport: function(info) {
+     *     if (info.success === 'OK') {
+     *       // your success code here to consume info.data
+     *       console.log(info.data);
+     *     } else {
+     *       // your failure code here to consume info.data
+     *       console.log(info.data);
+     *     }
+     *    }
      *  };
      *
      *  var elementSelector = '#ttb-instant-lookup-wrapper';
@@ -2921,7 +2911,7 @@
 
       // to be called on click of selected action button, or any other dropdown action.
       function invokeSelectedAction() {
-        var promise, selectionActionCb, enableControls;
+        var promise, enableControls;
         //console.log('invokeSelectedAction');
 
         // reset previous attempt results
@@ -2932,10 +2922,6 @@
           autoComplete.$element.focus();
           return;
         }
-
-        selectionActionCb = function() {
-          actions[o.selectedAction.name] && actions[o.selectedAction.name]();
-        };
 
         // disable widget controls
         autoComplete.$element.prop('disabled', true);
@@ -2955,9 +2941,9 @@
         promise = ttb.searchBySiteAddress(o.selectedAddressInfo);
         promise
           .then(function (res) {
-            var property;
+            var property, errorMessage;
 
-            ttb._log([defaults.sdkPrefix, ' : instantLookupWidget : searchBySiteAddress - success - ', res]);
+            ttb._log([defaults.sdkPrefix, ' : instantLookupWidget : searchBySiteAddress - complete - ', res]);
 
             res = res.response;
 
@@ -2966,9 +2952,14 @@
 
               // if multiple records found, cancel and alert user.
               if (res.data.length > 1) {
-                alert('Multiple records found, please refine your search to make it more specific.');
+                errorMessage = 'Multiple records found, please refine your search to make it more specific.';
+                alert(errorMessage);
+
                 enableControls();
-                return res;
+                selectionActionCb(false, {
+                  message: errorMessage
+                });
+                return;
               }
 
               property = res.data[0];
@@ -2986,9 +2977,7 @@
 
                 case 'fullProfileReport':
                   ttb._log([defaults.sdkPrefix, ' : instantLookupWidget : fullProfileReport']);
-
                   actionOrderReport(property, enableControls);
-
                   break;
 
                 default:
@@ -2997,16 +2986,27 @@
               }
 
             } else {
-              selectionActionCb(promise);
               enableControls();
+              selectionActionCb(true, res.data || {
+                  message: 'No records matched.'
+                });
             }
 
           }, function() {
-            selectionActionCb(promise);
             enableControls();
+            selectionActionCb(false, {
+              message: 'Failed in connecting to the server.'
+            });
           });
       }
 
+      // invokes the selected action with given promise
+      function selectionActionCb(success, data) {
+        actions[o.selectedAction.name] && actions[o.selectedAction.name]({
+          success: success,
+          data: data
+        });
+      }
 
       // opens up a net sheet modal against the selected property
       function actionOpenNetSheet(property, enableControls) {
@@ -3039,6 +3039,11 @@
 
         // enable the controls back.
         enableControls();
+
+        // invoke given action callback
+        selectionActionCb(true, {
+          message: 'Net Sheet Opened.'
+        });
       }
 
       // perform order report against the selected property
@@ -3067,11 +3072,24 @@
                 .attr('href', reportLink);
             }
 
-          }, function (reason) {
-            alert('Failed in getting full profile report.');
-          })
-          .always(function () {
+            // enable the controls back.
             enableControls();
+
+            // invoke given action callback
+            selectionActionCb(true, {
+              reportLink: reportLink
+            });
+
+          }, function () {
+            var errorMessage = 'Failed in getting full profile report.';
+
+            alert(errorMessage);
+            enableControls();
+
+            // invoke given action callback
+            selectionActionCb(false, {
+              message: errorMessage
+            });
           });
       }
     },
