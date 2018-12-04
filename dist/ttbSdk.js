@@ -3208,7 +3208,7 @@
         '  - ',
         ' </div>',
         ' <div id="ttb-sdk--connect--disconnect" class="col-xs-4">',
-        '  <button type="button" class="btn btn-danger pull-right">Disconnect</button>',
+        '  <button type="button" class="btn btn-primary pull-right">Change</button>',
         ' </div>',
         '</div>'
       ].join('');
@@ -3317,56 +3317,19 @@
 
       // remove the stored sponsor connection.
       function onDisconnect() {
-        var payload, utilHandleError;
+        ttb._log(['connectWidget: onDisconnect: called.']);
 
-        ttb._log(['connectWidget: onDisconnect: init.']);
-
-        // common handler for error scenarios
-        utilHandleError =  function (message, disableDisconnect) {
-
-          // update the state on disconnect UI
-          updateConnectedState(message, disableDisconnect);
-
-          // invoke the related action callback.
-          actions.onDisconnectFailure && actions.onDisconnectFailure(message);
-        };
+        // clear value from local storage.
+        window.TTB._setLocal(localName, null);
 
         // update the state on disconnect UI
-        updateConnectedState('Disconnecting...', true);
+        updateConnectedState('Disconnected.', false);
 
-        // perform clear sponsor selection API
-        payload = {
-          email: o.userProfile.email
-        };
+        // activate connect section UI.
+        activateDisconnectedMode(ttb.sponsor);
 
-        ttb.clearSponsorSelection(payload, true)
-          .then(function (res) {
-            res = res.response;
-
-            if (res.status === 'OK') {
-
-              ttb._log(['connectWidget: onDisconnect: success.', res.data]);
-
-              // clear value from local storage.
-              window.TTB._setLocal(localName, null);
-
-              // update the state on disconnect UI
-              updateConnectedState('Disconnected.', false);
-
-              // activate connect section UI.
-              activateDisconnectedMode(ttb.sponsor);
-
-            } else {
-
-              ttb._log(['connectWidget: onDisconnect: failed.', res.data[0]]);
-              utilHandleError(res.data[0], false);
-            }
-
-          }, function (reason) {
-
-            ttb._log(['connectWidget: onDisconnect: error.', reason]);
-            utilHandleError('Failed in contacting server.', false);
-          });
+        // auto trigger the connect click
+        $('#ttb-sdk--connect--connect button').trigger('click');
       }
 
       // pulls user profile, and checks for last selected sponsor.
@@ -3445,7 +3408,7 @@
         // leave success msg for connected.
         //updateDisconnectedState('sponsor selection saved.', false);
 
-        // store sponsor
+        // store selected sponsor
         window.TTB._setLocal(localName, data.info.selectedSponsor);
 
         // activate disconnect section UI.
