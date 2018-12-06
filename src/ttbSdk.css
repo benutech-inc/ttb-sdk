@@ -92,6 +92,7 @@
     color: #2e4250;
     font-size: 25px;
     line-height: 32px;
+    margin-top: 0;
 }
 #ttb-sdk--select-sponsor .modal-body{
     padding: 0;
@@ -186,5 +187,10 @@
 
 @media screen and (max-width: 479px) {
     /* start of phone styles */
-
+    #ttb-sdk--select-sponsor .modal-dialog {
+        width: 450px !important;
+    }
+    #ttb-sdk--select-sponsor .modal-title, #ttb-sdk--sponsor-tos-modal .modal-title{
+        margin-top: 10px;
+    }
 }
