@@ -3074,15 +3074,21 @@
 
             } else {
               enableControls();
+              alert('TTB - Lookup Failed. \n' + (res.data ? 'Reason: ' + res.data[0] : ''));
               selectionActionCb(true, res.data || {
-                  message: 'No records matched.'
+                  message: 'Failed in property lookup.'
                 });
             }
 
           }, function() {
+            var errorMessage;
+
             enableControls();
+
+            errorMessage = 'Failed in connecting to the server.';
+            alert('TTB - Lookup Failed. \n Reason: ' + errorMessage);
             selectionActionCb(false, {
-              message: 'Failed in connecting to the server.'
+              message: errorMessage
             });
           });
       }
