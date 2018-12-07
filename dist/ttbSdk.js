@@ -2855,21 +2855,25 @@
       o.selectedAction = window.TTB._getLocal('selectedAction', o.selectedAction) || {name: 'fullProfileReport', label: 'Full Profile Report'};
       o.widgetClass = 'ttb-sdk--instant-lookup--container';
       o.widgetTemplate = [
+        '<!-- the wait spinner box -->',
+        '<div class="col-xs-12">',
+        ' <i class="ttb-sdk--spinner"></i>',
+        '</div>',
+
         '<!-- the google autocomplete address lookup -->',
         '<div id="ttb-sdk--instant-lookup--address" class="col-xs-12 col-md-7">',
         ' <div class="">1 - Type in and select the property address below</div>',
         ' <div class="ttb-sdk--instant-lookup--auto-complete-wrapper">',
         '  <input type="text" class="form-control" id="ttb-sdk--instant-lookup--auto-complete" name="ttb-sdk--instant-lookup--auto-complete" placeholder="Search for an address...">',
         ' </div>',
-        '<i class="icon-widget-right-arrow"></i>',
+        '<i class="ttb-sdk--icon--right-arrow"></i>',
         '</div>',
 
         '<!-- actions menu -->',
         '<div id="ttb-sdk--instant-lookup--actions" class="col-xs-12 col-md-5">',
-        ' <i class="async loading spinner"></i>',
         ' <div class="">2 - Select the type of report you want below</div>',
 
-        ' <!-- Split button -->',
+        ' <!-- split button -->',
         ' <div class="btn-group col-xs-12" dropdown="">',
 
         '  <!-- dynamic placeholder to contain last selected action -->',
@@ -2896,7 +2900,7 @@
         '</div>',
 
         '<div class="col-xs-12 ttb-sdk--instant-lookup--footer text-center">',
-        '<i class="icon-widget-info"></i>',
+        '<i class="ttb-sdk--icon--info"></i>',
         ' Your report will automatically be created and displayed for you.',
         '</div>'
       ].join('')
@@ -2999,6 +3003,9 @@
           return;
         }
 
+        // activate wait spinner
+        o.$container.find('.ttb-sdk--spinner').addClass('active');
+
         // disable widget controls
         autoComplete.$element.prop('disabled', true);
         o.$selectedAction.prop('disabled', true)
@@ -3007,6 +3014,10 @@
 
         // function to enable widget controls back to normal
         enableControls = function () {
+          // deactivate wait spinner
+          o.$container.find('.ttb-sdk--spinner').removeClass('active');
+
+          // enable widget controls
           autoComplete.$element.prop('disabled', false);
           o.$selectedAction.prop('disabled', false)
             .next('button')
