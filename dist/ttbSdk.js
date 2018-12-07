@@ -2846,9 +2846,9 @@
      *
      * */
     instantLookupWidget: function (elementSelector, actions) {
-      var o, autoComplete, ttb;
+      var o, autoComplete, _self;
 
-      ttb = this;
+      _self = this;
       actions = actions || {};
 
       o = {};
@@ -2952,7 +2952,7 @@
         resetSuccessAlert();
 
         // fill the address form fields
-        o.selectedAddressInfo = ttb.googleBuildAddress(autoComplete.instance);
+        o.selectedAddressInfo = _self.googleBuildAddress(autoComplete.instance);
       });
 
       o.$selectedAction = o.$container.find('#ttb-sdk--instant-lookup--selected-action');
@@ -2991,7 +2991,7 @@
 
       // to be called on click of selected action button, or any other dropdown action.
       function invokeSelectedAction() {
-        var promise, enableControls;
+        var promise, enableControls, handleError;
         //console.log('invokeSelectedAction');
 
         // reset previous attempt results
@@ -3024,72 +3024,65 @@
             .prop('disabled', false);
         };
 
+        // common handler for error relates scenarios. 3 scenarios.
+        handleError = function (message) {
+          _self._log(['instantLookupWidget : searchBySiteAddress - handleError - ', message]);
+          enableControls();
+
+          alert('TTB - Lookup Failed. \nReason: ' + message);
+          selectionActionCb(false, {
+            message: message
+          });
+        };
+
         // get property_id and state info against the given addressInfo
-        promise = ttb.searchBySiteAddress(o.selectedAddressInfo);
+        promise = _self.searchBySiteAddress(o.selectedAddressInfo);
         promise
           .then(function (res) {
-            var property, errorMessage;
+            var property;
 
-            ttb._log([defaults.sdkPrefix, ' : instantLookupWidget : searchBySiteAddress - complete - ', res]);
+            _self._log([defaults.sdkPrefix, ' : instantLookupWidget : searchBySiteAddress - complete - ', res]);
 
             res = res.response;
 
-            if (res.status === 'OK' && res.data && res.data.length) {
-              //selectionActionCb(promise);
+            // error - when no records found
+            if (res.status !== 'OK' || !res.data || !res.data.length) {
+              handleError(res.data ? res.data[0] : 'Failed in property lookup.');
+              return;
+            }
 
-              // if multiple records found, cancel and alert user.
-              if (res.data.length > 1) {
-                errorMessage = 'Multiple records found, please refine your search to make it more specific.';
-                alert(errorMessage);
+            // error - when multiple records found.
+            if (res.data.length > 1) {
+              handleError('Multiple records found, please refine your search to make it more specific.');
+              return;
+            }
 
+            // targeted property found, go ahead to invoke the selected action.
+            property = res.data[0];
+            switch (o.selectedAction.name) {
+
+              case 'netSheet':
+                _self._log([defaults.sdkPrefix, ' : instantLookupWidget : netSheet - ']);
+                actionOpenNetSheet(property, enableControls);
+                break;
+
+              //case 'generateReport':
+              //  ttb._log([defaults.sdkPrefix, ' : instantLookupWidget : generateReport - dev in progress.']);
+              //  enableControls();
+              //  break;
+
+              case 'fullProfileReport':
+                _self._log([defaults.sdkPrefix, ' : instantLookupWidget : fullProfileReport']);
+                actionOrderReport(property, enableControls);
+                break;
+
+              default:
+                _self._log([defaults.sdkPrefix, ' : instantLookupWidget : action not found - ', elementSelector]);
                 enableControls();
-                selectionActionCb(false, {
-                  message: errorMessage
-                });
-                return;
-              }
-
-              property = res.data[0];
-              switch (o.selectedAction.name) {
-
-                case 'netSheet':
-                  ttb._log([defaults.sdkPrefix, ' : instantLookupWidget : netSheet - ']);
-                  actionOpenNetSheet(property, enableControls);
-                  break;
-
-                //case 'generateReport':
-                //  ttb._log([defaults.sdkPrefix, ' : instantLookupWidget : generateReport - dev in progress.']);
-                //  enableControls();
-                //  break;
-
-                case 'fullProfileReport':
-                  ttb._log([defaults.sdkPrefix, ' : instantLookupWidget : fullProfileReport']);
-                  actionOrderReport(property, enableControls);
-                  break;
-
-                default:
-                  ttb._log([defaults.sdkPrefix, ' : instantLookupWidget : action not found - ', elementSelector]);
-                  enableControls();
-              }
-
-            } else {
-              enableControls();
-              alert('TTB - Lookup Failed. \n' + (res.data ? 'Reason: ' + res.data[0] : ''));
-              selectionActionCb(true, res.data || {
-                  message: 'Failed in property lookup.'
-                });
             }
 
           }, function() {
-            var errorMessage;
-
-            enableControls();
-
-            errorMessage = 'Failed in connecting to the server.';
-            alert('TTB - Lookup Failed. \n Reason: ' + errorMessage);
-            selectionActionCb(false, {
-              message: errorMessage
-            });
+            handleError('Failed in connecting to the server.');
           });
       }
 
@@ -3119,12 +3112,12 @@
           origin: origin,
           pathname: '/netsheet',
           params: {
-            partnerKey: ttb.config.partnerKey,
-            verticalName: ttb.sponsor.name,
-            verticalTitle: ttb.sponsor.title,
+            partnerKey: _self.config.partnerKey,
+            verticalName: _self.sponsor.name,
+            verticalTitle: _self.sponsor.title,
             propertyId: property.sa_property_id,
             propertyAddress: property.v_mail_address,
-            debug: ttb.debug
+            debug: _self.debug
           }
         };
 
@@ -3141,7 +3134,7 @@
 
       // perform order report against the selected property
       function actionOrderReport(property, enableControls) {
-        ttb.orderReport({
+        _self.orderReport({
             sa_property_id: property.sa_property_id,
             state_county_fips: property.mm_fips_state_code + property.mm_fips_muni_code,
             report_type: 'property_profile',
