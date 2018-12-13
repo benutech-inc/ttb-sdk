@@ -1356,6 +1356,8 @@
    *
    * @description
    * This static method is used to render a logo link on vendors's sites, clicking which can take user to the landing page for TTB powered widgets.
+   * <br>
+   * (Check it out in action over https://jsfiddle.net/benutech/w0ya3qr5/)
    *
    * @param {String} elementSelector - DOM element selector where the widget needs to be rendered.
    * <code>#lorem</code> or <code>.ipsum</code> etc.
