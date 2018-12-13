@@ -3191,7 +3191,7 @@
      * This method renders a widget includes a connect button to open up the TTB integration modal which contains an <code>iframe</code> controlled by TTB. <br>
      * <br>
      * (Make sure <strong>ttbSdk.min.css</strong> file is injected for proper style and look for the widgets.
-     * You can even check out working example over https://jsfiddle.net/benutech_dev/qr7ykw9L/)
+     * You can even check out working example over https://jsfiddle.net/benutech/qr7ykw9L/)
      *
      * @param {Object} options - configuration for the connect widget.
      * @param {String} options.elementSelector - DOM element selector where the widget needs to be rendered.
