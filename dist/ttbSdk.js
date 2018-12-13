@@ -118,7 +118,7 @@
    * <p>
    * <strong>TitleToolBox SDK </strong> files (1 script, and 1 style), can be pulled via our public repo link:
    * <i>(keep the [latest version]{@link https://github.com/benutech-inc/ttb-sdk/releases})</i><br>
-   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.8.0/dist/ttbSdk.min.css​"> </code>
+   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.8.0/dist/ttbSdk.min.css"> </code>
    * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.8.0/dist/ttbSdk.min.js​">&lt;/script> </code>
    * <br><br>OR via<strong> Bower </strong> using <code>bower install ttb-sdk --save</code>
    * <br><br>
@@ -704,7 +704,7 @@
    * @static
    *
    * @description
-   * This static method provides the list of all available sponsors based on given info.
+   * [new widget .connectWidget() is recommended.] This static method provides the list of all available sponsors based on given info.
    *
    * @param {Object} payload - The payload object containing required info against the logged-in user, so that we could suggest the sponsor(s) for it.
    * @param {String} [payload.email] - The email address of the logged-in user, if they have signed-up previously for any sponsor(s), we include them.
@@ -812,7 +812,7 @@
    * @static
    *
    * @description
-   * This static method provides the list of all available sponsors based on given info.
+   * [new widget .connectWidget() is recommended.] This static method provides the list of all available sponsors based on given info.
    *
    * @param {Object} data - Information to be required through the sponsor selection flow.
    * @param {Object} [data.performLogin="true"] - To auto-perform login against the selected sponsor.
@@ -1096,7 +1096,7 @@
    * @static
    *
    * @description
-   * This static method is used as a helper component inside <code>showSelectSponsor()</code> method.
+   * [new widget .connectWidget() is recommended.] This static method is used as a helper component inside <code>showSelectSponsor()</code> method.
    * This method shows a "Thank you" modal for handling TOS against the selected sponsor, after user selected it
    * via <code>TTB.showSelectSponsor()</code>.
    *
@@ -3180,14 +3180,18 @@
       }
     },
 
-    /**
-     * This method renders a widget includes a connect button to open up the TTB integration modal which contains an <code>iframe</code> controlled by TTB. <br>
-     * <br>
+    /***
+     *
      * It uses <strong>localStorage</strong> of the host origin, to store the selected sponsor info as <code>ttb-sdk--connect--selected-sponsor</code>,
      * It is a good gate for host sites to persist the user's sponsor selection over their servers, by reading/writing from/to it.
      * Widget will pick it up whenever gets rendered.<br>
+     * <br>*/
+
+    /**
+     * This method renders a widget includes a connect button to open up the TTB integration modal which contains an <code>iframe</code> controlled by TTB. <br>
      * <br>
-     * (Make sure <strong>ttbSdk.min.css</strong> file is injected for proper style and look for the widgets.)
+     * (Make sure <strong>ttbSdk.min.css</strong> file is injected for proper style and look for the widgets.
+     * You can even check out working example over https://jsfiddle.net/benutech_dev/qr7ykw9L/)
      *
      * @param {Object} options - configuration for the connect widget.
      * @param {String} options.elementSelector - DOM element selector where the widget needs to be rendered.
