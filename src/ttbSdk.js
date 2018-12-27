@@ -3058,7 +3058,7 @@
             if (res.data.length > 1) {
 
               //handleError('Multiple records found, please enter unit number. For example: 303');
-              unitNumber = prompt('If it\'s a Condo or Apt. complex, please provide a specific unit number.');
+              unitNumber = prompt('Multiple records found. If it\'s a Condo or Apt. complex, please provide a specific unit number.');
 
               if (unitNumber) {
                 o.selectedAddressInfo.site_unit = unitNumber;
