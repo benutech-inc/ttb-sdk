@@ -1,7 +1,7 @@
 /**
  * Copyright © 2018 Benutech Inc. All rights reserved.
  * http://www.benutech.com - help@benutech.com
- * version: 1.8.0
+ * version: 1.9.0
  * https://github.com/benutech-inc/ttb-sdk
  * For latest release, please check - https://github.com/benutech-inc/ttb-sdk/releases
  * */
@@ -15,7 +15,8 @@
   siteProtocol = 'https:';
   defaults = {
     protocol: siteProtocol,
-    devPort: '9000',
+    devPortSandbox: '9000',
+    devPortLanding: '9001',
     //partnerKey: '1-234-567-890', // no key by default.
     sponsor: {
       name: 'direct',
@@ -106,7 +107,7 @@
    * <code> &lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> </code> <br/>
    * Scoped Bootstrap version: <br>
    * Having non-bootstrap based site ? please use the following scoped-bootstrap version to limit bootstrap styles to SDK widgets only. (bootstrap v3.3.7 used.)<br>
-   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.8.0/dist/scoped-bootstrap.min.css​"> </code>
+   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.9.0/dist/scoped-bootstrap.min.css​"> </code>
    * </p>
    *
    * <p>
@@ -118,8 +119,8 @@
    * <p>
    * <strong>TitleToolBox SDK </strong> files (1 script, and 1 style), can be pulled via our public repo link:
    * <i>(keep the [latest version]{@link https://github.com/benutech-inc/ttb-sdk/releases})</i><br>
-   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.8.0/dist/ttbSdk.min.css"> </code>
-   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.8.0/dist/ttbSdk.min.js​">&lt;/script> </code>
+   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.9.0/dist/ttbSdk.min.css"> </code>
+   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.9.0/dist/ttbSdk.min.js​">&lt;/script> </code>
    * <br><br>OR via<strong> Bower </strong> using <code>bower install ttb-sdk --save</code>
    * <br><br>
    *
@@ -290,7 +291,7 @@
    * @description The version of the SDK being used.
    * @type String
    * */
-  window.TTB.version = '1.8.0';
+  window.TTB.version = '1.9.0';
 
   /**
    * @memberof TTB
@@ -1385,7 +1386,7 @@
   window.TTB.renderLogoWidget = function (elementSelector, info) {
     var generatedURL, template, markup, wrapperEL;
 
-    generatedURL = window.location.port === defaults.devPort ? 'http://localhost:9001' : 'https://ttb-landing-page.herokuapp.com';
+    generatedURL = window.location.port === defaults.devPortSandbox ? 'http://localhost:9001' : 'https://ttb-landing-page.herokuapp.com';
     generatedURL += '/?stk={{stk}}&getuser_url={{getuser_url}}&partnerKey={{partnerKey}}&enabled_features={{enabled_features}}&debug={{debug}}'
       .replace('{{stk}}', info.stk)
       .replace('{{getuser_url}}', encodeURIComponent(info.getuser_url))
@@ -3041,7 +3042,7 @@
         promise = _self.searchBySiteAddress(o.selectedAddressInfo);
         promise
           .then(function (res) {
-            var property;
+            var property, unitNumber;
 
             _self._log([defaults.sdkPrefix, ' : instantLookupWidget : searchBySiteAddress - complete - ', res]);
 
@@ -3055,7 +3056,17 @@
 
             // error - when multiple records found.
             if (res.data.length > 1) {
-              handleError('Multiple records found, please refine your search to make it more specific.');
+
+              //handleError('Multiple records found, please enter unit number. For example: 303');
+              unitNumber = prompt('If it\'s a Condo or Apt. complex, please provide a specific unit number.');
+
+              if (unitNumber) {
+                o.selectedAddressInfo.site_unit = unitNumber;
+                invokeSelectedAction();
+              } else {
+                handleError('Couldn\'t find the property.');
+              }
+
               return;
             }
 
@@ -3105,8 +3116,8 @@
           title: 'Net Sheet'
         };
 
-        // dev vs prod destination, plus handling https-https protocols.
-        origin = window.location.port === defaults.devPort ? 'http://localhost:9002' : 'https://ttb-export.herokuapp.com';
+        // dev vs prod destination.
+        origin = window.location.port === defaults.devPortLanding ? 'http://localhost:9002' : 'https://ttb-export.herokuapp.com';
 
         iframeOptions = {
           id: 'ttb-sdk--net-sheet--iframe',
@@ -3344,8 +3355,8 @@
           title: 'Connect with TitleToolbox'
         };
 
-        // dev vs prod destination, plus handling https-https protocols.
-        origin = window.location.port === defaults.devPort ? 'http://localhost:9001' : 'https://ttb-landing-page.herokuapp.com';
+        // dev vs prod destination.
+        origin = window.location.port === defaults.devPortSandbox ? 'http://localhost:9001' : 'https://ttb-landing-page.herokuapp.com';
 
         iframeOptions = {
           id: 'ttb-sdk--connect--iframe',
