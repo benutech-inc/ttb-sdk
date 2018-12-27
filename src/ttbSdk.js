@@ -15,7 +15,8 @@
   siteProtocol = 'https:';
   defaults = {
     protocol: siteProtocol,
-    devPort: '9000',
+    devPortSandbox: '9000',
+    devPortLanding: '9001',
     //partnerKey: '1-234-567-890', // no key by default.
     sponsor: {
       name: 'direct',
@@ -1385,7 +1386,7 @@
   window.TTB.renderLogoWidget = function (elementSelector, info) {
     var generatedURL, template, markup, wrapperEL;
 
-    generatedURL = window.location.port === defaults.devPort ? 'http://localhost:9001' : 'https://ttb-landing-page.herokuapp.com';
+    generatedURL = window.location.port === defaults.devPortSandbox ? 'http://localhost:9001' : 'https://ttb-landing-page.herokuapp.com';
     generatedURL += '/?stk={{stk}}&getuser_url={{getuser_url}}&partnerKey={{partnerKey}}&enabled_features={{enabled_features}}&debug={{debug}}'
       .replace('{{stk}}', info.stk)
       .replace('{{getuser_url}}', encodeURIComponent(info.getuser_url))
@@ -3041,7 +3042,7 @@
         promise = _self.searchBySiteAddress(o.selectedAddressInfo);
         promise
           .then(function (res) {
-            var property;
+            var property, unitNumber;
 
             _self._log([defaults.sdkPrefix, ' : instantLookupWidget : searchBySiteAddress - complete - ', res]);
 
@@ -3055,7 +3056,17 @@
 
             // error - when multiple records found.
             if (res.data.length > 1) {
-              handleError('Multiple records found, please refine your search to make it more specific.');
+
+              //handleError('Multiple records found, please enter unit number. For example: 303');
+              unitNumber = prompt('If it\'s a Condo or Apt. complex, please provide a specific unit number.');
+
+              if (unitNumber) {
+                o.selectedAddressInfo.site_unit = unitNumber;
+                invokeSelectedAction();
+              } else {
+                handleError('Couldn\'t find the property.');
+              }
+
               return;
             }
 
@@ -3105,8 +3116,8 @@
           title: 'Net Sheet'
         };
 
-        // dev vs prod destination, plus handling https-https protocols.
-        origin = window.location.port === defaults.devPort ? 'http://localhost:9002' : 'https://ttb-export.herokuapp.com';
+        // dev vs prod destination.
+        origin = window.location.port === defaults.devPortLanding ? 'http://localhost:9002' : 'https://ttb-export.herokuapp.com';
 
         iframeOptions = {
           id: 'ttb-sdk--net-sheet--iframe',
@@ -3344,8 +3355,8 @@
           title: 'Connect with TitleToolbox'
         };
 
-        // dev vs prod destination, plus handling https-https protocols.
-        origin = window.location.port === defaults.devPort ? 'http://localhost:9001' : 'https://ttb-landing-page.herokuapp.com';
+        // dev vs prod destination.
+        origin = window.location.port === defaults.devPortSandbox ? 'http://localhost:9001' : 'https://ttb-landing-page.herokuapp.com';
 
         iframeOptions = {
           id: 'ttb-sdk--connect--iframe',
