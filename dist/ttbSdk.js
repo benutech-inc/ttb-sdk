@@ -1,7 +1,7 @@
 /**
  * Copyright © 2018 Benutech Inc. All rights reserved.
  * http://www.benutech.com - help@benutech.com
- * version: 1.9.1
+ * version: 1.9.2
  * https://github.com/benutech-inc/ttb-sdk
  * For latest release, please check - https://github.com/benutech-inc/ttb-sdk/releases
  * */
@@ -107,7 +107,7 @@
    * <code> &lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> </code> <br/>
    * Scoped Bootstrap version: <br>
    * Having non-bootstrap based site ? please use the following scoped-bootstrap version to limit bootstrap styles to SDK widgets only. (bootstrap v3.3.7 used.)<br>
-   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.9.1/dist/scoped-bootstrap.min.css​"> </code>
+   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.9.2/dist/scoped-bootstrap.min.css​"> </code>
    * </p>
    *
    * <p>
@@ -119,8 +119,8 @@
    * <p>
    * <strong>TitleToolBox SDK </strong> files (1 script, and 1 style), can be pulled via our public repo link:
    * <i>(keep the [latest version]{@link https://github.com/benutech-inc/ttb-sdk/releases})</i><br>
-   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.9.1/dist/ttbSdk.min.css"> </code>
-   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.9.1/dist/ttbSdk.min.js​">&lt;/script> </code>
+   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.9.2/dist/ttbSdk.min.css"> </code>
+   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.9.2/dist/ttbSdk.min.js​">&lt;/script> </code>
    * <br><br>OR via<strong> Bower </strong> using <code>bower install ttb-sdk --save</code>
    * <br><br>
    *
@@ -291,7 +291,7 @@
    * @description The version of the SDK being used.
    * @type String
    * */
-  window.TTB.version = '1.9.1';
+  window.TTB.version = '1.9.2';
 
   /**
    * @memberof TTB
@@ -2791,6 +2791,7 @@
       addressInfo.site_county = addressInfo.site_county ? addressInfo.site_county.replace(' County', '') : undefined;
         
       //addressInfo.site_address = addressInfo.site_street_number + ' ' + addressInfo.site_route;
+      //addressInfo.custom_google_formatted_address = place.formatted_address;
 
       // return the built address info, in order to let consumer use the info the way they want.
       return addressInfo;
@@ -3072,6 +3073,19 @@
 
             // targeted property found, go ahead to invoke the selected action.
             property = res.data[0];
+            //property.custom_google_formatted_address = o.selectedAddressInfo.custom_google_formatted_address;
+
+            // generate formatted full address
+            // e.g. 6039 Collins Ave, Miami Beach, FL 33140
+            // pattern: [h#] [streetName] [suf], [city], [state] [zip]
+            property.customFullAddress =
+              (property.sa_site_house_nbr ? (property.sa_site_house_nbr + ' ') : '') +        // 6039
+              (property.sa_site_street_name ? (property.sa_site_street_name + ' ') : '') +    // Collins
+              (property.sa_site_suf ? (property.sa_site_suf + ', ') : '') +                   // Ave,
+              (property.sa_site_city ? (property.sa_site_city + ', ') : '') +                 // Miami Beach,
+              (property.sa_site_state ? (property.sa_site_state + ' ') : '') +                // FL
+              (property.sa_site_zip ? (property.sa_site_zip) : '');                           // 33140
+
             switch (o.selectedAction.name) {
 
               case 'netSheet':
@@ -3117,7 +3131,8 @@
         };
 
         // dev vs prod destination.
-        origin = window.location.port === defaults.devPortLanding ? 'http://localhost:9002' : 'https://ttb-export.herokuapp.com';
+        origin = [defaults.devPortSandbox, defaults.devPortLanding].indexOf(window.location.port) >= 0
+          ? 'http://localhost:9002' : 'https://ttb-export.herokuapp.com';
 
         iframeOptions = {
           id: 'ttb-sdk--net-sheet--iframe',
@@ -3129,7 +3144,7 @@
             verticalName: _self.sponsor.name,
             verticalTitle: _self.sponsor.title,
             propertyId: property.sa_property_id,
-            propertyAddress: property.v_mail_address,
+            propertyAddress: property.customFullAddress,
             debug: _self.debug
           }
         };
