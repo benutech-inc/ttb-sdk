@@ -2791,6 +2791,7 @@
       addressInfo.site_county = addressInfo.site_county ? addressInfo.site_county.replace(' County', '') : undefined;
         
       //addressInfo.site_address = addressInfo.site_street_number + ' ' + addressInfo.site_route;
+      //addressInfo.custom_google_formatted_address = place.formatted_address;
 
       // return the built address info, in order to let consumer use the info the way they want.
       return addressInfo;
@@ -3072,6 +3073,19 @@
 
             // targeted property found, go ahead to invoke the selected action.
             property = res.data[0];
+            //property.custom_google_formatted_address = o.selectedAddressInfo.custom_google_formatted_address;
+
+            // generate formatted full address
+            // e.g. 6039 Collins Ave, Miami Beach, FL 33140
+            // pattern: [h#] [streetName] [suf], [city], [state] [zip]
+            property.customFullAddress =
+              (property.sa_site_house_nbr ? (property.sa_site_house_nbr + ' ') : '') +        // 6039
+              (property.sa_site_street_name ? (property.sa_site_street_name + ' ') : '') +    // Collins
+              (property.sa_site_suf ? (property.sa_site_suf + ', ') : '') +                   // Ave,
+              (property.sa_site_city ? (property.sa_site_city + ', ') : '') +                 // Miami Beach,
+              (property.sa_site_state ? (property.sa_site_state + ' ') : '') +                // FL
+              (property.sa_site_zip ? (property.sa_site_zip) : '');                           // 33140
+
             switch (o.selectedAction.name) {
 
               case 'netSheet':
@@ -3117,7 +3131,8 @@
         };
 
         // dev vs prod destination.
-        origin = window.location.port === defaults.devPortLanding ? 'http://localhost:9002' : 'https://ttb-export.herokuapp.com';
+        origin = [defaults.devPortSandbox, defaults.devPortLanding].indexOf(window.location.port) >= 0
+          ? 'http://localhost:9002' : 'https://ttb-export.herokuapp.com';
 
         iframeOptions = {
           id: 'ttb-sdk--net-sheet--iframe',
@@ -3129,7 +3144,7 @@
             verticalName: _self.sponsor.name,
             verticalTitle: _self.sponsor.title,
             propertyId: property.sa_property_id,
-            propertyAddress: property.v_mail_address,
+            propertyAddress: property.customFullAddress,
             debug: _self.debug
           }
         };
