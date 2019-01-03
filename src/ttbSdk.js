@@ -2870,7 +2870,10 @@
         ' <div class="ttb-sdk--instant-lookup--auto-complete-wrapper">',
         '  <input type="text" class="form-control" id="ttb-sdk--instant-lookup--auto-complete" name="ttb-sdk--instant-lookup--auto-complete" placeholder="Search for an address...">',
         ' </div>',
-        '<i class="ttb-sdk--icon--right-arrow"></i>',
+        ' <i class="ttb-sdk--icon--right-arrow"></i>',
+        ' <div class="ttb-sdk--instant-lookup--footer">',
+        ' (If this is a Condo, APT, or other Multi Unit, please do not enter the unit #. It will ask you for it after you enter the address.)</div>',
+        ' </div>',
         '</div>',
 
         '<!-- actions menu -->',
