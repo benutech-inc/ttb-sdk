@@ -37,7 +37,7 @@
     height: 20px;
     position: absolute;
     right: -10px;
-    bottom: 7px;
+    bottom: 60px;
 }
 .ttb-sdk--spinner{
     background: url(https://ttb-landing-page.herokuapp.com/images/loading.gif) no-repeat center;
