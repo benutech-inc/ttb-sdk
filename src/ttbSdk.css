@@ -83,6 +83,15 @@
     margin-top: 15px;
     font-style: oblique;
 }
+
+.ttb-sdk--table--record-selected{
+    background-color: #3276b1 !important;
+    color: #fff;
+}
+.ttb-sdk--table--record-selected .sorting_1{
+    background-color: #3276b1 !important;
+    color: #fff;
+}
 /* instant lookup widget - ends */
 
 /* ilookup - netsheet widget - starts */

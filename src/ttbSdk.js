@@ -34,6 +34,13 @@
     debug: false,
     sdkPrefix: 'ttb-sdk',
     autoFillAttr: 'data-ttb-field',
+    dataTableConfig: {
+      CDNs: {
+        CSS: 'https://ttb-export.herokuapp.com/libs/jquery-data-tables/jquery.dataTables.min.css',
+        JS: 'https://ttb-export.herokuapp.com/libs/jquery-data-tables/jquery.dataTables.min.js'
+      },
+      options: {}
+    },
     iframeOptions: {
       height: '600px'
     },
@@ -279,6 +286,11 @@
     /* exporting flags to main class for static methods */
     // scoped bootstrap to be true if at least one instance contains the flag.
     window.TTB.scopedBootstrap = !window.TTB.scopedBootstrap ? this.scopedBootstrap : window.TTB.scopedBootstrap;
+
+    // namespace to hold any third-party instances references for later usage like destroy. e.g. dataTable
+    //this._refs = {
+    //  instantLookup: {}
+    //};
 
     this._log(['TTB SDK instantiated. | version: ', window.TTB.version]);
   };
@@ -565,6 +577,253 @@
       window.TTB._log(['utilIframeModal: receiveMessage: event: ', event]);
       iframeOptions.onMessage(event.data, event);
     }
+  };
+
+  /**
+   * @memberof TTB
+   * @alias utilGenerateUniqueId
+   * @static
+   *
+   * Generates a unique string Id for list records.
+   * @private
+   *
+   * @param {String} [prefix] - a prefix string to include to generated unique id.
+   * @param {String} [suffix] - a suffix string to include to generated unique id.
+   *
+   * @return {String} UniqueId - A possibly unique id helpful for records identity.
+   *
+   * */
+  window.TTB.utilGenerateUniqueId = function (prefix, suffix) {
+    return defaults.sdkPrefix + '--' + (prefix || '') + Date.now() + '-' + parseInt(Math.random() * 100000) + (suffix || '');
+  };
+
+  /**
+   * @memberof TTB
+   * @alias utilCapitalize
+   * @static
+   *
+   * Capitalizes the given string.
+   * @private
+   *
+   * @param {String} [input] - string to transform into capital case
+   *
+   * @return {String} value - capitalized string.
+   *
+   * */
+  window.TTB.utilCapitalize = function(input) {
+    var capWord = function (wrd) {
+      return wrd.charAt(0).toUpperCase() + wrd.substr(1).toLowerCase();
+    };
+    input += '';
+    return input.split(' ').map(capWord).join(' ');
+  };
+
+
+  /**
+   * @memberof TTB
+   * @alias utilLoadDataTable
+   * @static
+   *
+   * Injects assets (JS, CSS) for dataTable
+   * @private
+   *
+   * @param {Function} [onLoad] - callback to be invoked when done loading data table.
+   *
+   * @return {String} value - capitalized string.
+   *
+   * */
+  window.TTB.utilLoadDataTable = function(onLoad) {
+
+    // check if lib has already been async loaded - initialize right away
+    if (!!$(document).DataTable) {
+      window.TTB._log(['utilLoadDataTable: data-table: already available: init']);
+      onLoad && onLoad();
+
+    } else {
+
+      window.TTB._log(['utilLoadDataTable: data-table: not available yet: loading files:  CSS added.']);
+
+      // load styles
+      $(document.head)
+        .append('<link type="text/css" rel="stylesheet" href="'+ defaults.dataTableConfig.CDNs.CSS + '"/>');
+
+      // load script
+      $.ajax({
+        method: 'GET',
+        url: defaults.dataTableConfig.CDNs.JS,
+        dataType: 'script',
+        cache: true,
+        success: function (content) {
+          window.TTB._log(['utilLoadDataTable: data-table: inject JS: success:']);
+
+          // initialize after browser is done with including script
+          onLoad && setTimeout(onLoad, 0);
+        },
+        error: function (reason) {
+          window.TTB._log(['utilLoadDataTable: data-table: inject JS: failure: ', reason]);
+        }
+      });
+    }
+  };
+
+  /**
+   * @memberof TTB
+   * @alias utilRenderTable
+   * @static
+   *
+   * Generate and render a table based on given data and options.
+   * @private
+   *
+   * @param {Array<Object>} records - the list of objects / records to show table against.
+   *
+   * @param {Object} options - configuration options for the table list. (which is going to be loaded into the given destination)
+   * @param {String} options.containerSelector - The selector value for the target container.
+   * @param {Array<Object>} options.columns - list of columns, each having "label", and "fieldName" fields.
+   * @param {Function} options.onInit - callback to be called when data-table lib is injected and instance has been created.
+   * @param {Function} options.onSelect - callback to be called when user selects any record from the list.
+   *
+   * @return {String} $container - A JQuery reference to the container DOMNode Element.
+   *
+   * */
+  window.TTB.utilRenderTable = function (records, options) {
+    var $container, o;
+
+    //options.hover = options.hover || defaults.tableOptions.height;
+
+    o = {
+      selectedRecordIndex: undefined,
+      dataTableInstance: undefined,
+      classSelected: 'ttb-sdk--table--record-selected',
+
+      tableId: undefined,
+      headings: undefined,
+      list: undefined,
+      tableTemplate: undefined,
+      tableMarkup: undefined
+    };
+
+    o.tableId = window.TTB.utilGenerateUniqueId('table-');
+    o.tableTemplate =  [
+      '<div class="table-responsive" id="{{tableId}}">',
+      //' <table class="table display table-hover table-striped table-condensed table-bordered">',
+      ' <table class="display">',
+      '  <thead>',
+      '  {{headings}}',
+      '  </thead>',
+      '  <tbody>',
+      '  {{list}}',
+      '  </tbody>',
+      ' </table>',
+      '</div>'
+    ].join('');
+
+    // capture the reference to container and for now hide the container
+    $container = $(options.containerSelector)
+      .hide();
+
+    // generate headings
+    o.headings = [
+      '<tr>',
+
+      // select button against each record
+      '<td></td>',
+
+      // all columns values
+      options.columns.map(function(column) {
+        return '<th>{{label}}</th>'.replace('{{label}}', column.label);
+
+      }).join(''),
+
+      '</tr>'
+    ];
+
+    // generate list / records
+    o.list = records.map(function(record, recordIndex) {
+
+      return [
+        '<tr data-record-index="'+ recordIndex +'">',
+
+        // select button against each record
+        '<td><button class="btn btn-primary ttb-sdk--instant-lookup--select">Select</button></td>',
+
+        // all columns values
+        options.columns.map(function(column) {
+          return '<td>{{value}}</td>'.replace('{{value}}', record[column.fieldName] || '-');
+
+        }).join(''),
+
+        '</tr>'
+
+      ].join('');
+
+    });
+
+    o.tableMarkup = o.tableTemplate
+      .replace('{{tableId}}', o.tableId)
+      .replace('{{headings}}', o.headings.join(''))
+      .replace('{{list}}', o.list.join(''));
+
+    // render the generated table markup
+    $container.empty().append(o.tableMarkup);
+
+    // listen to select button to send the selection info to host function
+    $container.find('table').on('click', '.ttb-sdk--instant-lookup--select', onRecordSelect);
+
+    // load data-table library in advance.
+    window.TTB.utilLoadDataTable(initializeDataTable);
+
+    /* functions declarations below */
+
+    // initialize data-table after checking with loading assets.
+    function initializeDataTable() {
+      window.TTB._log(['utilRenderTable: initializeDataTable: init']);
+
+      o.dataTableInstance = $container.find('table').DataTable();
+      o.dataTableInstance.on('draw.dt', activateSelectRecord);
+
+      // show the rendered table
+      $container.show();
+
+      // invoked passed onInit callback to forward the control.
+      options.onInit(o.dataTableInstance);
+    }
+
+    // to be invoked when a record is selected.
+    function onRecordSelect(event) {
+      var $record, record;
+
+      //window.TTB._log(['utilRenderTable: onRecordSelect:']);
+
+      // capture target record row.
+      $record = $(this).closest('tr');
+
+      o.selectedRecordIndex = +$record.attr('data-record-index');
+      activateSelectRecord();
+
+      record = records[o.selectedRecordIndex];
+
+      window.TTB._log(['utilRenderTable: onRecordSelect: select: record:', o.selectedRecordIndex, record]);
+
+      options.onSelect(record);
+    }
+
+    // to be invoked when search, or pagination re-draws the list.
+    //function onTableReDraw() {
+    //  window.TTB._log(['utilRenderTable: onTableReDraw']);
+    //
+    //}
+
+    // add a class of selected entry and remove prev selection.
+    function activateSelectRecord() {
+      window.TTB._log(['utilRenderTable: activateSelectRecord:']);
+
+      $container.find('table tr')
+        .removeClass(o.classSelected)
+        .filter('[data-record-index="' + o.selectedRecordIndex + '"]')
+        .addClass(o.classSelected);
+    }
+
+    return $container;
   };
 
   /**
@@ -2850,13 +3109,47 @@
      *
      * */
     instantLookupWidget: function (elementSelector, actions) {
-      var o, autoComplete, _self;
+      var o, autoComplete, _self, refs;
 
       _self = this;
       actions = actions || {};
 
+      refs = {};
       o = {};
-      o.selectedAction = window.TTB._getLocal('selectedAction', o.selectedAction) || {name: 'fullProfileReport', label: 'Full Profile Report'};
+      o.tableOptions = {
+        containerSelector: '.ttb-sdk--instant-lookup--list',
+        onInit: undefined, // handled bellow passing required references.
+        onSelect: undefined, // handled bellow passing required references.
+        columns: [
+          {
+            label: 'Address',
+            fieldName: 'customAddress'
+          }, {
+            label: 'Unit',
+            fieldName: 'v_unit'
+          }, {
+            label: 'Apn',
+            fieldName: 'sa_parcel_nbr_primary'
+          }, {
+            label: 'City',
+            fieldName: 'customCity'
+          }, {
+            label: 'Zip',
+            fieldName: 'sa_site_zip'
+          }, {
+            label: 'Mail State',
+            fieldName: 'sa_mail_state'
+          }, {
+            label: 'Owner name',
+            fieldName: 'formatted_sa_owner_1'
+          }
+        ]
+      };
+      o.selectedAction = window.TTB._getLocal('selectedAction', o.selectedAction) || {
+          name: 'fullProfileReport',
+          label: 'Full Profile Report'
+        };
+
       o.widgetClass = 'ttb-sdk--instant-lookup--container';
       o.widgetTemplate = [
         '<!-- the wait spinner box -->',
@@ -2900,14 +3193,20 @@
         ' </div>',
         '</div>',
 
+        '<!-- help tip ! -->',
         '<div id="ttb-sdk--instant-lookup--alert" class="col-xs-12 text-center">',
         ' <div class="alert alert-warning" style="border: 1px solid;">',
         ' Looks like you have not allowed popups for our site, yet. You can click <a href="javascript:" target="_blank">here</a> to get your report.',
         ' </div>',
         '</div>',
 
+        '<!-- multiple matched properties list - [conditional] ! -->',
+        '<div class="col-xs-12 ttb-sdk--instant-lookup--list">',
+        '</div>',
+
+        '<!-- widget footer ! -->',
         '<div class="col-xs-12 ttb-sdk--instant-lookup--footer text-center">',
-        '<i class="ttb-sdk--icon--info"></i>',
+        ' <i class="ttb-sdk--icon--info"></i>',
         ' Your report will automatically be created and displayed for you.',
         '</div>'
       ].join('')
@@ -2917,7 +3216,7 @@
 
       // validate if target element not found
       if (!o.$container.length) {
-        this._log([defaults.sdkPrefix, ' : instantLookupWidget : abort : element not found - ', elementSelector]);
+        this._log(['instantLookupWidget : abort : element not found - ', elementSelector]);
         return null;
       }
 
@@ -2935,15 +3234,24 @@
           .addClass(defaults.classScopedBootstrapBody);
       }
 
+      // capture the multiple match view container
+      o.$multipleMatchContainer = $(o.tableOptions.containerSelector);
+
+      // load data-table library in advance.
+      window.TTB.utilLoadDataTable();
+
       // check for google autocomplete first
       try {
         var test = google.maps.places.Autocomplete;
       } catch(e) {
-        this._log([defaults.sdkPrefix,
-          ' : instantLookupWidget : abort : "google.maps.places.Autocomplete" not found -',
+        this._log([
+          'instantLookupWidget : abort : "google.maps.places.Autocomplete" not found -',
           ' please make sure the google script was loaded and that instantLookupWidget() is being called inside/after google load cb is ',
           ' called i.e. googleInit() or the mentioned callback=* in the google script src value.'
         ]);
+
+        // abort the rendering
+        return null;
       }
 
       // bind google autocomplete
@@ -2954,9 +3262,13 @@
       //TODO destroy listener when element widget gets destroyed.
       // on address select, store the address components for later use when action is clicked.
       autoComplete.instance.addListener('place_changed', function() {
+        _self._log(['instantLookupWidget: place_changed called.']);
 
         // reset previous attempt results
         resetSuccessAlert();
+
+        // reset any prev attempt to multiple match list view
+        resetMultipleMatchListView();
 
         // fill the address form fields
         o.selectedAddressInfo = _self.googleBuildAddress(autoComplete.instance);
@@ -2970,12 +3282,24 @@
 
       // reset success alert bar used for e.g. full profile report link.
       function resetSuccessAlert() {
-        //console.log('resetSuccessAlert called.');
+        //_self._log(['instantLookupWidget: resetSuccessAlert called.']);
 
         $('#ttb-sdk--instant-lookup--alert')
         .hide()
         .find('a')
         .attr('href', 'javascript:');
+      }
+
+      // resets the list rendered against any previously searched address
+      function resetMultipleMatchListView() {
+        _self._log(['instantLookupWidget: resetMultipleMatchListView called.']);
+
+        // clear data-table instance (if was rendered)
+        refs.dataTable && refs.dataTable.destroy(true);
+        refs.dataTable = null;
+
+        // clear DOM completely (if any thing still left by prev data-table instance)
+        o.$multipleMatchContainer.empty();
       }
 
       // to be called from dropdown, selects the action, and auto-invokes it.
@@ -2998,11 +3322,14 @@
 
       // to be called on click of selected action button, or any other dropdown action.
       function invokeSelectedAction() {
-        var promise, enableControls, handleError;
+        var promise, disableControls, enableControls, handleError;
         //console.log('invokeSelectedAction');
 
         // reset previous attempt results
         resetSuccessAlert();
+
+        // reset any prev attempt to multiple match list view
+        resetMultipleMatchListView();
 
         // if no address was selected / fetched via autocomplete
         if (!o.selectedAddressInfo) {
@@ -3010,14 +3337,18 @@
           return;
         }
 
-        // activate wait spinner
-        o.$container.find('.ttb-sdk--spinner').addClass('active');
+        // to disable widget controls as activating wait state
+        disableControls = function() {
 
-        // disable widget controls
-        autoComplete.$element.prop('disabled', true);
-        o.$selectedAction.prop('disabled', true)
-          .next('button')
-          .prop('disabled', true);
+          // activate wait spinner
+          o.$container.find('.ttb-sdk--spinner').addClass('active');
+
+          // disable widget controls
+          autoComplete.$element.prop('disabled', true);
+          o.$selectedAction.prop('disabled', true)
+            .next('button')
+            .prop('disabled', true);
+        };
 
         // function to enable widget controls back to normal
         enableControls = function () {
@@ -3042,11 +3373,14 @@
           });
         };
 
+        // activate wait state
+        disableControls();
+
         // get property_id and state info against the given addressInfo
         promise = _self.searchBySiteAddress(o.selectedAddressInfo);
         promise
           .then(function (res) {
-            var property, unitNumber;
+            var property, records;
 
             _self._log([defaults.sdkPrefix, ' : instantLookupWidget : searchBySiteAddress - complete - ', res]);
 
@@ -3062,58 +3396,92 @@
             if (res.data.length > 1) {
 
               //handleError('Multiple records found, please enter unit number. For example: 303');
-              unitNumber = prompt('Multiple records found. If it\'s a Condo or Apt. complex, please provide a specific unit number.');
+              //unitNumber = prompt('Multiple records found. If it\'s a Condo or Apt. complex, please provide a specific unit number.');
+              //
+              //if (unitNumber) {
+              //  o.selectedAddressInfo.site_unit = unitNumber;
+              //  invokeSelectedAction();
+              //} else {
+              //  handleError('Couldn\'t find the property.');
+              //}
 
-              if (unitNumber) {
-                o.selectedAddressInfo.site_unit = unitNumber;
-                invokeSelectedAction();
-              } else {
-                handleError('Couldn\'t find the property.');
-              }
+              // renders the retrieved list
+              //var records = window.TTB._getLocal('ilookup-records');
+
+              records = res.data.map(function (record) {
+
+                record.customAddress = record.sa_site_house_nbr + ' ' + TTB.utilCapitalize(record.sa_site_street_name);
+                record.customCity = TTB.utilCapitalize(record.sa_site_city);
+
+                return record;
+              });
+
+              // capture the instance reference, and stop the wait state/
+              o.tableOptions.onInit = function (dataTable) {
+                refs.datatable = dataTable;
+                enableControls();
+              };
+
+              // proceed with the used action while searching.
+              o.tableOptions.onSelect = function (property) {
+
+                // activate wait state
+                disableControls();
+
+                proceedActionWithTargetProperty(property, enableControls);
+              };
+
+              window.TTB.utilRenderTable(records, o.tableOptions);
+              _self._log([defaults.sdkPrefix, ' : instantLookupWidget : match count:', records.length]);
 
               return;
             }
 
             // targeted property found, go ahead to invoke the selected action.
             property = res.data[0];
-            //property.custom_google_formatted_address = o.selectedAddressInfo.custom_google_formatted_address;
-
-            // generate formatted full address
-            // e.g. 6039 Collins Ave, Miami Beach, FL 33140
-            // pattern: [h#] [streetName] [suf], [city], [state] [zip]
-            property.customFullAddress =
-              (property.sa_site_house_nbr ? (property.sa_site_house_nbr + ' ') : '') +        // 6039
-              (property.sa_site_street_name ? (property.sa_site_street_name + ' ') : '') +    // Collins
-              (property.sa_site_suf ? (property.sa_site_suf + ', ') : '') +                   // Ave,
-              (property.sa_site_city ? (property.sa_site_city + ', ') : '') +                 // Miami Beach,
-              (property.sa_site_state ? (property.sa_site_state + ' ') : '') +                // FL
-              (property.sa_site_zip ? (property.sa_site_zip) : '');                           // 33140
-
-            switch (o.selectedAction.name) {
-
-              case 'netSheet':
-                _self._log([defaults.sdkPrefix, ' : instantLookupWidget : netSheet - ']);
-                actionOpenNetSheet(property, enableControls);
-                break;
-
-              //case 'generateReport':
-              //  ttb._log([defaults.sdkPrefix, ' : instantLookupWidget : generateReport - dev in progress.']);
-              //  enableControls();
-              //  break;
-
-              case 'fullProfileReport':
-                _self._log([defaults.sdkPrefix, ' : instantLookupWidget : fullProfileReport']);
-                actionOrderReport(property, enableControls);
-                break;
-
-              default:
-                _self._log([defaults.sdkPrefix, ' : instantLookupWidget : action not found - ', elementSelector]);
-                enableControls();
-            }
+            proceedActionWithTargetProperty(property, enableControls);
 
           }, function() {
             handleError('Failed in connecting to the server.');
           });
+      }
+
+      // proceed with target action, after property is identified with any of the supported methods above.
+      function proceedActionWithTargetProperty(property, enableControls) {
+        //property.custom_google_formatted_address = o.selectedAddressInfo.custom_google_formatted_address;
+
+        // generate formatted full address
+        // e.g. 6039 Collins Ave, Miami Beach, FL 33140
+        // pattern: [h#] [streetName] [suf], [city], [state] [zip]
+        property.customFullAddress =
+          (property.sa_site_house_nbr ? (property.sa_site_house_nbr + ' ') : '') +        // 6039
+          (property.sa_site_street_name ? (property.sa_site_street_name + ' ') : '') +    // Collins
+          (property.sa_site_suf ? (property.sa_site_suf + ', ') : '') +                   // Ave,
+          (property.sa_site_city ? (property.sa_site_city + ', ') : '') +                 // Miami Beach,
+          (property.sa_site_state ? (property.sa_site_state + ' ') : '') +                // FL
+          (property.sa_site_zip ? (property.sa_site_zip) : '');                           // 33140
+
+        switch (o.selectedAction.name) {
+
+          case 'netSheet':
+            _self._log([defaults.sdkPrefix, ' : instantLookupWidget : netSheet - ']);
+            actionOpenNetSheet(property, enableControls);
+            break;
+
+          //case 'generateReport':
+          //  ttb._log([defaults.sdkPrefix, ' : instantLookupWidget : generateReport - dev in progress.']);
+          //  enableControls();
+          //  break;
+
+          case 'fullProfileReport':
+            _self._log([defaults.sdkPrefix, ' : instantLookupWidget : fullProfileReport']);
+            actionOrderReport(property, enableControls);
+            break;
+
+          default:
+            _self._log([defaults.sdkPrefix, ' : instantLookupWidget : action not found - ', elementSelector]);
+            enableControls();
+        }
       }
 
       // invokes the selected action with given promise
