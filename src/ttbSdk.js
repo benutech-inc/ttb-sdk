@@ -3174,17 +3174,17 @@
         ' <div class="">2 - Select the type of report you want below</div>',
 
         ' <!-- split button -->',
-        ' <div class="btn-group col-xs-12" dropdown="">',
+        ' <div class="btn-group col-xs-12" id="ttb-sdk--instant-lookup--selected-action">',
 
-        '  <!-- dynamic placeholder to contain last selected action -->',
-        '  <button type="button" id="ttb-sdk--instant-lookup--selected-action" class="btn btn-default col-xs-10">{{selectedActionLabel}}</button>',
+        // '  <!-- dynamic placeholder to contain last selected action -->',
+        // '  <button type="button" id="ttb-sdk--instant-lookup--selected-action" class="btn btn-default col-xs-10">{{selectedActionLabel}}</button>',
+        //
+        // '  <button type="button" class="btn btn-default dropdown-toggle col-xs-2" data-dropdown-toggle="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">',
+        // '  <span class="caret"></span>',
+        // '  <span class="sr-only">Toggle Dropdown</span>',
+        // '  </button>',
 
-        '  <button type="button" class="btn btn-default dropdown-toggle col-xs-2" data-dropdown-toggle="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">',
-        '  <span class="caret"></span>',
-        '  <span class="sr-only">Toggle Dropdown</span>',
-        '  </button>',
-
-        '  <ul class="dropdown-menu">',
+        '  <ul>',
         '  <li><a data-action-name="netSheet" href="javascript:">NetSheet</a></li>',
         //'  <li><a data-action-name="generateReport" href="javascript:">Generate Report</a></li>',
         //'  <li role="separator" class="divider"></li>',
@@ -3274,11 +3274,12 @@
         o.selectedAddressInfo = _self.googleBuildAddress(autoComplete.instance);
       });
 
-      o.$selectedAction = o.$container.find('#ttb-sdk--instant-lookup--selected-action');
+      // o.$selectedAction = o.$container.find('#ttb-sdk--instant-lookup--selected-action');
+      o.$selectedAction = o.$container.find('#ttb-sdk--instant-lookup--selected-action ul li');
 
       // bind selected actions click handlers
-      o.$selectedAction.on('click', invokeSelectedAction);
-      o.$container.find('#ttb-sdk--instant-lookup--actions ul').on('click', setAndInvokeAction);
+      o.$selectedAction.on('click', setAndInvokeAction);
+      // o.$container.find('#ttb-sdk--instant-lookup--actions ul').on('click', setAndInvokeAction);
 
       // reset success alert bar used for e.g. full profile report link.
       function resetSuccessAlert() {
@@ -3314,9 +3315,9 @@
         //console.log('setActionSelection:', evt);
 
         o.selectedAction.name = $(evt.target).data('action-name');
-        o.selectedAction.label = $(evt.target).text();
+        // o.selectedAction.label = $(evt.target).text();
 
-        o.$selectedAction.text(o.selectedAction.label || '');
+        // o.$selectedAction.text(o.selectedAction.label || '');
         window.TTB._setLocal('selectedAction', o.selectedAction);
       }
 

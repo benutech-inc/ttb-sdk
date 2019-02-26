@@ -73,6 +73,12 @@
 #ttb-sdk--instant-lookup--selected-action {
     text-align: left;
 }
+#ttb-sdk--instant-lookup--selected-action ul {
+    list-style: none;
+}
+#ttb-sdk--instant-lookup--selected-action ul li{
+    font-weight: 600;
+}
 #ttb-sdk--instant-lookup--selected-action .btn-group{
     padding-right: 0;
 }
