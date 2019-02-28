@@ -3338,7 +3338,6 @@
           return;
         }
 
-        console.log(autoComplete);
         // to disable widget controls as activating wait state
         disableControls = function() {
 
