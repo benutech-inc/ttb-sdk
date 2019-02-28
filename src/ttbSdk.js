@@ -3338,6 +3338,7 @@
           return;
         }
 
+        console.log(autoComplete);
         // to disable widget controls as activating wait state
         disableControls = function() {
 
@@ -3346,9 +3347,10 @@
 
           // disable widget controls
           autoComplete.$element.prop('disabled', true);
-          o.$selectedAction.prop('disabled', true)
-            .next('button')
-            .prop('disabled', true);
+          o.$selectedAction.addClass('area-disabled');
+            // .next('button')
+            // .next('li')
+            // .prop('disabled', true);
         };
 
         // function to enable widget controls back to normal
@@ -3358,9 +3360,10 @@
 
           // enable widget controls
           autoComplete.$element.prop('disabled', false);
-          o.$selectedAction.prop('disabled', false)
-            .next('button')
-            .prop('disabled', false);
+          o.$selectedAction.removeClass('area-disabled');
+            // .next('button')
+            // .next('li')
+            // .prop('disabled', false);
         };
 
         // common handler for error relates scenarios. 3 scenarios.
