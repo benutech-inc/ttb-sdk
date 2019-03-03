@@ -3174,16 +3174,7 @@
         ' <div class="">2 - Select the type of report you want below</div>',
 
         ' <!-- split button -->',
-        ' <div class="btn-group col-xs-12" id="ttb-sdk--instant-lookup--selected-action">',
-
-        // '  <!-- dynamic placeholder to contain last selected action -->',
-        // '  <button type="button" id="ttb-sdk--instant-lookup--selected-action" class="btn btn-default col-xs-10">{{selectedActionLabel}}</button>',
-        //
-        // '  <button type="button" class="btn btn-default dropdown-toggle col-xs-2" data-dropdown-toggle="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">',
-        // '  <span class="caret"></span>',
-        // '  <span class="sr-only">Toggle Dropdown</span>',
-        // '  </button>',
-
+        ' <div class="btn-group col-xs-12">',
         '  <ul>',
         '  <li><a data-action-name="netSheet" href="javascript:">NetSheet</a></li>',
         //'  <li><a data-action-name="generateReport" href="javascript:">Generate Report</a></li>',
@@ -3274,12 +3265,10 @@
         o.selectedAddressInfo = _self.googleBuildAddress(autoComplete.instance);
       });
 
-      // o.$selectedAction = o.$container.find('#ttb-sdk--instant-lookup--selected-action');
-      o.$selectedAction = o.$container.find('#ttb-sdk--instant-lookup--selected-action ul li');
+      o.$actions = o.$container.find('#ttb-sdk--instant-lookup--actions li');
 
-      // bind selected actions click handlers
-      o.$selectedAction.on('click', setAndInvokeAction);
-      // o.$container.find('#ttb-sdk--instant-lookup--actions ul').on('click', setAndInvokeAction);
+      // bind click handlers to all actions
+      o.$container.find('#ttb-sdk--instant-lookup--actions ul').on('click', 'li', setAndInvokeAction);
 
       // reset success alert bar used for e.g. full profile report link.
       function resetSuccessAlert() {
@@ -3346,10 +3335,7 @@
 
           // disable widget controls
           autoComplete.$element.prop('disabled', true);
-          o.$selectedAction.addClass('area-disabled');
-            // .next('button')
-            // .next('li')
-            // .prop('disabled', true);
+          o.$actions.addClass('ttb-sdk--disabled-link');
         };
 
         // function to enable widget controls back to normal
@@ -3359,10 +3345,7 @@
 
           // enable widget controls
           autoComplete.$element.prop('disabled', false);
-          o.$selectedAction.removeClass('area-disabled');
-            // .next('button')
-            // .next('li')
-            // .prop('disabled', false);
+          o.$actions.removeClass('ttb-sdk--disabled-link');
         };
 
         // common handler for error relates scenarios. 3 scenarios.

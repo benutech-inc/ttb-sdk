@@ -7,24 +7,26 @@
  * */
 
 /* widgets styles */
+
+/* common - all SDK modals */
+.ttb-sdk--modal .close {
+    font-size: 40px;
+}
+
+/* common - all SDK links used in widgets */
+.ttb-sdk--disabled-link {
+    pointer-events: none;
+}
+.ttb-sdk--disabled-link a {
+    color: #9c9c9c;
+}
+
 /* instant lookup widget - starts */
 .ttb-sdk--instant-lookup--container {
     padding: 15px;
     background: #f5f7f7; /* should be customized for 3party site theme */
     border: 1px solid #e0e0e0;
     border-radius: 5px;
-}
-.box-center{
-    max-width: 1400px;
-}
-.close{
-    font-size: 22px !important;
-}
-.area-disabled{
-    pointer-events: none;
-}
-.area-disabled a{
-    color: #9c9c9c;
 }
 #ttb-sdk--instant-lookup--address{
     margin-bottom: 15px;
@@ -82,17 +84,15 @@
 #ttb-sdk--instant-lookup--actions .dropdown-menu {
     width: 100%;
 }
-#ttb-sdk--instant-lookup--selected-action {
+#ttb-sdk--instant-lookup--actions {
     text-align: left;
 }
-#ttb-sdk--instant-lookup--selected-action ul {
+#ttb-sdk--instant-lookup--actions ul {
     list-style: none;
+    padding-left: 20px;
 }
-#ttb-sdk--instant-lookup--selected-action ul li{
+#ttb-sdk--instant-lookup--actions ul li{
     font-weight: 600;
-}
-#ttb-sdk--instant-lookup--selected-action .btn-group{
-    padding-right: 0;
 }
 #ttb-sdk--instant-lookup--alert {
     display: none;
