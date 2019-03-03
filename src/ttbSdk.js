@@ -33,6 +33,7 @@
     classScopedBootstrapBody: 'scoped-bootstrap--body',
     debug: false,
     sdkPrefix: 'ttb-sdk',
+    sessionKeyName: 'TTBSID',
     autoFillAttr: 'data-ttb-field',
     dataTableConfig: {
       CDNs: {
@@ -373,7 +374,7 @@
    * */
   window.TTB._getLocal = function (key) {
     var value = window.localStorage.getItem(defaults.sdkPrefix + '--' + key);
-    return JSON.parse(value);
+    return value === 'undefined' ? undefined : JSON.parse(value);
   };
 
   /**
@@ -1768,15 +1769,34 @@
      *
      * */
     _ajax: function (options, mapping, queryParams) {
-      var _self, request;
+      var _self, request, o;
 
       _self = this;
+      o = {};
 
       // take the full URL or build it up using baseURL and the given endpoint
       options.url = options.url || (this.baseURL + mapping.endpoint);
 
+      // if its not a login API, send session id (TTBSID query param), if user is logged in.
+      o.isNotLoginAPI = [
+          methodsMapping.LOGIN_REMOTE.methodName,
+          methodsMapping.LOGIN.methodName
+        ].indexOf(mapping.methodName) === -1;
+
+      if (o.isNotLoginAPI) {
+        o.defaultQueryParams = {};
+
+        o.sessionId = TTB._getLocal(defaults.sessionKeyName);
+        if (o.sessionId) {
+          o.defaultQueryParams[defaults.sessionKeyName] = o.sessionId;
+        }
+
+        queryParams = $.extend(o.defaultQueryParams, queryParams);
+      }
+
       // append query params (if provided)
-      options.url = queryParams ? options.url + '?' + $.param(queryParams) : options.url;
+      o.paramsString = queryParams ? $.param(queryParams) : '';
+      options.url += o.paramsString ? '?' + o.paramsString : '';
 
       // extend given AJAX options with required Headers, and CORS flag
       request = $.extend(options, {
@@ -1789,7 +1809,7 @@
 
         // allow CORS
         xhrFields: options.xhrFields || {
-          withCredentials: true
+          //withCredentials: true
         }
       });
 
@@ -1988,7 +2008,19 @@
         data: JSON.stringify(payload)
       };
 
-      return this._ajax(request, methodsMapping.LOGIN_REMOTE);
+      return this._ajax(request, methodsMapping.LOGIN_REMOTE)
+        .then(function (res) {
+          var sessionId;
+
+          // if user is successfully logged-in !!
+          if (res.response.status === 'OK') {
+            // store sessionId in local-storage for later usage against each API key
+            sessionId = res.response.data['0'].TbUser.stk;
+            TTB._setLocal(defaults.sessionKeyName, sessionId);
+          }
+
+          return res;
+        });
     },
 
 
@@ -2035,7 +2067,19 @@
         data: JSON.stringify(payload)
       };
 
-      return this._ajax(request, methodsMapping.LOGIN);
+      return this._ajax(request, methodsMapping.LOGIN)
+        .then(function (res) {
+          var sessionId;
+
+          // if user is successfully logged-in !!
+          if (res.response.status === 'OK') {
+            // store sessionId in local-storage for later usage against each API key
+            sessionId = res.response.data.stk;
+            TTB._setLocal(defaults.sessionKeyName, sessionId);
+          }
+
+          return res;
+        });
     },
 
 
