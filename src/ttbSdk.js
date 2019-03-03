@@ -2015,7 +2015,7 @@
           // if user is successfully logged-in !!
           if (res.response.status === 'OK') {
             // store sessionId in local-storage for later usage against each API key
-            sessionId = res.response.data['0'].TbUser.stk;
+            sessionId = res.response.data[defaults.sessionKeyName];
             TTB._setLocal(defaults.sessionKeyName, sessionId);
           }
 
@@ -2074,7 +2074,7 @@
           // if user is successfully logged-in !!
           if (res.response.status === 'OK') {
             // store sessionId in local-storage for later usage against each API key
-            sessionId = res.response.data.stk;
+            sessionId = res.response.data[defaults.sessionKeyName];
             TTB._setLocal(defaults.sessionKeyName, sessionId);
           }
 
