@@ -33,6 +33,7 @@
     classScopedBootstrapBody: 'scoped-bootstrap--body',
     debug: false,
     sdkPrefix: 'ttb-sdk',
+    sessionKeyName: 'TTBSID',
     autoFillAttr: 'data-ttb-field',
     dataTableConfig: {
       CDNs: {
@@ -373,7 +374,7 @@
    * */
   window.TTB._getLocal = function (key) {
     var value = window.localStorage.getItem(defaults.sdkPrefix + '--' + key);
-    return JSON.parse(value);
+    return value === 'undefined' ? undefined : JSON.parse(value);
   };
 
   /**
@@ -1768,15 +1769,34 @@
      *
      * */
     _ajax: function (options, mapping, queryParams) {
-      var _self, request;
+      var _self, request, o;
 
       _self = this;
+      o = {};
 
       // take the full URL or build it up using baseURL and the given endpoint
       options.url = options.url || (this.baseURL + mapping.endpoint);
 
+      // if its not a login API, send session id (TTBSID query param), if user is logged in.
+      o.isNotLoginAPI = [
+          methodsMapping.LOGIN_REMOTE.methodName,
+          methodsMapping.LOGIN.methodName
+        ].indexOf(mapping.methodName) === -1;
+
+      if (o.isNotLoginAPI) {
+        o.defaultQueryParams = {};
+
+        o.sessionId = TTB._getLocal(defaults.sessionKeyName);
+        if (o.sessionId) {
+          o.defaultQueryParams[defaults.sessionKeyName] = o.sessionId;
+        }
+
+        queryParams = $.extend(o.defaultQueryParams, queryParams);
+      }
+
       // append query params (if provided)
-      options.url = queryParams ? options.url + '?' + $.param(queryParams) : options.url;
+      o.paramsString = queryParams ? $.param(queryParams) : '';
+      options.url += o.paramsString ? '?' + o.paramsString : '';
 
       // extend given AJAX options with required Headers, and CORS flag
       request = $.extend(options, {
@@ -1789,7 +1809,7 @@
 
         // allow CORS
         xhrFields: options.xhrFields || {
-          withCredentials: true
+          //withCredentials: true
         }
       });
 
@@ -1988,7 +2008,19 @@
         data: JSON.stringify(payload)
       };
 
-      return this._ajax(request, methodsMapping.LOGIN_REMOTE);
+      return this._ajax(request, methodsMapping.LOGIN_REMOTE)
+        .then(function (res) {
+          var sessionId;
+
+          // if user is successfully logged-in !!
+          if (res.response.status === 'OK') {
+            // store sessionId in local-storage for later usage against each API key
+            sessionId = res.response.data['0'].TbUser.stk;
+            TTB._setLocal(defaults.sessionKeyName, sessionId);
+          }
+
+          return res;
+        });
     },
 
 
@@ -2035,7 +2067,19 @@
         data: JSON.stringify(payload)
       };
 
-      return this._ajax(request, methodsMapping.LOGIN);
+      return this._ajax(request, methodsMapping.LOGIN)
+        .then(function (res) {
+          var sessionId;
+
+          // if user is successfully logged-in !!
+          if (res.response.status === 'OK') {
+            // store sessionId in local-storage for later usage against each API key
+            sessionId = res.response.data.stk;
+            TTB._setLocal(defaults.sessionKeyName, sessionId);
+          }
+
+          return res;
+        });
     },
 
 
@@ -3174,17 +3218,8 @@
         ' <div class="">2 - Select the type of report you want below</div>',
 
         ' <!-- split button -->',
-        ' <div class="btn-group col-xs-12" dropdown="">',
-
-        '  <!-- dynamic placeholder to contain last selected action -->',
-        '  <button type="button" id="ttb-sdk--instant-lookup--selected-action" class="btn btn-default col-xs-10">{{selectedActionLabel}}</button>',
-
-        '  <button type="button" class="btn btn-default dropdown-toggle col-xs-2" data-dropdown-toggle="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">',
-        '  <span class="caret"></span>',
-        '  <span class="sr-only">Toggle Dropdown</span>',
-        '  </button>',
-
-        '  <ul class="dropdown-menu">',
+        ' <div class="btn-group col-xs-12">',
+        '  <ul>',
         '  <li><a data-action-name="netSheet" href="javascript:">NetSheet</a></li>',
         //'  <li><a data-action-name="generateReport" href="javascript:">Generate Report</a></li>',
         //'  <li role="separator" class="divider"></li>',
@@ -3274,11 +3309,10 @@
         o.selectedAddressInfo = _self.googleBuildAddress(autoComplete.instance);
       });
 
-      o.$selectedAction = o.$container.find('#ttb-sdk--instant-lookup--selected-action');
+      o.$actions = o.$container.find('#ttb-sdk--instant-lookup--actions li');
 
-      // bind selected actions click handlers
-      o.$selectedAction.on('click', invokeSelectedAction);
-      o.$container.find('#ttb-sdk--instant-lookup--actions ul').on('click', setAndInvokeAction);
+      // bind click handlers to all actions
+      o.$container.find('#ttb-sdk--instant-lookup--actions ul').on('click', 'li', setAndInvokeAction);
 
       // reset success alert bar used for e.g. full profile report link.
       function resetSuccessAlert() {
@@ -3314,9 +3348,9 @@
         //console.log('setActionSelection:', evt);
 
         o.selectedAction.name = $(evt.target).data('action-name');
-        o.selectedAction.label = $(evt.target).text();
+        // o.selectedAction.label = $(evt.target).text();
 
-        o.$selectedAction.text(o.selectedAction.label || '');
+        // o.$selectedAction.text(o.selectedAction.label || '');
         window.TTB._setLocal('selectedAction', o.selectedAction);
       }
 
@@ -3345,9 +3379,7 @@
 
           // disable widget controls
           autoComplete.$element.prop('disabled', true);
-          o.$selectedAction.prop('disabled', true)
-            .next('button')
-            .prop('disabled', true);
+          o.$actions.addClass('ttb-sdk--disabled-link');
         };
 
         // function to enable widget controls back to normal
@@ -3357,9 +3389,7 @@
 
           // enable widget controls
           autoComplete.$element.prop('disabled', false);
-          o.$selectedAction.prop('disabled', false)
-            .next('button')
-            .prop('disabled', false);
+          o.$actions.removeClass('ttb-sdk--disabled-link');
         };
 
         // common handler for error relates scenarios. 3 scenarios.
