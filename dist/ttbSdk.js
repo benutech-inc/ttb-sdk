@@ -375,7 +375,17 @@
   window.TTB._getLocal = function (key) {
     try {
       var value = window.localStorage.getItem(defaults.sdkPrefix + '--' + key);
-      return value === 'undefined' ? undefined : JSON.parse(value);
+      switch (value) {
+        case 'null':
+          return null;
+
+        case 'undefined':
+          return undefined;
+
+        default:
+          return (value[0] === '{' || value[0] === '[') ? JSON.parse(value) : value;
+      }
+
     } catch (e) {
       return null;
     }
@@ -396,13 +406,16 @@
    *
    * var actionName = TTB._setLocal('selectedAction', 'fullProfileReport');
    *
+   * @return {Boolean} successWrite - if was successful write. helpful for browsers having "site data" write disabled.
+   *
    * */
   window.TTB._setLocal = function (key, value) {
     try {
-      window.localStorage.setItem(defaults.sdkPrefix + '--' + key, JSON.stringify(value));
+      var valueToWrite = typeof value === 'object' ? JSON.stringify(value) : value;
+      window.localStorage.setItem(defaults.sdkPrefix + '--' + key, valueToWrite);
       return true;
     } catch (e) {
-      return null;
+      return false;
     }
   };
 
@@ -533,6 +546,7 @@
 
     // check if additional params are passed
     if (iframeOptions.params) {
+
       // technique used to pass URLs. https://stackoverflow.com/a/1739132
       $.each(iframeOptions.params, function(key, value) {
         o.src += value ? ('&' + key + '=' + encodeURIComponent(value)) : '';
@@ -3555,7 +3569,8 @@
             verticalTitle: _self.sponsor.title,
             propertyId: property.sa_property_id,
             propertyAddress: property.customFullAddress,
-            debug: _self.debug
+            debug: _self.debug,
+            TTBSID: TTB._getLocal(defaults.sessionKeyName)
           }
         };
 
