@@ -373,8 +373,12 @@
    *
    * */
   window.TTB._getLocal = function (key) {
-    var value = window.localStorage.getItem(defaults.sdkPrefix + '--' + key);
-    return value === 'undefined' ? undefined : JSON.parse(value);
+    try {
+      var value = window.localStorage.getItem(defaults.sdkPrefix + '--' + key);
+      return value === 'undefined' ? undefined : JSON.parse(value);
+    } catch (e) {
+      return null;
+    }
   };
 
   /**
@@ -394,7 +398,12 @@
    *
    * */
   window.TTB._setLocal = function (key, value) {
-    window.localStorage.setItem(defaults.sdkPrefix + '--' + key, JSON.stringify(value));
+    try {
+      window.localStorage.setItem(defaults.sdkPrefix + '--' + key, JSON.stringify(value));
+      return true;
+    } catch (e) {
+      return null;
+    }
   };
 
   /**
