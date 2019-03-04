@@ -27,6 +27,11 @@
     background: #f5f7f7; /* should be customized for 3party site theme */
     border: 1px solid #e0e0e0;
     border-radius: 5px;
+    line-height: 27px;
+}
+#ttb-sdk--instant-lookup--auto-complete{
+    margin-top: 8px;
+    height: 32px;
 }
 #ttb-sdk--instant-lookup--address{
     margin-bottom: 15px;
@@ -51,7 +56,7 @@
     height: 20px;
     position: absolute;
     right: -10px;
-    bottom: 60px;
+    bottom: 75px;
 }
 .ttb-sdk--spinner{
     background: url(https://ttb-landing-page.herokuapp.com/images/loading.gif) no-repeat center;
