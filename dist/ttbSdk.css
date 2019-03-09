@@ -11,6 +11,8 @@
 /* common - all SDK modals */
 .ttb-sdk--modal .close {
     font-size: 40px;
+    position: absolute;
+    right: 22px;
 }
 
 /* common - all SDK links used in widgets */
@@ -144,11 +146,6 @@
 }
 #ttb-sdk--select-sponsor .modal-body{
     padding: 0;
-}
-#ttb-sdk--select-sponsor .close, #ttb-sdk--sponsor-tos-modal .close {
-    font-size: 22px;
-    position: absolute;
-    right: 22px;
 }
 #ttb-sdk--select-sponsor .table{
     border-bottom: 1px solid #dee2e6;
