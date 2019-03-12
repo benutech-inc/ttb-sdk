@@ -101,6 +101,10 @@
 #ttb-sdk--instant-lookup--actions ul li{
     font-weight: 600;
 }
+#ttb-sdk--sponsor-tos-check input{
+    width: 18px;
+    height: 18px;
+}
 #ttb-sdk--instant-lookup--alert {
     display: none;
 }
