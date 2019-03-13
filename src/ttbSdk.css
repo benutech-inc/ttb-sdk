@@ -105,6 +105,9 @@
     width: 18px;
     height: 18px;
 }
+#ttb-sdk--sponsor-tos-check label{
+    font-size: 18px;
+}
 #ttb-sdk--instant-lookup--alert {
     display: none;
 }
