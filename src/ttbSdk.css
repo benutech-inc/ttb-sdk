@@ -115,6 +115,14 @@
     margin-top: 15px;
     font-style: oblique;
 }
+#ttb-sdk--select-sponsor table .btn{
+    position: relative;
+    padding: 8px 30px 8px 40px !important;
+}
+#ttb-sdk--select-sponsor table .btn.btn-disabled{
+    color: #000000;
+    background: #d3d3d3;
+}
 
 .ttb-sdk--table--record-selected{
     background-color: #3276b1 !important;

@@ -1209,24 +1209,19 @@
           ' <td>{{name}}</td>',
           ' <td><a href="{{website}}" target="_blank">{{website}}</a></td>',
           ' <td class="text-center">',
-            '  <button class="btn btn-primary"',
-            '   data-sponsor-name="{{sponsorName}}"',
-            '   data-sponsor-title="{{sponsorTitle}}"',
-            '   data-sponsor-site="{{sponsorSite}}"',
-            '   data-sponsor-logo="{{sponsorLogoURL}}"',
-            '   data-sponsor-tos="{{sponsorTOSURL}}">',
-            ' <span class="icon cross-icon"></span>',
-            '  Select',
-            '  </button>',
-            '  <button class="btn btn-disabled"',
-            '   data-sponsor-name="{{sponsorName}}"',
-            '   data-sponsor-title="{{sponsorTitle}}"',
-            '   data-sponsor-site="{{sponsorSite}}"',
-            '   data-sponsor-logo="{{sponsorLogoURL}}"',
-            '   data-sponsor-tos="{{sponsorTOSURL}}">',
-            ' <span class="icon check-icon"></span>',
+            ' <button style="display: {{isDisabled}}" disabled="disabled" class="btn btn-disabled">',
+            ' <span class="ttb-sdk--common-icon ttb-sdk--common-check-icon"></span>',
             '  Selected',
             '</button>',
+            '  <button style="display: {{isEnabled}}" class="btn btn-primary"',
+            '   data-sponsor-name="{{sponsorName}}"',
+            '   data-sponsor-title="{{sponsorTitle}}"',
+            '   data-sponsor-site="{{sponsorSite}}"',
+            '   data-sponsor-logo="{{sponsorLogoURL}}"',
+            '   data-sponsor-tos="{{sponsorTOSURL}}">',
+            ' <span class="ttb-sdk--common-icon ttb-sdk--common-cross-icon"></span>',
+            '  Select',
+            '  </button>',
           ' </td>',
           '</tr>'
         ].join('');
@@ -1262,7 +1257,9 @@
             .replace('{{sponsorTitle}}', sponsor.company_info.company_name)
             .replace('{{sponsorSite}}', sponsor.site_url)
             .replace('{{sponsorLogoURL}}', sponsor.company_info.logo_url)
-            .replace('{{sponsorTOSURL}}', sponsor.TOS_content);
+            .replace('{{sponsorTOSURL}}', sponsor.TOS_content)
+            .replace('{{isDisabled}}', (store.ttb.sponsor.name === sponsor.vertical_name) ? 'block' : 'none')
+            .replace('{{isEnabled}}', (store.ttb.sponsor.name === sponsor.vertical_name) ? 'none' : 'block');
 
           // set the target list with respect to match.type
           switch (sponsor.match.type) {
