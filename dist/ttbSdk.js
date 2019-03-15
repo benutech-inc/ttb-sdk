@@ -59,8 +59,8 @@
       '  </a>',
       ' </td>',
       ' <td>',
-      '  {{name}} <br>',
-      '  <strong>{{websiteName}}</strong>',
+      '  <strong>{{name}}</strong> <br>',
+      '  {{websiteName}}',
       ' </td>',
       ' <td class="text-center">',
       '  {{sponsorActionButton}}',
@@ -88,7 +88,7 @@
     ].join(''),
 
     sponsorListTemplate: [
-      '<h3>{{resultsMessage}}</h3>',
+      '<h3 class="ttb-sdk--select-sponsor--heading">{{resultsMessage}}</h3>',
       '<div style="overflow-x: auto">',
       '<table class="table ttb-sdk--selected-sponsor--list">',
       ' <thead>',
@@ -1321,7 +1321,7 @@
         // add match type "email" results.
         if (o.sponsorsEmailMarkup.length) {
 
-          o.resultsMessage = 'It appears you currently partner with the following Companies ...';
+          o.resultsMessage = 'It appears you <strong>currently partner</strong> with the following Companies ...';
 
           o.bodyMarkup.push(defaults.sponsorListTemplate
             .replace('{{resultsMessage}}', o.resultsMessage)
@@ -1337,7 +1337,7 @@
           //  o.bodyMarkup.push('<hr>');
           //}
 
-          o.resultsMessage = 'The following Companies are available Partners in the <strong>{{zipCode}}</strong> zip code.'
+          o.resultsMessage = 'The following Companies are <strong>available Partners</strong> in the <strong>{{zipCode}}</strong> zip code.'
             .replace('{{zipCode}}', data.getSponsorsPayload.zipCode);
 
           o.bodyMarkup.push(defaults.sponsorListTemplate

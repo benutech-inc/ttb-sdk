@@ -164,11 +164,11 @@
     width: 880px !important;
     margin: 1.75rem auto;
 }
-#ttb-sdk--select-sponsor .modal-header, #ttb-sdk--select-sponsor .modal-header{
+#ttb-sdk--select-sponsor .modal-header{
     text-align: center;
     background: #f8fafb;
 }
-#ttb-sdk--select-sponsor .modal-title, #ttb-sdk--sponsor-tos-modal .modal-title{
+#ttb-sdk--select-sponsor .modal-title{
     width: 100%;
     color: #2e4250;
     font-size: 25px;
@@ -177,6 +177,9 @@
 }
 #ttb-sdk--select-sponsor .modal-body{
     padding: 0;
+}
+.ttb-sdk--select-sponsor--heading{
+    background-color: #f1f2fa;
 }
 #ttb-sdk--select-sponsor .table{
     border-bottom: 1px solid #dee2e6;
