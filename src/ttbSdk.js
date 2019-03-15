@@ -53,10 +53,14 @@
     sponsorItemTemplate: [
       '<tr>',
       ' <th scope="row">{{count}}</th>',
-      ' <td><img src="{{logoUrl}}" class="img-responsive" alt="Sponsor Logo"></td>',
+      ' <td>',
+      '  <a href="{{websiteURL}}" target="_blank">',
+      '   <img src="{{logoUrl}}" class="img-responsive" alt="Sponsor Logo" >',
+      '  </a>',
+      ' </td>',
       ' <td>',
       '  {{name}} <br>',
-      '  <strong>{{website}}</strong>',
+      '  <strong>{{websiteName}}</strong>',
       ' </td>',
       ' <td class="text-center">',
       '  {{sponsorActionButton}}',
@@ -1257,28 +1261,32 @@
 
           // generate the required action button - check if sponsor is already selected
           o.isCurrentSponsor = data.selectedSponsor && (data.selectedSponsor.name === sponsor.vertical_name);
-          if (!o.isCurrentSponsor) {
-            o.sponsorActionButton = defaults.sponsorItemSelectedButton
+
+          // if already selected - no info needed to render
+          if (o.isCurrentSponsor) {
+            o.sponsorActionButton = defaults.sponsorItemSelectedButton;
+
+            // else render the info in button to generate the sponsor info later
+          } else {
+            o.sponsorActionButton = defaults.sponsorItemSelectButton
               .replace('{{sponsorName}}', sponsor.vertical_name)
               .replace('{{sponsorTitle}}', sponsor.company_info.company_name)
               .replace('{{sponsorSite}}', sponsor.site_url)
               .replace('{{sponsorLogoURL}}', sponsor.company_info.logo_url)
               .replace('{{sponsorTOSURL}}', sponsor.TOS_content);
-
-          } else {
-            o.sponsorActionButton = defaults.sponsorItemSelectButton;
           }
 
           // parse site url, to show only the domain name
-          o.sponsorCompanySite = sponsor.company_info.company_website && sponsor.company_info.company_website
-              .replace(/http:\/\/www\.|https:\/\/www\./, '');
+          o.sponsorSiteName =
+            (sponsor.company_info.company_website || '').replace(/http:\/\/www\.|https:\/\/www\./, '');
 
           // generate sponsor info markup
           o.sponsorMarkup = defaults.sponsorItemTemplate
             //.replace('{{count}}', i + 1)
             .replace('{{logoUrl}}', sponsor.company_info.logo_url)
             .replace('{{name}}', sponsor.company_info.company_name)
-            .replace(/(\{\{website}})/g, o.sponsorCompanySite)
+            .replace(/(\{\{websiteURL}})/g, sponsor.company_info.company_website || 'javascript:')
+            .replace(/(\{\{websiteName}})/g, o.sponsorSiteName)
             .replace('{{sponsorActionButton}}', o.sponsorActionButton);
 
           // set the target list with respect to match.type
