@@ -15,6 +15,23 @@
     right: 22px;
 }
 
+/* tick n cross icons */
+.ttb-sdk--common--icon {
+    width: 32px;
+    height: 35px;
+    position: absolute;
+    left: 3px;
+    top: 7px;
+}
+.ttb-sdk--common--icon-check{
+    background: url('https://ttb-landing-page.herokuapp.com/images/check.png') no-repeat;
+    background-size: 22px 22px;
+}
+.ttb-sdk--common--icon-cross{
+    background: url('https://ttb-landing-page.herokuapp.com/images/cross.png') no-repeat;
+    background-size: 22px 22px;
+}
+
 /* common - all SDK links used in widgets */
 .ttb-sdk--disabled-link {
     pointer-events: none;
@@ -115,6 +132,13 @@
     margin-top: 15px;
     font-style: oblique;
 }
+.ttb-sdk--selected-sponsor--list .btn{
+    position: relative;
+}
+/*.ttb-sdk--select-sponsor--selected{*/
+    /*color: #000000;*/
+    /*background: #d3d3d3;*/
+/*}*/
 
 .ttb-sdk--table--record-selected{
     background-color: #3276b1 !important;

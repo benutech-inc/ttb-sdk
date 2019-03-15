@@ -187,6 +187,57 @@
       sizeClass: 'modal-lg',
       autoDestroy: true
     },
+
+    sponsorItemTemplate: [
+      '&lt;tr>',
+      ' &lt;th scope="row">{{count}}&lt;/th>',
+      ' &lt;td>&lt;img src="{{logoUrl}}" class="img-responsive" alt="Sponsor Logo">&lt;/td>',
+      ' &lt;td>',
+      '  {{name}} &lt;br>',
+      '  &lt;strong>{{website}}&lt;/strong>',
+      ' &lt;/td>',
+      ' &lt;td class="text-center">',
+      '  {{sponsorActionButton}}',
+      ' &lt;/td>',
+      '&lt;/tr>'
+    ].join(''),
+
+    sponsorItemSelectedButton: [
+      '&lt;button type="button" class="btn btn-success ttb-sdk--select-sponsor--selected" disabled>',
+      ' &lt;!-- &lt;span class="ttb-sdk--common--icon ttb-sdk--common--icon-cross">&lt;/span> -->',
+      ' &lt;span class="ttb-sdk--common--icon ttb-sdk--common--icon-check">&lt;/span>',
+      ' Selected',
+      '&lt;/button>'
+    ].join(''),
+
+    sponsorItemSelectButton: [
+      '&lt;button type="button" class="btn btn-primary"',
+      ' data-sponsor-name="{{sponsorName}}"',
+      ' data-sponsor-title="{{sponsorTitle}}"',
+      ' data-sponsor-site="{{sponsorSite}}"',
+      ' data-sponsor-logo="{{sponsorLogoURL}}"',
+      ' data-sponsor-tos="{{sponsorTOSURL}}">',
+      '  Select',
+      '&lt;/button>'
+    ].join(''),
+
+    sponsorListTemplate: [
+      '&lt;h3>{{resultsMessage}}&lt;/h3>',
+      '&lt;div style="overflow-x: auto">',
+      '&lt;table class="table ttb-sdk--selected-sponsor--list">',
+      ' &lt;thead>',
+      '  &lt;tr>',
+      '   &lt;th scope="col" width="80" class="text-center">#&lt;/th>',
+      '   &lt;th scope="col" width="80" class="text-center">Logo&lt;/th>',
+      '   &lt;th scope="col" width="80" class="text-center">Name&lt;/th>',
+      '   &lt;th scope="col" width="80" class="text-center">&lt;/th>',
+      '  &lt;/tr>',
+      ' &lt;thead>',
+      ' &lt;tbody class="align-items-center">{{sponsorsMarkup}}&lt;/tbody>',
+      '&lt;/table>',
+      '&lt;/div>'
+    ].join(''),
+
     modalTemplate: [
       '&lt;div id={{modalId}} class="ttb-sdk--modal modal" tabindex="-1" role="dialog" aria-labelledby="{{modalId}}-label" aria-hidden="true">',
       ' &lt;div class="modal-dialog {{sizeClass}}" role="document">',
@@ -1241,6 +1292,7 @@
    * @param {Object} data.partnerKey - The partner key provided by support team for the consumer site.
    * @param {Object} data.getSponsorsPayload - To be used for &lt;code>getSponsors()&lt;/code>. Please see payload information over [TTB.getSponsors()]{@link TTB#.getSponsors}.
    * @param {Object} data.loginRemotePayload - To be used for &lt;code>loginRemote()&lt;/code>. Please see payload information over [TTB.loginRemote()]{@link TTB#loginRemote}.
+   * @param {Object} [data.selectedSponsor] - if user has any existing sponsor, provide this to show that sponsor as selected, in the list.
    * @param {Object} [data.userProfile] - Alternate way to pass user profile, [Not recommended] (TTB Internal use only).
 
    * @param {Object} actions - The callbacks options to retrieve success and failure info.
@@ -1305,10 +1357,8 @@
 
         o = {
           sponsorsData: undefined,
-          bodyTemplate: undefined,
           bodyMarkup: undefined,
 
-          sponsorTemplate: undefined,
           sponsorMarkup: undefined,
           sponsorsEmailMarkup: undefined,
           sponsorsZipMarkup: undefined,
@@ -1340,57 +1390,34 @@
         o.sponsorsZipMarkup = [];
         o.sponsorsOtherMarkup = [];
 
-        o.sponsorTemplate = [
-          '&lt;tr>',
-          ' &lt;th scope="row">{{count}}&lt;/th>',
-          ' &lt;td>&lt;img src="{{logoUrl}}" class="img-responsive" alt="Sponsor Logo">&lt;/td>',
-          ' &lt;td>{{name}}&lt;/td>',
-          ' &lt;td>&lt;a href="{{website}}" target="_blank">{{website}}&lt;/a>&lt;/td>',
-          ' &lt;td class="text-center">',
-          '  &lt;button class="btn btn-primary"',
-          '   data-sponsor-name="{{sponsorName}}"',
-          '   data-sponsor-title="{{sponsorTitle}}"',
-          '   data-sponsor-site="{{sponsorSite}}"',
-          '   data-sponsor-logo="{{sponsorLogoURL}}"',
-          '   data-sponsor-tos="{{sponsorTOSURL}}">',
-          '  Select',
-          '  &lt;/button>',
-          ' &lt;/td>',
-          '&lt;/tr>'
-        ].join('');
-
-        o.bodyTemplate = [
-          '&lt;h3>{{resultsMessage}}&lt;/h3>',
-          '&lt;div style="overflow-x: auto">',
-            '&lt;table class="table">',
-            ' &lt;thead>',
-            '  &lt;tr>',
-            '   &lt;th scope="col" width="80" class="text-center">#&lt;/th>',
-            '   &lt;th scope="col" width="80" class="text-center">Logo&lt;/th>',
-            '   &lt;th scope="col" width="80" class="text-center">Name&lt;/th>',
-            '   &lt;th scope="col" width="80" class="text-center">Website&lt;/th>',
-            '   &lt;th scope="col" width="80" class="text-center">&lt;/th>',
-            '  &lt;/tr>',
-            ' &lt;thead>',
-            ' &lt;tbody class="align-items-center">{{sponsorsMarkup}}&lt;/tbody>',
-            '&lt;/table>',
-          '&lt;/div>'
-        ].join('');
-
         // iterate over the list and generate the available options
         $.each(o.sponsorsData, function (i, sponsor) {
 
+          // generate the required action button - check if sponsor is already selected
+          o.isCurrentSponsor = data.selectedSponsor &amp;&amp; (data.selectedSponsor.name === sponsor.vertical_name);
+          if (!o.isCurrentSponsor) {
+            o.sponsorActionButton = defaults.sponsorItemSelectedButton
+              .replace('{{sponsorName}}', sponsor.vertical_name)
+              .replace('{{sponsorTitle}}', sponsor.company_info.company_name)
+              .replace('{{sponsorSite}}', sponsor.site_url)
+              .replace('{{sponsorLogoURL}}', sponsor.company_info.logo_url)
+              .replace('{{sponsorTOSURL}}', sponsor.TOS_content);
+
+          } else {
+            o.sponsorActionButton = defaults.sponsorItemSelectButton;
+          }
+
+          // parse site url, to show only the domain name
+          o.sponsorCompanySite = sponsor.company_info.company_website &amp;&amp; sponsor.company_info.company_website
+              .replace(/http:\/\/www\.|https:\/\/www\./, '');
+
           // generate sponsor info markup
-          o.sponsorMarkup = o.sponsorTemplate
+          o.sponsorMarkup = defaults.sponsorItemTemplate
             //.replace('{{count}}', i + 1)
             .replace('{{logoUrl}}', sponsor.company_info.logo_url)
             .replace('{{name}}', sponsor.company_info.company_name)
-            .replace(/(\{\{website}})/g, sponsor.company_info.company_website)
-            .replace('{{sponsorName}}', sponsor.vertical_name)
-            .replace('{{sponsorTitle}}', sponsor.company_info.company_name)
-            .replace('{{sponsorSite}}', sponsor.site_url)
-            .replace('{{sponsorLogoURL}}', sponsor.company_info.logo_url)
-            .replace('{{sponsorTOSURL}}', sponsor.TOS_content);
+            .replace(/(\{\{website}})/g, o.sponsorCompanySite)
+            .replace('{{sponsorActionButton}}', o.sponsorActionButton);
 
           // set the target list with respect to match.type
           switch (sponsor.match.type) {
@@ -1426,7 +1453,7 @@
 
           o.resultsMessage = 'It appears you currently partner with the following Companies ...';
 
-          o.bodyMarkup.push(o.bodyTemplate
+          o.bodyMarkup.push(defaults.sponsorListTemplate
             .replace('{{resultsMessage}}', o.resultsMessage)
             .replace('{{sponsorsMarkup}}', o.sponsorsEmailMarkup.join(''))
           );
@@ -1443,7 +1470,7 @@
           o.resultsMessage = 'The following Companies are available Partners in the &lt;strong>{{zipCode}}&lt;/strong> zip code.'
             .replace('{{zipCode}}', data.getSponsorsPayload.zipCode);
 
-          o.bodyMarkup.push(o.bodyTemplate
+          o.bodyMarkup.push(defaults.sponsorListTemplate
             .replace('{{resultsMessage}}', o.resultsMessage)
             .replace('{{sponsorsMarkup}}', o.sponsorsZipMarkup.join(''))
           );
@@ -1464,7 +1491,7 @@
             o.resultsMessage = 'The following Companies are available Partners.';
           }
 
-          o.bodyMarkup.push(o.bodyTemplate
+          o.bodyMarkup.push(defaults.sponsorListTemplate
             .replace('{{resultsMessage}}', o.resultsMessage)
             .replace('{{sponsorsMarkup}}', o.sponsorsOtherMarkup.join(''))
           );
@@ -1475,7 +1502,10 @@
 
         // register the click handler for sponsor selection
         $('#' + modalId + ' tbody').on('click', 'button', function (e) {
-          var selectedSponsor = {
+          var selectedSponsor;
+
+          // TODO refactor - take data directly from sponsor object
+          selectedSponsor = {
             name: $(this).attr('data-sponsor-name'),
             title: $(this).attr('data-sponsor-title'),
             site: $(this).attr('data-sponsor-site'),
@@ -4153,7 +4183,7 @@
 
         <footer>
             Copyright © 2018 <a href="http://www.benutech.com/" target="_blank" title="Benutech official website">Benutech Inc.</a> All rights reserved.</a>
-           <!-- Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Mar 14 2019 04:22:11 GMT+0500 (PKT) -->
+           <!-- Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Mar 15 2019 05:01:44 GMT+0500 (PKT) -->
         </footer>
     </div>
 </div>
