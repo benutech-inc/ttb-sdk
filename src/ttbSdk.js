@@ -3777,7 +3777,7 @@
       o.widgetTemplate = [
         '<div id="ttb-sdk--connect--connect-section" class="row">',
         ' <div id="ttb-sdk--connect--alert" class="col-xs-9">',
-        ' No Partner - Please click "Connect" to select one.',
+        defaults.errorMessages.CONNECT__NO_SPONSOR,
         ' </div>',
         ' <div id="ttb-sdk--connect--connect" class="col-xs-3">',
         '  <button type="button" class="btn btn-primary pull-right">Connect</button>',
@@ -4008,7 +4008,7 @@
       function activateDisconnectedMode(selectedSponsor) {
         o.$container
           .find('#ttb-sdk--connect--connect-section').show()
-          .find('#ttb-sdk--connect--alert').text('No Partner - Please click "Connect" to select one.')
+          .find('#ttb-sdk--connect--alert').text(defaults.errorMessages.CONNECT__NO_SPONSOR)
           .end()
           .next('#ttb-sdk--connect--disconnect-section').hide()
           .find('#ttb-sdk--connect--company-name').text('');
