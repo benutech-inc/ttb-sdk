@@ -52,8 +52,8 @@
 
     // for all components
     errorMessages: {
-      CONNECT_FAILED: 'Failed in contacting TitleToolbox',
-      NO_PARTNER: 'No Partner - Please click "Connect" to select one.'
+      GENERAL__CONNECT_FAILED: 'Failed in connecting to TitleToolbox',
+      CONNECT__NO_SPONSOR: 'No Partner - Please click "Connect" to select one.'
     },
 
     sponsorItemTemplate: [
@@ -1405,7 +1405,9 @@
       .fail(function (err) {
         var errorMessage;
 
-        errorMessage = messageTemplate.replace('{{message}}', defaults.errorMessages.CONNECT_FAILED + ' for retrieving companies list.');
+        errorMessage = messageTemplate
+          .replace('{{message}}', defaults.errorMessages.GENERAL__CONNECT_FAILED + ' for retrieving companies list.');
+
         $modal.find('.modal-body').html(errorMessage);
 
         // pass the error to error callback if provided.
@@ -1602,7 +1604,7 @@
 
         }, function (reason) {
           window.TTB._log(['saveSponsor: error', reason]);
-          utilHandleError(defaults.errorMessages.CONNECT_FAILED + ' for saving partner.');
+          utilHandleError(defaults.errorMessages.GENERAL__CONNECT_FAILED + ' for saving partner.');
         });
     }
 
@@ -1633,7 +1635,7 @@
 
         }, function (reason) {
           window.TTB._log(['performLogin: error', reason]);
-          utilHandleError(defaults.errorMessages.CONNECT_FAILED + ' for login.');
+          utilHandleError(defaults.errorMessages.GENERAL__CONNECT_FAILED + ' for login.');
         });
     }
 
@@ -1672,7 +1674,7 @@
 
         }, function (reason) {
           window.TTB._log(['TOSAccept: error', reason]);
-          utilHandleError(defaults.errorMessages.CONNECT_FAILED + ' for accepting Terms.');
+          utilHandleError(defaults.errorMessages.GENERAL__CONNECT_FAILED + ' for accepting Terms.');
         });
     }
   };
@@ -3539,7 +3541,7 @@
             proceedActionWithTargetProperty(property, enableControls);
 
           }, function() {
-            handleError(defaults.errorMessages.CONNECT_FAILED + '.');
+            handleError(defaults.errorMessages.GENERAL__CONNECT_FAILED + '.');
           });
       }
 
@@ -3951,7 +3953,7 @@
               };
               window.TTB.getSponsorSelection(ttb.config.partnerKey, payload)
                 .then(function (res) {
-                  var selectedSponsor;
+                  var selectedSponsor, errorMessage;
 
                   res = res.response;
 
@@ -3968,12 +3970,15 @@
                   } else {
 
                     // we keep "connect" enabled here.
-                    utilHandleError(res.data[0], false);
+                    errorMessage = res.data[0].indexOf('RC_ERROR_105') >= 0 ? 
+                      defaults.errorMessages.CONNECT__NO_SPONSOR : res.data[0];
+                    
+                    utilHandleError(errorMessage, false);
                   }
 
                 }, function (reason) {
                   // we keep "connect" enabled here.
-                  utilHandleError(defaults.errorMessages.CONNECT_FAILED + ' for pulling partner selection.', false);
+                  utilHandleError(defaults.errorMessages.GENERAL__CONNECT_FAILED + ' for pulling partner selection.', false);
                 });
 
             } else {
@@ -3981,7 +3986,7 @@
             }
 
           }, function (reason) {
-            utilHandleError(defaults.errorMessages.CONNECT_FAILED + ' for pulling user profile.', true);
+            utilHandleError(defaults.errorMessages.GENERAL__CONNECT_FAILED + ' for pulling user profile.', true);
           });
       }
 
