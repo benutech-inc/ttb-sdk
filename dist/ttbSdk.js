@@ -50,6 +50,12 @@
       autoDestroy: true
     },
 
+    // for all components
+    errorMessages: {
+      CONNECT_FAILED: 'Failed in contacting TitleToolbox',
+      NO_PARTNER: 'No Partner - Please click "Connect" to select one.'
+    },
+
     sponsorItemTemplate: [
       '<tr>',
       ' <th scope="row">{{count}}</th>',
@@ -1399,7 +1405,7 @@
       .fail(function (err) {
         var errorMessage;
 
-        errorMessage = messageTemplate.replace('{{message}}', 'Failed in retrieving companies list.');
+        errorMessage = messageTemplate.replace('{{message}}', defaults.errorMessages.CONNECT_FAILED + ' for retrieving companies list.');
         $modal.find('.modal-body').html(errorMessage);
 
         // pass the error to error callback if provided.
@@ -1596,7 +1602,7 @@
 
         }, function (reason) {
           window.TTB._log(['saveSponsor: error', reason]);
-          utilHandleError('Failed in contacting server for saving partner.');
+          utilHandleError(defaults.errorMessages.CONNECT_FAILED + ' for saving partner.');
         });
     }
 
@@ -1627,7 +1633,7 @@
 
         }, function (reason) {
           window.TTB._log(['performLogin: error', reason]);
-          utilHandleError('Failed in contacting server for login.');
+          utilHandleError(defaults.errorMessages.CONNECT_FAILED + ' for login.');
         });
     }
 
@@ -1666,7 +1672,7 @@
 
         }, function (reason) {
           window.TTB._log(['TOSAccept: error', reason]);
-          utilHandleError('Failed in contacting server for accepting Terms.');
+          utilHandleError(defaults.errorMessages.CONNECT_FAILED + ' for accepting Terms.');
         });
     }
   };
@@ -3533,7 +3539,7 @@
             proceedActionWithTargetProperty(property, enableControls);
 
           }, function() {
-            handleError('Failed in connecting to the server.');
+            handleError(defaults.errorMessages.CONNECT_FAILED + '.');
           });
       }
 
@@ -3967,7 +3973,7 @@
 
                 }, function (reason) {
                   // we keep "connect" enabled here.
-                  utilHandleError('Error in contacting server for pulling partner selection.', false);
+                  utilHandleError(defaults.errorMessages.CONNECT_FAILED + ' for pulling partner selection.', false);
                 });
 
             } else {
@@ -3975,7 +3981,7 @@
             }
 
           }, function (reason) {
-            utilHandleError('Error in contacting server for pulling user profile.', true);
+            utilHandleError(defaults.errorMessages.CONNECT_FAILED + ' for pulling user profile.', true);
           });
       }
 
