@@ -1,7 +1,7 @@
 /**
  * Copyright © 2018 Benutech Inc. All rights reserved.
  * http://www.benutech.com - help@benutech.com
- * version: 1.14.0
+ * version: 1.14.1
  * https://github.com/benutech-inc/ttb-sdk
  * For latest release, please check - https://github.com/benutech-inc/ttb-sdk/releases
  * */
@@ -176,7 +176,7 @@
    * <code> &lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> </code> <br/>
    * Scoped Bootstrap version: <br>
    * Having non-bootstrap based site ? please use the following scoped-bootstrap version to limit bootstrap styles to SDK widgets only. (bootstrap v3.3.7 used.)<br>
-   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.14.0/dist/scoped-bootstrap.min.css​"> </code>
+   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.14.1/dist/scoped-bootstrap.min.css​"> </code>
    * </p>
    *
    * <p>
@@ -188,8 +188,8 @@
    * <p>
    * <strong>TitleToolBox SDK </strong> files (1 script, and 1 style), can be pulled via our public repo link:
    * <i>(keep the [latest version]{@link https://github.com/benutech-inc/ttb-sdk/releases})</i><br>
-   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.14.0/dist/ttbSdk.min.css"> </code>
-   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.14.0/dist/ttbSdk.min.js​">&lt;/script> </code>
+   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.14.1/dist/ttbSdk.min.css"> </code>
+   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.14.1/dist/ttbSdk.min.js​">&lt;/script> </code>
    * <br><br>OR via<strong> Bower </strong> using <code>bower install ttb-sdk --save</code>
    * <br><br>
    *
@@ -365,7 +365,7 @@
    * @description The version of the SDK being used.
    * @type String
    * */
-  window.TTB.version = '1.14.0';
+  window.TTB.version = '1.14.1';
 
   /**
    * @memberof TTB
@@ -3777,7 +3777,7 @@
       o.widgetTemplate = [
         '<div id="ttb-sdk--connect--connect-section" class="row">',
         ' <div id="ttb-sdk--connect--alert" class="col-xs-9">',
-        ' No Partner - Please click "Connect" to select one.',
+        defaults.errorMessages.CONNECT__NO_SPONSOR,
         ' </div>',
         ' <div id="ttb-sdk--connect--connect" class="col-xs-3">',
         '  <button type="button" class="btn btn-primary pull-right">Connect</button>',
@@ -3970,7 +3970,7 @@
                   } else {
 
                     // we keep "connect" enabled here.
-                    errorMessage = res.data[0].indexOf('RC_ERROR_105') >= 0 ? 
+                    errorMessage = res.data[0].indexOf('RC_ERR_105') >= 0 ?
                       defaults.errorMessages.CONNECT__NO_SPONSOR : res.data[0];
                     
                     utilHandleError(errorMessage, false);
@@ -4008,7 +4008,7 @@
       function activateDisconnectedMode(selectedSponsor) {
         o.$container
           .find('#ttb-sdk--connect--connect-section').show()
-          .find('#ttb-sdk--connect--alert').text('No Partner - Please click "Connect" to select one.')
+          .find('#ttb-sdk--connect--alert').text(defaults.errorMessages.CONNECT__NO_SPONSOR)
           .end()
           .next('#ttb-sdk--connect--disconnect-section').hide()
           .find('#ttb-sdk--connect--company-name').text('');
