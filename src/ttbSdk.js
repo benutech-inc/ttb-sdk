@@ -54,7 +54,7 @@
     errorMessages: {
       GENERAL__CONNECT_FAILED: 'Failed in connecting to TitleToolbox',
       // CONNECT__NO_SPONSOR: 'No Partner - Please click "Connect" to select one.'
-      CONNECT__NO_SPONSOR: 'The data related features are supported by various partners. Please click Connect to select one.'
+      CONNECT__NO_SPONSOR: 'The data related features are supported by various partners. Please click Connect to select a partner.'
     },
 
     sponsorItemTemplate: [
