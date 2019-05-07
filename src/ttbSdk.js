@@ -3970,7 +3970,7 @@
                   } else {
 
                     // we keep "connect" enabled here.
-                    errorMessage = res.data[0].indexOf('RC_ERROR_105') >= 0 ? 
+                    errorMessage = res.data[0].indexOf('RC_ERR_105') >= 0 ?
                       defaults.errorMessages.CONNECT__NO_SPONSOR : res.data[0];
                     
                     utilHandleError(errorMessage, false);
