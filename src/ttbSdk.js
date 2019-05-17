@@ -34,6 +34,9 @@
     debug: false,
     sdkPrefix: 'ttb-sdk',
     sessionKeyName: 'TTBSID',
+    sessionKeySkippedMethods: [
+        'TTBSID'
+    ],
     autoFillAttr: 'data-ttb-field',
     dataTableConfig: {
       CDNs: {
@@ -132,29 +135,36 @@
 
   // methods and their API endpoints
   methodsMapping = {
-    LOGIN: {methodName: 'login', endpoint: 'webservices/login.json'},
-    LOGIN_REMOTE: {methodName: 'loginRemote', endpoint: 'webservices/remote_login.json'},
-    LOGOUT: {methodName: 'logout', endpoint: 'webservices/logout.json'},
-    GET_USER_PROFILE: {methodName: 'TTB.getUserProfile', endpoint: 'webservices/get_vendor_user.json'},
-    GET_VENDOR_PROFILE: {methodName: 'TTB.getVendorProfile', endpoint: 'webservices/get_vendor/{{partnerKey}}.json'},
-    GET_SPONSORS: {methodName: 'TTB.getSponsors', endpoint: 'webservices/get_sponsors.json'},
-    GET_SPONSOR_SELECTION: {methodName: 'TTB.getSponsorSelection', endpoint: 'webservices/get_sponsor_selection.json'},
-    SAVE_SPONSOR_SELECTION: {methodName: 'saveSponsorSelection', endpoint: 'webservices/save_sponsor_selection.json'},
-    CLEAR_SPONSOR_SELECTION: {methodName: 'clearSponsorSelection', endpoint: 'webservices/clear_sponsor_selection.json'},
-    ACCEPT_SPONSOR_TOS: {methodName: 'TTB.getSponsors', endpoint: 'webservices/accept_tos/accept.json'},
-    SEARCH_PARCEL: {methodName: 'searchByParcelNumber', endpoint: 'webservices/search_parcel_number.json'},
-    SEARCH_PROPERTY: {methodName: 'searchBySiteAddress', endpoint: 'webservices/search_property/ttb.json'},
-    SEARCH_OWNER: {methodName: 'searchByOwnerName', endpoint: 'webservices/search_owner_name/ttb.json'},
-    ORDER_REPORT: {methodName: 'orderReport', endpoint: 'webservices/order_report.json'},
-    PROPERTY_COMPS: {methodName: 'propertyComps', endpoint: 'webservices/property_comps.json'},
-    PROPERTY_DETAILS: {methodName: 'propertyDetails', endpoint: 'webservices/property_details.json'},
-    FARMS_PE_CHECK_STATUS: {methodName: 'checkPEFarmStatus', endpoint: 'webservices/pe_farm_status/{{farmId}}.json'},
-    FARMS_GET_FARM: {methodName: 'getFarmProperties', endpoint: 'webservices/get_farm/{{farmId}}.json'},
-    FARMS_GET_FARMS_LIST: {methodName: 'getFarmsList', endpoint: 'webservices/get_farm_metainfo.json'},
-    GLOBAL_SEARCH: {methodName: 'globalSearch', endpoint: 'webservices/global_search.json'},
-    GLOBAL_SEARCH_COUNT: {methodName: 'globalSearchCount', endpoint: 'webservices/global_search_count.json'},
-    GET_TYPES_REPORT: {methodName: 'getTypesReport', endpoint: 'webservices/types_report.json'},
-    GET_SEARCH_FIELDS: {methodName: 'getSearchFields', endpoint: 'webservices/get_search_fields.json'}
+    AUTH__LOGIN: {methodName: 'login', endpoint: 'webservices/login.json'},
+    AUTH__LOGIN_REMOTE: {methodName: 'loginRemote', endpoint: 'webservices/remote_login.json'},
+    AUTH__LOGOUT: {methodName: 'logout', endpoint: 'webservices/logout.json'},
+
+    GET_PROFILE__USER: {methodName: 'TTB.getUserProfile', endpoint: 'webservices/get_vendor_user.json'},
+    GET_PROFILE__VENDOR: {methodName: 'TTB.getVendorProfile', endpoint: 'webservices/get_vendor/{{partnerKey}}.json'},
+
+    SPONSOR__GET_LIST: {methodName: 'TTB.getSponsors', endpoint: 'webservices/get_sponsors.json'},
+    SPONSOR__GET_SELECTION: {methodName: 'TTB.getSponsorSelection', endpoint: 'webservices/get_sponsor_selection.json'},
+    SPONSOR__SAVE_SELECTION: {methodName: 'saveSponsorSelection', endpoint: 'webservices/save_sponsor_selection.json'},
+    SPONSOR__CLEAR_SELECTION: {methodName: 'clearSponsorSelection', endpoint: 'webservices/clear_sponsor_selection.json'},
+    SPONSOR__ACCEPT_TOS: {methodName: 'TTB.getSponsors', endpoint: 'webservices/accept_tos/accept.json'},
+
+    SEARCH_PROPERTY__PARCEL: {methodName: 'searchByParcelNumber', endpoint: 'webservices/search_parcel_number.json'},
+    SEARCH_PROPERTY__ADDRESS: {methodName: 'searchBySiteAddress', endpoint: 'webservices/search_property/ttb.json'},
+    SEARCH_PROPERTY__OWNER: {methodName: 'searchByOwnerName', endpoint: 'webservices/search_owner_name/ttb.json'},
+
+    REPORT__ORDER: {methodName: 'orderReport', endpoint: 'webservices/order_report.json'},
+    REPORT__GET_TYPES: {methodName: 'getTypesReport', endpoint: 'webservices/types_report.json'},
+
+    PROPERTY__COMPS: {methodName: 'propertyComps', endpoint: 'webservices/property_comps.json'},
+    PROPERTY__DETAILS: {methodName: 'propertyDetails', endpoint: 'webservices/property_details.json'},
+
+    FARM__PE__CHECK_STATUS: {methodName: 'checkPEFarmStatus', endpoint: 'webservices/pe_farm_status/{{farmId}}.json'},
+    FARM__GET_DETAILS: {methodName: 'getFarmProperties', endpoint: 'webservices/get_farm/{{farmId}}.json'},
+    FARM__GET_LIST: {methodName: 'getFarmsList', endpoint: 'webservices/get_farm_metainfo.json'},
+
+    GLOBAL_SEARCH__PROPERTIES: {methodName: 'globalSearch', endpoint: 'webservices/global_search.json'},
+    GLOBAL_SEARCH__COUNT: {methodName: 'globalSearchCount', endpoint: 'webservices/global_search_count.json'},
+    GLOBAL_SEARCH__FIELDS: {methodName: 'getSearchFields', endpoint: 'webservices/get_search_fields.json'}
   };
 
   /**
@@ -988,7 +998,7 @@
       }
     };
 
-    return ttb._ajax(request, methodsMapping.GET_USER_PROFILE);
+    return ttb._ajax(request, methodsMapping.GET_PROFILE__USER);
   };
 
   /**
@@ -1031,7 +1041,7 @@
     // get a default instance for internal use
     var ttb = window.TTB._createDefaultInstance(partnerKey);
 
-    var url = (ttb.baseURL + methodsMapping.GET_VENDOR_PROFILE.endpoint).replace('{{partnerKey}}', partnerKey);
+    var url = (ttb.baseURL + methodsMapping.GET_PROFILE__VENDOR.endpoint).replace('{{partnerKey}}', partnerKey);
 
     var request = {
       url: url,
@@ -1041,7 +1051,7 @@
       }
     };
 
-    return ttb._ajax(request, methodsMapping.GET_VENDOR_PROFILE);
+    return ttb._ajax(request, methodsMapping.GET_PROFILE__VENDOR);
   };
 
   /**
@@ -1095,7 +1105,7 @@
       data: JSON.stringify(payload)
     };
 
-    return ttb._ajax(request, methodsMapping.GET_SPONSORS);
+    return ttb._ajax(request, methodsMapping.SPONSOR__GET_LIST);
   };
 
   /**
@@ -1149,7 +1159,7 @@
       data: JSON.stringify(payload)
     };
 
-    return ttb._ajax(request, methodsMapping.GET_SPONSOR_SELECTION);
+    return ttb._ajax(request, methodsMapping.SPONSOR__GET_SELECTION);
   };
 
   /**
@@ -1653,7 +1663,7 @@
         method: 'GET'
       };
 
-      return ttb._ajax(request, methodsMapping.ACCEPT_SPONSOR_TOS)
+      return ttb._ajax(request, methodsMapping.SPONSOR__ACCEPT_TOS)
         .then(function (res) {
           res = res.response;
 
@@ -1849,8 +1859,8 @@
 
       // if its not a login API, send session id (TTBSID query param), if user is logged in.
       o.isNotLoginAPI = [
-          methodsMapping.LOGIN_REMOTE.methodName,
-          methodsMapping.LOGIN.methodName
+          methodsMapping.AUTH__LOGIN_REMOTE.methodName,
+          methodsMapping.AUTH__LOGIN.methodName
         ].indexOf(mapping.methodName) === -1;
 
       if (o.isNotLoginAPI) {
@@ -2078,7 +2088,7 @@
         data: JSON.stringify(payload)
       };
 
-      return this._ajax(request, methodsMapping.LOGIN_REMOTE)
+      return this._ajax(request, methodsMapping.AUTH__LOGIN_REMOTE)
         .then(function (res) {
           var sessionId;
 
@@ -2137,7 +2147,7 @@
         data: JSON.stringify(payload)
       };
 
-      return this._ajax(request, methodsMapping.LOGIN)
+      return this._ajax(request, methodsMapping.AUTH__LOGIN)
         .then(function (res) {
           var sessionId;
 
@@ -2185,7 +2195,7 @@
         method: 'GET'
       };
 
-      return this._ajax(request, methodsMapping.LOGOUT);
+      return this._ajax(request, methodsMapping.AUTH__LOGOUT);
     },
 
 
@@ -2229,7 +2239,7 @@
         data: JSON.stringify(payload)
       };
 
-      return this._ajax(request, methodsMapping.SEARCH_PARCEL);
+      return this._ajax(request, methodsMapping.SEARCH_PROPERTY__PARCEL);
     },
 
 
@@ -2282,7 +2292,7 @@
         data: JSON.stringify(payload)
       };
 
-      return this._ajax(request, methodsMapping.SEARCH_PROPERTY);
+      return this._ajax(request, methodsMapping.SEARCH_PROPERTY__ADDRESS);
     },
 
 
@@ -2328,7 +2338,7 @@
         data: JSON.stringify(payload)
       };
 
-      return this._ajax(request, methodsMapping.SEARCH_OWNER);
+      return this._ajax(request, methodsMapping.SEARCH_PROPERTY__OWNER);
     },
 
 
@@ -2381,7 +2391,7 @@
         data: JSON.stringify(payload)
       };
 
-      return this._ajax(request, methodsMapping.ORDER_REPORT);
+      return this._ajax(request, methodsMapping.REPORT__ORDER);
     },
 
 
@@ -2437,7 +2447,7 @@
         data: JSON.stringify(payload)
       };
 
-      return this._ajax(request, methodsMapping.PROPERTY_COMPS);
+      return this._ajax(request, methodsMapping.PROPERTY__COMPS);
     },
 
 
@@ -2496,7 +2506,7 @@
         data: JSON.stringify(payload)
       };
 
-      return this._ajax(request, methodsMapping.PROPERTY_DETAILS)
+      return this._ajax(request, methodsMapping.PROPERTY__DETAILS)
         .then(function (res) {
           options.autoFillContext && _self._fillFields(options.autoFillContext, res.response.data, options.autoFillClearExisting, options.autoFillDelay);
           return res;
@@ -2538,14 +2548,14 @@
      * @return {Object} promise - Jquery AJAX deferred promise is returned which on-success returns the required info.
      * */
     checkPEFarmStatus: function (farmId) {
-      var url = (this.baseURL + methodsMapping.FARMS_PE_CHECK_STATUS.endpoint).replace('{{farmId}}', farmId);
+      var url = (this.baseURL + methodsMapping.FARM__PE__CHECK_STATUS.endpoint).replace('{{farmId}}', farmId);
 
       var request = {
         method: 'GET',
         url: url
       };
 
-      return this._ajax(request, methodsMapping.FARMS_PE_CHECK_STATUS);
+      return this._ajax(request, methodsMapping.FARM__PE__CHECK_STATUS);
     },
 
     /**
@@ -2580,14 +2590,14 @@
      * @return {Object} promise - Jquery AJAX deferred promise is returned which on-success returns the required info.
      * */
     getFarmProperties: function (farmId) {
-      var url = (this.baseURL + methodsMapping.FARMS_GET_FARM.endpoint).replace('{{farmId}}', farmId);
+      var url = (this.baseURL + methodsMapping.FARM__GET_DETAILS.endpoint).replace('{{farmId}}', farmId);
 
       var request = {
         method: 'GET',
         url: url
       };
 
-      return this._ajax(request, methodsMapping.FARMS_GET_FARM);
+      return this._ajax(request, methodsMapping.FARM__GET_DETAILS);
     },
 
     /**
@@ -2622,7 +2632,7 @@
         method: 'GET'
       };
 
-      return this._ajax(request, methodsMapping.FARMS_GET_FARMS_LIST);
+      return this._ajax(request, methodsMapping.FARM__GET_LIST);
     },
 
     /**
@@ -2717,7 +2727,7 @@
         data: JSON.stringify(payload)
       };
 
-      return this._ajax(request, methodsMapping.GLOBAL_SEARCH, queryParams);
+      return this._ajax(request, methodsMapping.GLOBAL_SEARCH__PROPERTIES, queryParams);
     },
 
 
@@ -2778,7 +2788,7 @@
         data: JSON.stringify(payload)
       };
 
-      return this._ajax(request, methodsMapping.GLOBAL_SEARCH_COUNT);
+      return this._ajax(request, methodsMapping.GLOBAL_SEARCH__COUNT);
     },
 
 
@@ -2857,7 +2867,7 @@
         data: JSON.stringify(finalPayload)
       };
 
-      return this._ajax(request, methodsMapping.GLOBAL_SEARCH, queryParams);
+      return this._ajax(request, methodsMapping.GLOBAL_SEARCH__PROPERTIES, queryParams);
     },
 
 
@@ -2893,7 +2903,7 @@
         method: 'GET'
       };
 
-      return this._ajax(request, methodsMapping.GET_TYPES_REPORT);
+      return this._ajax(request, methodsMapping.REPORT__GET_TYPES);
     },
 
 
@@ -2933,7 +2943,7 @@
         method: 'GET'
       };
 
-      return this._ajax(request, methodsMapping.GET_SEARCH_FIELDS);
+      return this._ajax(request, methodsMapping.GLOBAL_SEARCH__FIELDS);
     },
 
 
@@ -2989,7 +2999,7 @@
         save_and_login: !!performLogin
       };
 
-      return this._ajax(request, methodsMapping.SAVE_SPONSOR_SELECTION, queryParams);
+      return this._ajax(request, methodsMapping.SPONSOR__SAVE_SELECTION, queryParams);
     },
 
     /**
@@ -3037,7 +3047,7 @@
       //  perform_logout: !!performLogout
       //};
 
-      return this._ajax(request, methodsMapping.CLEAR_SPONSOR_SELECTION);
+      return this._ajax(request, methodsMapping.SPONSOR__CLEAR_SELECTION);
     },
 
 
