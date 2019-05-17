@@ -35,7 +35,11 @@
     sdkPrefix: 'ttb-sdk',
     sessionKeyName: 'TTBSID',
     sessionKeySkippedMethods: [
-        'TTBSID'
+        'login',
+        'loginRemote',
+        'TTB.getUserProfile',
+        'TTB.getVendorProfile',
+        'TTB.getSponsorSelection',
     ],
     autoFillAttr: 'data-ttb-field',
     dataTableConfig: {
@@ -139,8 +143,8 @@
     AUTH__LOGIN_REMOTE: {methodName: 'loginRemote', endpoint: 'webservices/remote_login.json'},
     AUTH__LOGOUT: {methodName: 'logout', endpoint: 'webservices/logout.json'},
 
-    GET_PROFILE__USER: {methodName: 'TTB.getUserProfile', endpoint: 'webservices/get_vendor_user.json'},
-    GET_PROFILE__VENDOR: {methodName: 'TTB.getVendorProfile', endpoint: 'webservices/get_vendor/{{partnerKey}}.json'},
+    VENDOR__GET_PROFILE__USER: {methodName: 'TTB.getUserProfile', endpoint: 'webservices/get_vendor_user.json'},
+    VENDOR__GET_PROFILE__VENDOR: {methodName: 'TTB.getVendorProfile', endpoint: 'webservices/get_vendor/{{partnerKey}}.json'},
 
     SPONSOR__GET_LIST: {methodName: 'TTB.getSponsors', endpoint: 'webservices/get_sponsors.json'},
     SPONSOR__GET_SELECTION: {methodName: 'TTB.getSponsorSelection', endpoint: 'webservices/get_sponsor_selection.json'},
@@ -998,7 +1002,7 @@
       }
     };
 
-    return ttb._ajax(request, methodsMapping.GET_PROFILE__USER);
+    return ttb._ajax(request, methodsMapping.VENDOR__GET_PROFILE__USER);
   };
 
   /**
@@ -1041,7 +1045,7 @@
     // get a default instance for internal use
     var ttb = window.TTB._createDefaultInstance(partnerKey);
 
-    var url = (ttb.baseURL + methodsMapping.GET_PROFILE__VENDOR.endpoint).replace('{{partnerKey}}', partnerKey);
+    var url = (ttb.baseURL + methodsMapping.VENDOR__GET_PROFILE__VENDOR.endpoint).replace('{{partnerKey}}', partnerKey);
 
     var request = {
       url: url,
@@ -1051,7 +1055,7 @@
       }
     };
 
-    return ttb._ajax(request, methodsMapping.GET_PROFILE__VENDOR);
+    return ttb._ajax(request, methodsMapping.VENDOR__GET_PROFILE__VENDOR);
   };
 
   /**
