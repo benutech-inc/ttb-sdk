@@ -9,7 +9,41 @@
 (function () {
   'use strict';
 
-  var defaults, methodsMapping, siteProtocol;
+  var methodsMapping, siteProtocol, defaults;
+
+  // methods and their API endpoints
+  methodsMapping = {
+    AUTH__LOGIN: {methodName: 'login', endpoint: 'webservices/login.json'},
+    AUTH__LOGIN_REMOTE: {methodName: 'loginRemote', endpoint: 'webservices/remote_login.json'},
+    AUTH__LOGOUT: {methodName: 'logout', endpoint: 'webservices/logout.json'},
+
+    VENDOR__GET_PROFILE__USER: {methodName: 'TTB.getUserProfile', endpoint: 'webservices/get_vendor_user.json'},
+    VENDOR__GET_PROFILE__VENDOR: {methodName: 'TTB.getVendorProfile', endpoint: 'webservices/get_vendor/{{partnerKey}}.json'},
+
+    SPONSOR__GET_LIST: {methodName: 'TTB.getSponsors', endpoint: 'webservices/get_sponsors.json'},
+    SPONSOR__GET_SELECTION: {methodName: 'TTB.getSponsorSelection', endpoint: 'webservices/get_sponsor_selection.json'},
+    SPONSOR__SAVE_SELECTION: {methodName: 'saveSponsorSelection', endpoint: 'webservices/save_sponsor_selection.json'},
+    SPONSOR__CLEAR_SELECTION: {methodName: 'clearSponsorSelection', endpoint: 'webservices/clear_sponsor_selection.json'},
+    SPONSOR__ACCEPT_TOS: {methodName: 'TTB.getSponsors', endpoint: 'webservices/accept_tos/accept.json'},
+
+    SEARCH_PROPERTY__PARCEL: {methodName: 'searchByParcelNumber', endpoint: 'webservices/search_parcel_number.json'},
+    SEARCH_PROPERTY__ADDRESS: {methodName: 'searchBySiteAddress', endpoint: 'webservices/search_property/ttb.json'},
+    SEARCH_PROPERTY__OWNER: {methodName: 'searchByOwnerName', endpoint: 'webservices/search_owner_name/ttb.json'},
+
+    REPORT__ORDER: {methodName: 'orderReport', endpoint: 'webservices/order_report.json'},
+    REPORT__GET_TYPES: {methodName: 'getTypesReport', endpoint: 'webservices/types_report.json'},
+
+    PROPERTY__COMPS: {methodName: 'propertyComps', endpoint: 'webservices/property_comps.json'},
+    PROPERTY__DETAILS: {methodName: 'propertyDetails', endpoint: 'webservices/property_details.json'},
+
+    FARM__PE__CHECK_STATUS: {methodName: 'checkPEFarmStatus', endpoint: 'webservices/pe_farm_status/{{farmId}}.json'},
+    FARM__GET_DETAILS: {methodName: 'getFarmProperties', endpoint: 'webservices/get_farm/{{farmId}}.json'},
+    FARM__GET_LIST: {methodName: 'getFarmsList', endpoint: 'webservices/get_farm_metainfo.json'},
+
+    GLOBAL_SEARCH__PROPERTIES: {methodName: 'globalSearch', endpoint: 'webservices/global_search.json'},
+    GLOBAL_SEARCH__COUNT: {methodName: 'globalSearchCount', endpoint: 'webservices/global_search_count.json'},
+    GLOBAL_SEARCH__FIELDS: {methodName: 'getSearchFields', endpoint: 'webservices/get_search_fields.json'}
+  };
 
   //siteProtocol = window.location.protocol;
   siteProtocol = 'https:';
@@ -35,11 +69,11 @@
     sdkPrefix: 'ttb-sdk',
     sessionKeyName: 'TTBSID',
     sessionKeySkippedMethods: [
-        'login',
-        'loginRemote',
-        'TTB.getUserProfile',
-        'TTB.getVendorProfile',
-        'TTB.getSponsorSelection',
+        methodsMapping.AUTH__LOGIN.methodName, // e.g. 'login',
+        methodsMapping.AUTH__LOGIN_REMOTE.methodName,
+        methodsMapping.VENDOR__GET_PROFILE__USER.methodName,
+        methodsMapping.VENDOR__GET_PROFILE__VENDOR.methodName,
+        methodsMapping.SPONSOR__GET_SELECTION.methodName
     ],
     autoFillAttr: 'data-ttb-field',
     dataTableConfig: {
@@ -135,40 +169,6 @@
       ' </div>',
       '</div>'
     ].join('')
-  };
-
-  // methods and their API endpoints
-  methodsMapping = {
-    AUTH__LOGIN: {methodName: 'login', endpoint: 'webservices/login.json'},
-    AUTH__LOGIN_REMOTE: {methodName: 'loginRemote', endpoint: 'webservices/remote_login.json'},
-    AUTH__LOGOUT: {methodName: 'logout', endpoint: 'webservices/logout.json'},
-
-    VENDOR__GET_PROFILE__USER: {methodName: 'TTB.getUserProfile', endpoint: 'webservices/get_vendor_user.json'},
-    VENDOR__GET_PROFILE__VENDOR: {methodName: 'TTB.getVendorProfile', endpoint: 'webservices/get_vendor/{{partnerKey}}.json'},
-
-    SPONSOR__GET_LIST: {methodName: 'TTB.getSponsors', endpoint: 'webservices/get_sponsors.json'},
-    SPONSOR__GET_SELECTION: {methodName: 'TTB.getSponsorSelection', endpoint: 'webservices/get_sponsor_selection.json'},
-    SPONSOR__SAVE_SELECTION: {methodName: 'saveSponsorSelection', endpoint: 'webservices/save_sponsor_selection.json'},
-    SPONSOR__CLEAR_SELECTION: {methodName: 'clearSponsorSelection', endpoint: 'webservices/clear_sponsor_selection.json'},
-    SPONSOR__ACCEPT_TOS: {methodName: 'TTB.getSponsors', endpoint: 'webservices/accept_tos/accept.json'},
-
-    SEARCH_PROPERTY__PARCEL: {methodName: 'searchByParcelNumber', endpoint: 'webservices/search_parcel_number.json'},
-    SEARCH_PROPERTY__ADDRESS: {methodName: 'searchBySiteAddress', endpoint: 'webservices/search_property/ttb.json'},
-    SEARCH_PROPERTY__OWNER: {methodName: 'searchByOwnerName', endpoint: 'webservices/search_owner_name/ttb.json'},
-
-    REPORT__ORDER: {methodName: 'orderReport', endpoint: 'webservices/order_report.json'},
-    REPORT__GET_TYPES: {methodName: 'getTypesReport', endpoint: 'webservices/types_report.json'},
-
-    PROPERTY__COMPS: {methodName: 'propertyComps', endpoint: 'webservices/property_comps.json'},
-    PROPERTY__DETAILS: {methodName: 'propertyDetails', endpoint: 'webservices/property_details.json'},
-
-    FARM__PE__CHECK_STATUS: {methodName: 'checkPEFarmStatus', endpoint: 'webservices/pe_farm_status/{{farmId}}.json'},
-    FARM__GET_DETAILS: {methodName: 'getFarmProperties', endpoint: 'webservices/get_farm/{{farmId}}.json'},
-    FARM__GET_LIST: {methodName: 'getFarmsList', endpoint: 'webservices/get_farm_metainfo.json'},
-
-    GLOBAL_SEARCH__PROPERTIES: {methodName: 'globalSearch', endpoint: 'webservices/global_search.json'},
-    GLOBAL_SEARCH__COUNT: {methodName: 'globalSearchCount', endpoint: 'webservices/global_search_count.json'},
-    GLOBAL_SEARCH__FIELDS: {methodName: 'getSearchFields', endpoint: 'webservices/get_search_fields.json'}
   };
 
   /**
@@ -1861,15 +1861,14 @@
       // take the full URL or build it up using baseURL and the given endpoint
       options.url = options.url || (this.baseURL + mapping.endpoint);
 
-      // if its not a login API, send session id (TTBSID query param), if user is logged in.
-      o.isNotLoginAPI = [
-          methodsMapping.AUTH__LOGIN_REMOTE.methodName,
-          methodsMapping.AUTH__LOGIN.methodName
-        ].indexOf(mapping.methodName) === -1;
+      // check for type of the method. public vs auth-protected methods.
+      o.isPublicAPIMethod = defaults.sessionKeySkippedMethods.indexOf(mapping.methodName) >= 0;
 
-      if (o.isNotLoginAPI) {
+      // if its not a public API, send session id (TTBSID query param)
+      if (!o.isPublicAPIMethod) {
         o.defaultQueryParams = {};
 
+        // attach only when user is logged in. - most probably user would be logged in this scenario.
         o.sessionId = TTB._getLocal(defaults.sessionKeyName);
         if (o.sessionId) {
           o.defaultQueryParams[defaults.sessionKeyName] = o.sessionId;
