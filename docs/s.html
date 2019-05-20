@@ -70,6 +70,8 @@
             
                 <li data-name="TTB.utilBuildSponsorInfo"><a href="TTB.html#.utilBuildSponsorInfo">utilBuildSponsorInfo</a></li>
             
+                <li data-name="TTB.utilGenerateLandingPageURL"><a href="TTB.html#.utilGenerateLandingPageURL">utilGenerateLandingPageURL</a></li>
+            
                 <li data-name="TTB#checkPEFarmStatus"><a href="TTB.html#checkPEFarmStatus">checkPEFarmStatus</a></li>
             
                 <li data-name="TTB#clearSponsorSelection"><a href="TTB.html#clearSponsorSelection">clearSponsorSelection</a></li>
@@ -1838,52 +1840,43 @@
    * @static
    *
    * @description
-   * This static method is used to render a logo link on vendors's sites, clicking which can take user to the landing page for TTB powered widgets.
+   * This static method renders a logo link on vendors's sites, clicking which can take user to the landing page for TTB powered widgets.
    * &lt;br>
    * (Check it out in action over https://jsfiddle.net/benutech/w0ya3qr5/)
    *
    * @param {String} elementSelector - DOM element selector where the widget needs to be rendered.
    * &lt;code>#lorem&lt;/code> or &lt;code>.ipsum&lt;/code> etc.
    *
-   * @param {Object} info - The information regarding vendor, and it's user.
-   * @param {String} info.stk - The session token from existing login at 3rd-party app.
-   * @param {String} info.getuser_url - The URL to hit to get the user information against the given stk.
-   * @param {Object} info.partnerKey - The partner key provided by support team for the consumer site.
+   * @param {Object} vendorInfo - The information regarding vendor, and it's user session details. for details, Check out utilGenerateLandingPageURL() documentation.
 
    * @example
    *
    * var elementSelector = '#ttb--render-logo-wrapper';
    *
-   * var info = {
+   * var vendorInfo = {
    *  stk: "xxxxxxxxxxxxxxx",
    *  getuser_url: 'https://www.yoursite.com/webservices/getuser.json'
    *  partnerKey: 'xxxxxxxxxxxxxxxxx'
    * };
    *
-   * TTB.renderLogoWidget(elementSelector, info);
+   * TTB.renderLogoWidget(elementSelector, vendorInfo);
    *
    * @return {Object} wrapperEL - DOM Node reference to the rendered widget's wrapper.
    *
    * */
-  window.TTB.renderLogoWidget = function (elementSelector, info) {
-    var generatedURL, template, markup, wrapperEL;
+  window.TTB.renderLogoWidget = function (elementSelector, vendorInfo) {
+    var landingPageUrl, template, markup, wrapperEL;
 
-    generatedURL = window.location.port === defaults.devPortSandbox ? 'http://localhost:9001' : 'https://ttb-landing-page.herokuapp.com';
-    generatedURL += '/?stk={{stk}}&amp;getuser_url={{getuser_url}}&amp;partnerKey={{partnerKey}}&amp;enabled_features={{enabled_features}}&amp;debug={{debug}}'
-      .replace('{{stk}}', info.stk)
-      .replace('{{getuser_url}}', encodeURIComponent(info.getuser_url))
-      .replace('{{partnerKey}}', info.partnerKey)
-      .replace('{{enabled_features}}', defaults.enabledFeatures)
-      .replace('{{debug}}', window.TTB.debug);
+    landingPageUrl = window.TTB.utilGenerateLandingPageURL(vendorInfo);
 
     template = [
-      '&lt;a class="ttb-sdk--render-logo--link" target="_blank" href="{{generatedURL}}" title="Title ToolBox - Full Profile and Net Sheet Report Lookup">',
+      '&lt;a class="ttb-sdk--render-logo--link" target="_blank" href="{{landingPageUrl}}" title="Title ToolBox - Full Profile and Net Sheet Report Lookup">',
       ' &lt;img class="ttb-sdk--render-logo--image" src="https://demo.titletoolbox.com/assets/images/logo_in.png" style="background-color: #389ae5;">',
       '&lt;/a>'
     ].join('');
 
     markup = template
-      .replace('{{generatedURL}}', generatedURL);
+      .replace('{{landingPageUrl}}', landingPageUrl);
 
     // we do not use jquery, to lose our dependency for this widget.
     wrapperEL = document.querySelector(elementSelector);
@@ -1893,6 +1886,49 @@
 
     // return the reference for any further usage of element.
     return wrapperEL;
+  };
+
+  /**
+   * @memberof TTB
+   * @alias utilGenerateLandingPageURL
+   * @static
+   *
+   * @description
+   * This static method generates a link / URL to use on vendors's site, clicking which can take user to the landing page for TTB powered widgets.
+   * &lt;br>
+   * it is used inside renderLogoWidget(), To learn more about it, check out its documentation.
+   *
+   * @param {Object} vendorInfo - The information regarding vendor, and it's user.
+   * @param {String} vendorInfo.stk - The session token from existing login at 3rd-party app.
+   * @param {String} vendorInfo.getuser_url - The URL to hit to get the user information against the given stk.
+   * @param {Object} vendorInfo.partnerKey - The partner key provided by support team for the consumer site.
+
+   * @example
+   *
+   * var vendorInfo = {
+   *  stk: "xxxxxxxxxxxxxxx",
+   *  getuser_url: 'https://www.yoursite.com/webservices/getuser.json'
+   *  partnerKey: 'xxxxxxxxxxxxxxxxx'
+   * };
+   *
+   * var TTBLandingPageUrl = TTB.generateLandingPageURL(vendorInfo);
+   * // you can use this variable as HREF to any anchor (a) tag.
+   *
+   * @return {string} TTBLandingPageUrl - A string URL contains provided info in an encoded format, as part of URL.
+   *
+   * */
+  window.TTB.utilGenerateLandingPageURL = function (vendorInfo) {
+    var TTBLandingPageUrl;
+
+    TTBLandingPageUrl = window.location.port === defaults.devPortSandbox ? 'http://localhost:9001' : 'https://ttb-landing-page.herokuapp.com';
+    TTBLandingPageUrl += '/?stk={{stk}}&amp;getuser_url={{getuser_url}}&amp;partnerKey={{partnerKey}}&amp;enabled_features={{enabled_features}}&amp;debug={{debug}}'
+        .replace('{{stk}}', vendorInfo.stk)
+        .replace('{{getuser_url}}', encodeURIComponent(vendorInfo.getuser_url))
+        .replace('{{partnerKey}}', vendorInfo.partnerKey)
+        .replace('{{enabled_features}}', defaults.enabledFeatures)
+        .replace('{{debug}}', window.TTB.debug);
+
+    return TTBLandingPageUrl;
   };
 
 
@@ -1910,7 +1946,7 @@
     },
 
     /**
-     * This method auto fill the form fields having data-ttb-field="", against the given data.
+     * This method auto fills the form fields having data-ttb-field="", against the given data.
      *@private
      *
      * @param {String} selector - A query selector of context (form/parent element)
@@ -4216,7 +4252,7 @@
 
         <footer>
             Copyright © 2018 <a href="http://www.benutech.com/" target="_blank" title="Benutech official website">Benutech Inc.</a> All rights reserved.</a>
-           <!-- Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat May 18 2019 05:07:45 GMT+0500 (PKT) -->
+           <!-- Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue May 21 2019 02:16:20 GMT+0500 (PKT) -->
         </footer>
     </div>
 </div>

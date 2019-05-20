@@ -1700,52 +1700,43 @@
    * @static
    *
    * @description
-   * This static method is used to render a logo link on vendors's sites, clicking which can take user to the landing page for TTB powered widgets.
+   * This static method renders a logo link on vendors's sites, clicking which can take user to the landing page for TTB powered widgets.
    * <br>
    * (Check it out in action over https://jsfiddle.net/benutech/w0ya3qr5/)
    *
    * @param {String} elementSelector - DOM element selector where the widget needs to be rendered.
    * <code>#lorem</code> or <code>.ipsum</code> etc.
    *
-   * @param {Object} info - The information regarding vendor, and it's user.
-   * @param {String} info.stk - The session token from existing login at 3rd-party app.
-   * @param {String} info.getuser_url - The URL to hit to get the user information against the given stk.
-   * @param {Object} info.partnerKey - The partner key provided by support team for the consumer site.
+   * @param {Object} vendorInfo - The information regarding vendor, and it's user session details. for details, Check out utilGenerateLandingPageURL() documentation.
 
    * @example
    *
    * var elementSelector = '#ttb--render-logo-wrapper';
    *
-   * var info = {
+   * var vendorInfo = {
    *  stk: "xxxxxxxxxxxxxxx",
    *  getuser_url: 'https://www.yoursite.com/webservices/getuser.json'
    *  partnerKey: 'xxxxxxxxxxxxxxxxx'
    * };
    *
-   * TTB.renderLogoWidget(elementSelector, info);
+   * TTB.renderLogoWidget(elementSelector, vendorInfo);
    *
    * @return {Object} wrapperEL - DOM Node reference to the rendered widget's wrapper.
    *
    * */
-  window.TTB.renderLogoWidget = function (elementSelector, info) {
-    var generatedURL, template, markup, wrapperEL;
+  window.TTB.renderLogoWidget = function (elementSelector, vendorInfo) {
+    var landingPageUrl, template, markup, wrapperEL;
 
-    generatedURL = window.location.port === defaults.devPortSandbox ? 'http://localhost:9001' : 'https://ttb-landing-page.herokuapp.com';
-    generatedURL += '/?stk={{stk}}&getuser_url={{getuser_url}}&partnerKey={{partnerKey}}&enabled_features={{enabled_features}}&debug={{debug}}'
-      .replace('{{stk}}', info.stk)
-      .replace('{{getuser_url}}', encodeURIComponent(info.getuser_url))
-      .replace('{{partnerKey}}', info.partnerKey)
-      .replace('{{enabled_features}}', defaults.enabledFeatures)
-      .replace('{{debug}}', window.TTB.debug);
+    landingPageUrl = window.TTB.utilGenerateLandingPageURL(vendorInfo);
 
     template = [
-      '<a class="ttb-sdk--render-logo--link" target="_blank" href="{{generatedURL}}" title="Title ToolBox - Full Profile and Net Sheet Report Lookup">',
+      '<a class="ttb-sdk--render-logo--link" target="_blank" href="{{landingPageUrl}}" title="Title ToolBox - Full Profile and Net Sheet Report Lookup">',
       ' <img class="ttb-sdk--render-logo--image" src="https://demo.titletoolbox.com/assets/images/logo_in.png" style="background-color: #389ae5;">',
       '</a>'
     ].join('');
 
     markup = template
-      .replace('{{generatedURL}}', generatedURL);
+      .replace('{{landingPageUrl}}', landingPageUrl);
 
     // we do not use jquery, to lose our dependency for this widget.
     wrapperEL = document.querySelector(elementSelector);
@@ -1755,6 +1746,49 @@
 
     // return the reference for any further usage of element.
     return wrapperEL;
+  };
+
+  /**
+   * @memberof TTB
+   * @alias utilGenerateLandingPageURL
+   * @static
+   *
+   * @description
+   * This static method generates a link / URL to use on vendors's site, clicking which can take user to the landing page for TTB powered widgets.
+   * <br>
+   * it is used inside renderLogoWidget(), To learn more about it, check out its documentation.
+   *
+   * @param {Object} vendorInfo - The information regarding vendor, and it's user.
+   * @param {String} vendorInfo.stk - The session token from existing login at 3rd-party app.
+   * @param {String} vendorInfo.getuser_url - The URL to hit to get the user information against the given stk.
+   * @param {Object} vendorInfo.partnerKey - The partner key provided by support team for the consumer site.
+
+   * @example
+   *
+   * var vendorInfo = {
+   *  stk: "xxxxxxxxxxxxxxx",
+   *  getuser_url: 'https://www.yoursite.com/webservices/getuser.json'
+   *  partnerKey: 'xxxxxxxxxxxxxxxxx'
+   * };
+   *
+   * var TTBLandingPageUrl = TTB.generateLandingPageURL(vendorInfo);
+   * // you can use this variable as HREF to any anchor (a) tag.
+   *
+   * @return {string} TTBLandingPageUrl - A string URL contains provided info in an encoded format, as part of URL.
+   *
+   * */
+  window.TTB.utilGenerateLandingPageURL = function (vendorInfo) {
+    var TTBLandingPageUrl;
+
+    TTBLandingPageUrl = window.location.port === defaults.devPortSandbox ? 'http://localhost:9001' : 'https://ttb-landing-page.herokuapp.com';
+    TTBLandingPageUrl += '/?stk={{stk}}&getuser_url={{getuser_url}}&partnerKey={{partnerKey}}&enabled_features={{enabled_features}}&debug={{debug}}'
+        .replace('{{stk}}', vendorInfo.stk)
+        .replace('{{getuser_url}}', encodeURIComponent(vendorInfo.getuser_url))
+        .replace('{{partnerKey}}', vendorInfo.partnerKey)
+        .replace('{{enabled_features}}', defaults.enabledFeatures)
+        .replace('{{debug}}', window.TTB.debug);
+
+    return TTBLandingPageUrl;
   };
 
 
@@ -1772,7 +1806,7 @@
     },
 
     /**
-     * This method auto fill the form fields having data-ttb-field="", against the given data.
+     * This method auto fills the form fields having data-ttb-field="", against the given data.
      *@private
      *
      * @param {String} selector - A query selector of context (form/parent element)
