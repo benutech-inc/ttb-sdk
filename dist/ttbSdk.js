@@ -1715,7 +1715,7 @@
    *
    * var vendorInfo = {
    *  stk: "xxxxxxxxxxxxxxx",
-   *  getuser_url: 'https://www.yoursite.com/webservices/getuser.json'
+   *  getuser_url: 'https://www.yoursite.com/webservices/getuser.json',
    *  partnerKey: 'xxxxxxxxxxxxxxxxx'
    * };
    *
@@ -1767,7 +1767,7 @@
    *
    * var vendorInfo = {
    *  stk: "xxxxxxxxxxxxxxx",
-   *  getuser_url: 'https://www.yoursite.com/webservices/getuser.json'
+   *  getuser_url: 'https://www.yoursite.com/webservices/getuser.json',
    *  partnerKey: 'xxxxxxxxxxxxxxxxx'
    * };
    *
