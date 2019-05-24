@@ -1773,6 +1773,7 @@
    *
    * var TTBLandingPageUrl = TTB.utilGenerateLandingPageURL(vendorInfo);
    * // you can use this variable as HREF to any anchor (a) tag.
+   * console.log(TTBLandingPageUrl);
    *
    * @return {string} TTBLandingPageUrl - A string URL contains provided info in an encoded format, as part of URL.
    *
