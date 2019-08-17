@@ -1404,6 +1404,11 @@
             TOSURL: $(this).attr('data-sponsor-tos')
           };
 
+          // handle value "null" of "site"
+          if (selectedSponsor.site === 'null') {
+            selectedSponsor.site = null;
+          }
+
           // present TOS modal
           window.TTB.showSponsorTOSModal(selectedSponsor, actions, {
             performLogin: data.performLogin === undefined ? true : data.performLogin,
