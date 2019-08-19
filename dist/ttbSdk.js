@@ -2102,7 +2102,7 @@
      *   stk: "xxxxxxxxxxxxxxx"
      * };
      *
-     * ttb.remoteLogin(payload)
+     * ttb.loginRemote(payload)
      * .done(function(res) {
      *   if (res.response.status === 'OK') {
      *     // user is successfully logged-in !!
