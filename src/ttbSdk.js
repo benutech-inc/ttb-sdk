@@ -1855,7 +1855,7 @@
           modelValue = eval('data.' + model);
           modelValue && fillValue($(this), modelValue);
         } catch (e) {
-          _self._log([defaults.sdkPrefix, ' : autoFill : ', model, ': skipping - invalid model']);
+          _self._log(['autoFill : ', model, ': skipping - invalid model']);
         }
       });
     },
@@ -1879,7 +1879,7 @@
       if ($field.length) {
         $field.val(fieldValue);
       } else {
-        this._log([defaults.sdkPrefix, ' : autoFill : skipping : field not found - ', fieldName]);
+        this._log(['autoFill : skipping : field not found - ', fieldName]);
       }
     },
 
@@ -1940,15 +1940,15 @@
         .done(function (res) {
 
           if (typeof res === 'string' || res instanceof Array || (res.response || res).status === 'OK') {
-            _self._log([defaults.sdkPrefix + ' :', mapping.methodName + '() [', mapping.endpoint , ']', ': success :', res]);
+            _self._log([mapping.methodName + '() [', mapping.endpoint , ']', ': success :', res]);
           } else {
-            _self._log([defaults.sdkPrefix + ' :', mapping.methodName + '() [', mapping.endpoint , ']', ': error :', res]);
+            _self._log([mapping.methodName + '() [', mapping.endpoint , ']', ': error :', res]);
           }
 
           return res;
         })
         .fail(function (err) {
-          _self._log([defaults.sdkPrefix + ' :', mapping.methodName + '() [', mapping.endpoint , ']', ': fail :', err]);
+          _self._log([mapping.methodName + '() [', mapping.endpoint , ']', ': fail :', err]);
 
           // handle 401 unauthenticated / session-expired if config.onSessionExpire callback provided
           if (err.status === 401 && _self.config.onSessionExpire) {
@@ -1966,7 +1966,7 @@
           return err;
         });
       //.always(function(arg) {
-      //  _self._log([defaults.sdkPrefix + ' :', mapping.methodName + '() [', mapping.endpoint , ']', ': always :', arg]);
+      //  _self._log([mapping.methodName + '() [', mapping.endpoint , ']', ': always :', arg]);
       //  return arg;
       //});
     },
@@ -3535,7 +3535,7 @@
           .then(function (res) {
             var property, records;
 
-            _self._log([defaults.sdkPrefix, ' : instantLookupWidget : searchBySiteAddress - complete - ', res]);
+            _self._log(['instantLookupWidget : searchBySiteAddress - complete - ', res]);
 
             res = res.response;
 
@@ -3585,7 +3585,7 @@
               };
 
               window.TTB.utilRenderTable(records, o.tableOptions);
-              _self._log([defaults.sdkPrefix, ' : instantLookupWidget : match count:', records.length]);
+              _self._log(['instantLookupWidget : match count:', records.length]);
 
               return;
             }
@@ -3617,22 +3617,22 @@
         switch (o.selectedAction.name) {
 
           case 'netSheet':
-            _self._log([defaults.sdkPrefix, ' : instantLookupWidget : netSheet - ']);
+            _self._log(['instantLookupWidget : selectedAction: netSheet']);
             actionOpenNetSheet(property, enableControls);
             break;
 
           //case 'generateReport':
-          //  ttb._log([defaults.sdkPrefix, ' : instantLookupWidget : generateReport - dev in progress.']);
+          //  ttb._log(['instantLookupWidget : selectedAction: generateReport - dev in progress.']);
           //  enableControls();
           //  break;
 
           case 'fullProfileReport':
-            _self._log([defaults.sdkPrefix, ' : instantLookupWidget : fullProfileReport']);
+            _self._log(['instantLookupWidget : selectedAction: fullProfileReport']);
             actionOrderReport(property, enableControls);
             break;
 
           default:
-            _self._log([defaults.sdkPrefix, ' : instantLookupWidget : action not found - ', elementSelector]);
+            _self._log(['instantLookupWidget : selectedAction: action not found - ', elementSelector]);
             enableControls();
         }
       }
