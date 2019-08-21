@@ -1,7 +1,7 @@
 /**
  * Copyright © 2018 Benutech Inc. All rights reserved.
  * http://www.benutech.com - help@benutech.com
- * version: 1.15.1
+ * version: 1.15.2
  * https://github.com/benutech-inc/ttb-sdk
  * For latest release, please check - https://github.com/benutech-inc/ttb-sdk/releases
  * */
@@ -134,11 +134,13 @@
 }
 .ttb-sdk--selected-sponsor--list .btn{
     position: relative;
+    padding-left: 27px;
 }
-/*.ttb-sdk--select-sponsor--selected{*/
-    /*color: #000000;*/
-    /*background: #d3d3d3;*/
-/*}*/
+.ttb-sdk--select-sponsor--selected{
+    padding-right: 17px;
+    /* background: #dddddd; */
+    /* color: white; */
+}
 
 .ttb-sdk--table--record-selected{
     background-color: #3276b1 !important;

@@ -1,7 +1,7 @@
 /**
  * Copyright © 2018 Benutech Inc. All rights reserved.
  * http://www.benutech.com - help@benutech.com
- * version: 1.15.1
+ * version: 1.15.2
  * https://github.com/benutech-inc/ttb-sdk
  * For latest release, please check - https://github.com/benutech-inc/ttb-sdk/releases
  * */
@@ -191,7 +191,7 @@
    * <code> &lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> </code> <br/>
    * Scoped Bootstrap version: <br>
    * Having non-bootstrap based site ? please use the following scoped-bootstrap version to limit bootstrap styles to SDK widgets only. (bootstrap v3.3.7 used.)<br>
-   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.15.1/dist/scoped-bootstrap.min.css​"> </code>
+   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.15.2/dist/scoped-bootstrap.min.css​"> </code>
    * </p>
    *
    * <p>
@@ -203,8 +203,8 @@
    * <p>
    * <strong>TitleToolBox SDK </strong> files (1 script, and 1 style), can be pulled via our public repo link:
    * <i>(keep the [latest version]{@link https://github.com/benutech-inc/ttb-sdk/releases})</i><br>
-   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.15.1/dist/ttbSdk.min.css"> </code>
-   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.15.1/dist/ttbSdk.min.js​">&lt;/script> </code>
+   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.15.2/dist/ttbSdk.min.css"> </code>
+   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.15.2/dist/ttbSdk.min.js​">&lt;/script> </code>
    * <br><br>OR via<strong> Bower </strong> using <code>bower install ttb-sdk --save</code>
    * <br><br>
    *
@@ -380,7 +380,7 @@
    * @description The version of the SDK being used.
    * @type String
    * */
-  window.TTB.version = '1.15.1';
+  window.TTB.version = '1.15.2';
 
   /**
    * @memberof TTB
@@ -1855,7 +1855,7 @@
           modelValue = eval('data.' + model);
           modelValue && fillValue($(this), modelValue);
         } catch (e) {
-          _self._log([defaults.sdkPrefix, ' : autoFill : ', model, ': skipping - invalid model']);
+          _self._log(['autoFill : ', model, ': skipping - invalid model']);
         }
       });
     },
@@ -1879,7 +1879,7 @@
       if ($field.length) {
         $field.val(fieldValue);
       } else {
-        this._log([defaults.sdkPrefix, ' : autoFill : skipping : field not found - ', fieldName]);
+        this._log(['autoFill : skipping : field not found - ', fieldName]);
       }
     },
 
@@ -1940,15 +1940,15 @@
         .done(function (res) {
 
           if (typeof res === 'string' || res instanceof Array || (res.response || res).status === 'OK') {
-            _self._log([defaults.sdkPrefix + ' :', mapping.methodName + '() [', mapping.endpoint , ']', ': success :', res]);
+            _self._log([mapping.methodName + '() [', mapping.endpoint , ']', ': success :', res]);
           } else {
-            _self._log([defaults.sdkPrefix + ' :', mapping.methodName + '() [', mapping.endpoint , ']', ': error :', res]);
+            _self._log([mapping.methodName + '() [', mapping.endpoint , ']', ': error :', res]);
           }
 
           return res;
         })
         .fail(function (err) {
-          _self._log([defaults.sdkPrefix + ' :', mapping.methodName + '() [', mapping.endpoint , ']', ': fail :', err]);
+          _self._log([mapping.methodName + '() [', mapping.endpoint , ']', ': fail :', err]);
 
           // handle 401 unauthenticated / session-expired if config.onSessionExpire callback provided
           if (err.status === 401 && _self.config.onSessionExpire) {
@@ -1966,7 +1966,7 @@
           return err;
         });
       //.always(function(arg) {
-      //  _self._log([defaults.sdkPrefix + ' :', mapping.methodName + '() [', mapping.endpoint , ']', ': always :', arg]);
+      //  _self._log([mapping.methodName + '() [', mapping.endpoint , ']', ': always :', arg]);
       //  return arg;
       //});
     },
@@ -3535,7 +3535,7 @@
           .then(function (res) {
             var property, records;
 
-            _self._log([defaults.sdkPrefix, ' : instantLookupWidget : searchBySiteAddress - complete - ', res]);
+            _self._log(['instantLookupWidget : searchBySiteAddress - complete - ', res]);
 
             res = res.response;
 
@@ -3585,7 +3585,7 @@
               };
 
               window.TTB.utilRenderTable(records, o.tableOptions);
-              _self._log([defaults.sdkPrefix, ' : instantLookupWidget : match count:', records.length]);
+              _self._log(['instantLookupWidget : match count:', records.length]);
 
               return;
             }
@@ -3617,22 +3617,22 @@
         switch (o.selectedAction.name) {
 
           case 'netSheet':
-            _self._log([defaults.sdkPrefix, ' : instantLookupWidget : netSheet - ']);
+            _self._log(['instantLookupWidget : selectedAction: netSheet']);
             actionOpenNetSheet(property, enableControls);
             break;
 
           //case 'generateReport':
-          //  ttb._log([defaults.sdkPrefix, ' : instantLookupWidget : generateReport - dev in progress.']);
+          //  ttb._log(['instantLookupWidget : selectedAction: generateReport - dev in progress.']);
           //  enableControls();
           //  break;
 
           case 'fullProfileReport':
-            _self._log([defaults.sdkPrefix, ' : instantLookupWidget : fullProfileReport']);
+            _self._log(['instantLookupWidget : selectedAction: fullProfileReport']);
             actionOrderReport(property, enableControls);
             break;
 
           default:
-            _self._log([defaults.sdkPrefix, ' : instantLookupWidget : action not found - ', elementSelector]);
+            _self._log(['instantLookupWidget : selectedAction: action not found - ', elementSelector]);
             enableControls();
         }
       }
