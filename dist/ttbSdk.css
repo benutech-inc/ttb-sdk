@@ -11,8 +11,7 @@
 /* common - all SDK modals */
 .ttb-sdk--modal .close {
     font-size: 40px;
-    position: absolute;
-    right: 22px;
+    line-height: 0.7;
 }
 
 /* tick n cross icons */
