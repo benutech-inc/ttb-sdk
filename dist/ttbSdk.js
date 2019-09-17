@@ -51,6 +51,8 @@
     protocol: siteProtocol,
     devPortSandbox: '9000',
     devPortLanding: '9001',
+    devPortExport: '9002',
+    // devPortExport: '9005',
     //partnerKey: '1-234-567-890', // no key by default.
     sponsor: {
       name: 'direct',
@@ -1786,7 +1788,10 @@
   window.TTB.utilGenerateLandingPageURL = function (vendorInfo) {
     var TTBLandingPageUrl;
 
-    TTBLandingPageUrl = window.location.port === defaults.devPortSandbox ? 'http://localhost:9001' : 'https://ttb-landing-page.herokuapp.com';
+    // dev vs prod destination.
+    TTBLandingPageUrl = window.location.port === defaults.devPortSandbox ?
+      ('http://localhost:' + defaults.devPortLanding): 'https://ttb-landing-page.herokuapp.com';
+
     TTBLandingPageUrl += '/?stk={{stk}}&getuser_url={{getuser_url}}&partnerKey={{partnerKey}}&enabled_features={{enabled_features}}&debug={{debug}}'
         .replace('{{stk}}', vendorInfo.stk)
         .replace('{{getuser_url}}', encodeURIComponent(vendorInfo.getuser_url))
@@ -3656,7 +3661,7 @@
 
         // dev vs prod destination.
         origin = [defaults.devPortSandbox, defaults.devPortLanding].indexOf(window.location.port) >= 0
-          ? 'http://localhost:9002' : 'https://ttb-export.herokuapp.com';
+          ? ('http://localhost:' + defaults.devPortExport) : 'https://ttb-export.herokuapp.com';
 
         iframeOptions = {
           id: 'ttb-sdk--net-sheet--iframe',
@@ -3896,11 +3901,12 @@
         };
 
         // dev vs prod destination.
-        origin = window.location.port === defaults.devPortSandbox ? 'http://localhost:9001' : 'https://ttb-landing-page.herokuapp.com';
+        origin = window.location.port === defaults.devPortSandbox ?
+          ('http://localhost:' + defaults.devPortLanding) : 'https://ttb-landing-page.herokuapp.com';
 
         iframeOptions = {
           id: 'ttb-sdk--connect--iframe',
-          height: '635px',
+          height: '635px', // TODO should calculated against window height
           origin: origin,
           pathname: '/index.html',
           params: {
