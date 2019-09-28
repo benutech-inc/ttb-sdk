@@ -51,8 +51,8 @@
     protocol: siteProtocol,
     devPortSandbox: '9000',
     devPortLanding: '9001',
-    devPortExport: '9002',
-    // devPortExport: '9005',
+    devPortExport: '9002', // SERVE mode
+    // devPortExport: '9003', // PROD mode
     //partnerKey: '1-234-567-890', // no key by default.
     sponsor: {
       name: 'direct',
@@ -222,19 +222,17 @@
    * and/or <code>baseURLPattern</code> to keep switching to custom <code>baseURL</code> on the fly.)
    *
    * @param {Object} [config.sponsor] - The Title Company Sponsor object to be used in generating baseURL. contains name, title, site, logoURL, and TOSURL.
-   * (note - It will be ignored if baseURL is already passed.)
+   * (Note - It will be ignored if baseURL is already passed.)
    *
    * @param {String} [config.baseURLPattern="https://{{sponsorName}}.api.titletoolbox.com/"] - The URL pattern to be used
    * to generate the baseURL which includes the <code>sponsor.name</code> provided. Must contain {{sponsorName}} at least once.
-   * (note - It will be ignored if <code>baseURL</code> is already passed.)
+   * (Note - It will be ignored if <code>baseURL</code> is already passed.)
    *
-   * @param {Function} [config.onSessionExpire] - The callback / handler to be called whenever an API receives <code>401 - UNAUTHENTICATED</code>
-   * (session expired) from server.
-   * @param {Object} [config.onSessionExpire.info] - The info object that SDK passes to the callback to provide more control to recover the request failure.
-   * @param {String} [config.onSessionExpire.info.requestError] - The AJAX error object passed to the error-handler of the API method that was failed.
-   * @param {String} [config.onSessionExpire.info.requestConfig] - The configuration object passed to the request that was failed.
-   * @param {Function} [config.onSessionExpire.info.retry] - retry the failed call, while auto-passing exactly all the info e.g. payload (if any), and query params (if any)
-   * Returns the AJAX promise. - very useful to call and ready-up the feature once user logs-in back.
+   * @param {Function} [config.onSessionExpireV2] - [Recommended over deprecated onSessionExpire()] - The callback / handler to be called
+   * whenever an API receives <code>401 - UNAUTHENTICATED</code> (session expired) from server.
+   * This can be used to get a new valid "stk" from vendor site, via a login prompt or a direct ajax request to vendor server, to renew user login session from TTB server.
+   * Method should return a promise, which should be resolved with a loginRemotePayload object. (Check loginRemotePayload details from loginRemote() method.)
+   * @param {Object} [config.onSessionExpireV2.info] - Contains details on the failed request. This can be used for advanced handling.
    *
    * @param {String} [config.autoFillAttr="data-ttb-field"] - The attribute to be used for auto-fill input fields when
    * <code>options.autoFillContext</code> specified in methods which support auto-fill.
@@ -246,6 +244,14 @@
    * (recommended when non-bootstrap sites faces styles conflicts with official bootstrap CSS)
    *
    * @param {String} [config.debug=true] - SDK debug mode flag useful for logs, etc.
+   *
+   * @param {Function} [config.onSessionExpire] - (DEPRECATED! Please check onSessionExpireV2() ) - The callback / handler to be called whenever an API receives <code>401 - UNAUTHENTICATED</code>
+   * (session expired) from server. (NOTE: This will be ignored when onSessionExpireV2() is provided)
+   * @param {Object} config.onSessionExpire.info - The info object that SDK passes to the callback to provide more control to recover the request failure.
+   * @param {String} config.onSessionExpire.info.requestError - The AJAX error object passed to the error-handler of the API method that was failed.
+   * @param {String} config.onSessionExpire.info.requestConfig - The configuration object passed to the request that was failed.
+   * @param {Function} config.onSessionExpire.info.retry - retry the failed call, while auto-passing exactly all the info e.g. payload (if any), and query params (if any)
+   * Returns the AJAX promise. - very useful to call and ready-up the feature once user logs-in back.
    *
    * @return {Object} ttb - The instance associated with the provided configuration.
    *
@@ -274,7 +280,48 @@
    * });
    *
    * @example
-   * // optionally registering session-timeout (401 status error) handler for ttb ajax requests.
+   * // (Optional but Recommended !) registering session-expired (401 status error) handler for ttb ajax requests.
+   * // live working example will be provided soon.
+   *
+   * // your app store / constant having configuration
+   * var ttbStore = {
+   *   ttb: undefined,
+   *   partnerKey: '558b3e66-47b2-477d-a0d3-6d85db4c3148',
+   *   stk: '64on7i137ksveoa18os6i7g9a3', // assuming you maintain user valid stk in your store.
+   *   getuser_url: 'https://newlawyersie.api.titletoolbox.com/webservices/get_ttb_user.json',
+   * };
+   *
+   * // step#2 instantiate the TTB with your (vendor's) credentials. check full config from TTB instance section.
+   * ttbStore.ttb = new TTB({
+   *  partnerKey: ttbStore.partnerKey,
+   *  onSessionExpireV2: ttbOnSessionExpireV2 // note suffix "V2" in "onSessionExpireV2"
+   * });
+   *
+   * // step#3 set up a sessionExpire handler. following is just an example.
+   * // this callback gets called, whenever any ttb method Ajax call encounters 401.
+   * function ttbOnSessionExpireV2(info) {
+   *  console.log('ttbOnSessionExpireV2: No / Expired Session.', info); // check out "info" in console for any advanced handling.
+   *
+   *  // step#3.1 build required info by getting the latest / valid stk (depends on vendor site's login system.)
+   *  // option 1 - Some vendors have it in store on Frontend.
+   *  // option 2 - Some vendors get latest stk from their server via ajax call.
+   *  // option 3 - Some vendors perform a login prompt modal to renew user session on their login system to get latest stk for TTB.
+   *
+   *  // for example vendor has option 2 case.
+   *  // build required info
+   *  var loginRemotePayload = {
+   *    stk: ttbStore.stk,
+   *    getuser_url: ttbStore.getuser_url
+   *  };
+   *
+   *  // step#3.2 Simply return the resolved promise containing this info, leave the rest on SDK to perform TTB system login, and retry the failed requests, like nothing happened. ^ _ ^
+   *  return TTB.utilPromiseResolve(loginRemotePayload);
+   * }
+   *
+   * // That's it! We are ready to shine!
+   *
+   * @example
+   * // optionally registering session-expired (401 status error) handler for ttb ajax requests.
    * // check live working example at https://jsfiddle.net/shahzadns/rkw8v51y/
    *
    * // your app store / constant having configuration
@@ -285,14 +332,14 @@
    *   getuser_url: 'https://newlawyersie.api.titletoolbox.com/webservices/get_ttb_user.json',
    * };
    *
-   * // step#2 instantiate the TTB with your (vendor's) credentials. check full config on
+   * // step#2 instantiate the TTB with your (vendor's) credentials. check full config from TTB instance section.
    * ttbStore.ttb = new TTB({
    *  partnerKey: ttbStore.partnerKey,
    *  onSessionExpire: ttbOnSessionExpire
    * });
    *
    * // step#3 set up a sessionExpire handler. following is just an example.
-   * // this callback gets called, whenver any ttb method Ajax call faces 401.
+   * // this callback gets called, whenever any ttb method Ajax call encounters 401.
    * function ttbOnSessionExpire(info) {
    *  console.log('ttbOnSessionExpire: No / Expired Session.', info); // check out "info" in console for more.
    *
@@ -339,7 +386,7 @@
    *          promise
    *            .then(successCb, failureCb);
    *
-   *          // party time ^ _ ^
+   *          // That's it !
    *          // ...
    *        });
    *    });
@@ -356,7 +403,7 @@
 
     // setup default baseURL
     this.baseURLPattern = config.baseURLPattern || defaults.baseURLPattern;
-    this.sponsor = config.sponsor || defaults.sponsor;
+    this.sponsor = config.sponsor || window.TTB.utilCopy(defaults.sponsor);
     this.baseURL = config.baseURL || this.setSponsor(this.sponsor);
     this.autoFillAttr = config.autoFillAttr || defaults.autoFillAttr;
     this.scopedBootstrap = config.scopedBootstrap || defaults.scopedBootstrap;
@@ -1803,6 +1850,125 @@
   };
 
 
+  /**
+   * @memberof TTB
+   * @alias _utilAddSessionToken
+   * @static
+   *
+   * @description
+   * This static method extends provided object (if any) with the session-token (if any) stored by last login attempt by loginRemote() or login().
+   *
+   * @param {Object} [info] - any object to extend. E.g. query params converted object by _.ajax()
+   *
+   * @example
+   *
+   * var queryParams = { ... }; // your stuff
+   * var infoContainsSessionToken = TTB._utilAddSessionToken(queryParams);
+   *
+   * @return {Object | undefined} info - extended object with session token (if any)
+   *
+   * */
+  window.TTB._utilAddSessionToken = function (info) {
+
+    // attach only when user is logged in.
+    var sessionToken = TTB._getLocal(defaults.sessionKeyName);
+
+    if (sessionToken) {
+
+      // define one if no object provided
+      info = info || {};
+
+      // extend and return
+      info[defaults.sessionKeyName] = sessionToken;
+      return info;
+    }
+
+    // else - return what provided as it is. object or undefined
+    return info;
+  };
+
+  /**
+   * @memberof TTB
+   * @alias utilPromiseReject
+   * @static
+   *
+   * @description
+   * This static method returns a promise with rejection, holding the passed reason.
+   *
+   * @param {Object | String | any} reason - reason of rejection. It can be an object, a string, or anything.
+   *
+   * @example
+   *
+   * var rejectedPromise = TTB.utilPromiseReject('Something went wrong');
+   *
+   * // or
+   *
+   * var rejectedPromise = TTB.utilPromiseReject({foo: 'Something useful as a detailed reason.'});
+   *
+   * @return {Promise} promise - promise with rejection state, holding the passed reason.
+   *
+   * */
+  window.TTB.utilPromiseReject = function (reason) {
+    var deferred;
+
+    deferred = $.Deferred();
+    deferred.reject(reason);
+
+    return deferred;
+  };
+
+  /**
+   * @memberof TTB
+   * @alias utilPromiseResolve
+   * @static
+   *
+   * @description
+   * This static method returns a promise with resolution, holding the passed information.
+   *
+   * @param {Object | String | any} info - info for resolution. It can be an object, a string, or anything.
+   *
+   * @example
+   *
+   * var resolvedPromise = TTB.utilPromiseResolve('Successful operation !');
+   *
+   * // or
+   *
+   * var resolvedPromise = TTB.utilPromiseResolve({foo: 'Something useful as a detailed info.'});
+   *
+   * @return {Promise} promise - promise with resolved state, holding the passed info.
+   *
+   * */
+  window.TTB.utilPromiseResolve = function (info) {
+    var deferred;
+
+    deferred = $.Deferred();
+    deferred.resolve(info);
+
+    return deferred;
+  };
+
+  /**
+   * @memberof TTB
+   * @alias utilCopy
+   * @static
+   *
+   * @description
+   * This static method returns a one-level-only deep copy / clone of provided info object.
+   *
+   * @param {Object} info - object to copy / clone.
+   *
+   * @example
+   *
+   * var detail = {foo: 'xoxo'};
+   * var cloneOfDetail = TTB.utilCopy(detail);
+   *
+   * @return {Object | String | any} copy - copy / clone of provided info object.
+   *
+   * */
+  window.TTB.utilCopy = function (info) {
+    return $.extend({}, info);
+  };
+
   /** @lends TTB.prototype */
   window.TTB.prototype = {
 
@@ -1892,39 +2058,18 @@
     /**
      * Triggers the request with all required headers, cookies, etc.
      * @param options {Object} - The configuration to pass to $.ajax .
-     * @param [mapping] {Object} - Certain method's mapping info that contains its methodName and the endpoint of the webservice it consumes.
+     * @param mapping {Object} - Certain method's mapping info that contains its methodName and the endpoint of the webservice it consumes.
      * @param [queryParams] {Object} - key-value paired info that needs to be passed as query params string.
      * @private
      *
      * */
     _ajax: function (options, mapping, queryParams) {
-      var _self, request, o;
+      var _self, request;
 
       _self = this;
-      o = {};
 
       // take the full URL or build it up using baseURL and the given endpoint
       options.url = options.url || (this.baseURL + mapping.endpoint);
-
-      // check for type of the method. public vs auth-protected methods.
-      o.isPublicAPIMethod = defaults.sessionKeySkippedMethods.indexOf(mapping.methodName) >= 0;
-
-      // if its not a public API, send session id (TTBSID query param)
-      if (!o.isPublicAPIMethod) {
-        o.defaultQueryParams = {};
-
-        // attach only when user is logged in. - most probably user would be logged in this scenario.
-        o.sessionId = TTB._getLocal(defaults.sessionKeyName);
-        if (o.sessionId) {
-          o.defaultQueryParams[defaults.sessionKeyName] = o.sessionId;
-        }
-
-        queryParams = $.extend(o.defaultQueryParams, queryParams);
-      }
-
-      // append query params (if provided)
-      o.paramsString = queryParams ? $.param(queryParams) : '';
-      options.url += o.paramsString ? '?' + o.paramsString : '';
 
       // extend given AJAX options with required Headers, and CORS flag
       request = $.extend(options, {
@@ -1941,8 +2086,41 @@
         }
       });
 
+      // proceed with the request using configuration
+      return _self._ajaxProceed(request, mapping, queryParams);
+    },
+
+    /**
+     * Proceed the ajax request after configuration has been build from _ajax(), or when retried from _handleSessionExpire()
+     * @param request {Object} - The configuration built from _ajax() call.
+     * @param mapping {Object} - Check _ajax() for details.
+     * @param [queryParams] {Object} - Check _ajax() for details.
+     *
+     * @private
+     *
+     * */
+    _ajaxProceed: function (request, mapping, queryParams) {
+      var _self, o;
+
+      _self = this;
+      o = {};
+
+      // check for type of the method. public vs auth-protected methods.
+      o.isPublicAPIMethod = defaults.sessionKeySkippedMethods.indexOf(mapping.methodName) >= 0;
+
+      // if its not a public API, send session id (TTBSID query param)
+      if (!o.isPublicAPIMethod) {
+
+        // attach only when user is logged in. - most probably user would be logged in this scenario.
+        queryParams = TTB._utilAddSessionToken(queryParams);
+      }
+
+      // append query params (if any)
+      o.paramsString = queryParams ? $.param(queryParams) : '';
+      request.url += o.paramsString ? '?' + o.paramsString : '';
+
       return $.ajax(request)
-        .done(function (res) {
+        .then(function (res) {
 
           if (typeof res === 'string' || res instanceof Array || (res.response || res).status === 'OK') {
             _self._log([mapping.methodName + '() [', mapping.endpoint , ']', ': success :', res]);
@@ -1951,29 +2129,149 @@
           }
 
           return res;
-        })
-        .fail(function (err) {
-          _self._log([mapping.methodName + '() [', mapping.endpoint , ']', ': fail :', err]);
 
-          // handle 401 unauthenticated / session-expired if config.onSessionExpire callback provided
-          if (err.status === 401 && _self.config.onSessionExpire) {
-            _self.config.onSessionExpire({
-              requestConfig: request,
-              requestError: err,
-              methodName: mapping.methodName,
-              endpoint: mapping.endpoint,
-              retry: function () {
-                return $.ajax(request);
-              }
-            });
+        }, function (error) {
+          _self._log([mapping.methodName + '() [', mapping.endpoint , ']', ': fail :', error]);
+
+          // exit with error if it is not a session-expire response.
+          if (error.status !== 401) {
+            return error;
           }
 
-          return err;
+          // handle session expire / no authentication
+          return _self._handleSessionExpire(error, request, mapping);
         });
+
       //.always(function(arg) {
       //  _self._log([mapping.methodName + '() [', mapping.endpoint , ']', ': always :', arg]);
       //  return arg;
       //});
+    },
+
+    /**
+     * Handles the failed requests due to session expire or not authenticated.
+     * @param error {Object} - error object from the failed _ajaxProceed() callback.
+     * @param request {Object} - Check _ajax() for details
+     * @param mapping {Object} - Check _ajax() for details
+     * @private
+     *
+     * */
+    _handleSessionExpire: function (error, request, mapping) {
+      var _self, sessionExpireInfo, renewSessionPromise, messages;
+
+      _self = this;
+
+      sessionExpireInfo = {
+        requestConfig: request,
+        requestError: error,
+        methodName: mapping.methodName,
+        endpoint: mapping.endpoint,
+      };
+
+      // DEPRECATED !
+      // case: handle with old onSessionExpire() - when onSessionExpireV2() was not provided
+      if (_self.config.onSessionExpire && !_self.config.onSessionExpireV2) {
+
+        _self._log(['_handleSessionExpire:', mapping.methodName + '() [', mapping.endpoint , ']: handling with config.onSessionExpire()']);
+
+        sessionExpireInfo.retry = function () {
+          return $.ajax(request);
+        };
+
+        _self.config.onSessionExpire(sessionExpireInfo);
+
+        // exist with error
+        return error;
+      }
+
+      messages = {
+        couldNotHandle: '_handleSessionExpire: ERROR - Could not handle.',
+        checkDocs: 'Please check documentation for more details.',
+      };
+
+      // case: no config.onSessionExpireV2() was provided even.
+      if (!_self.config.onSessionExpireV2) {
+        _self._log([
+          messages.couldNotHandle,
+          'Neither config.onSessionExpire() nor config.onSessionExpireV2() was provided.',
+          messages.checkDocs
+        ]);
+
+        // exist with error
+        return error;
+      }
+
+      // case: config.onSessionExpireV2() was provided - handle with it.
+      _self._log(['_handleSessionExpire:', mapping.methodName + '() [', mapping.endpoint , ']: handling with config.onSessionExpireV2()']);
+
+      // call to let host app return a new/valid STK (e.g. host app prompt user for a login, OR return immediately a new STK)
+      renewSessionPromise = _self.config.onSessionExpireV2(sessionExpireInfo);
+
+      // case: no promise returned from the onSessionExpireV2() of the host app
+      if (!renewSessionPromise) {
+
+        _self._log([
+          messages.couldNotHandle,
+          'Expected a promise in return from onSessionExpireV2()',
+          messages.checkDocs
+        ]);
+
+        // exist with error
+        return error;
+      }
+
+      return renewSessionPromise
+        .then(function(loginRemotePayload) {
+
+          // case: promise resolved with invalid loginRemotePayload info.
+          if (!loginRemotePayload || !loginRemotePayload.stk || !loginRemotePayload.getuser_url) {
+
+            _self._log([
+              messages.couldNotHandle,
+              'onSessionExpireV2(): Returned promise resolved with invalid loginRemotePayload info.',
+              messages.checkDocs
+            ]);
+
+            // reject and exist with error
+            return window.TTB.utilPromiseReject(error);
+          }
+
+          // case: promise resolved with valid loginRemotePayload info
+          // perform a login
+          return _self.loginRemote(loginRemotePayload)
+            .then(function (res) {
+
+              _self._log(['_handleSessionExpire: loginRemote: success:']);
+
+              // retry the failed request now
+              return _self._ajaxProceed(request, mapping);
+
+            }, function (reason) {
+
+              _self._log([
+                messages.couldNotHandle,
+                'Could not perform login using provided loginRemotePayload info.',
+                messages.checkDocs,
+                reason
+              ]);
+
+              // exist with error
+              return error;
+            });
+
+          // case: could not retrieve a valid STK
+        }, function (reason) {
+
+          _self._log([
+            messages.couldNotHandle,
+            'onSessionExpireV2(): returned Promise rejected.',
+            messages.checkDocs,
+            reason
+          ]);
+
+          // exist with error
+          return error;
+        });
     },
 
 
@@ -1982,8 +2280,8 @@
      * based on passed <code/>sponsor.name</code> with existing <code>baseURLPattern</code>.
      *
      * @param {Object} sponsor - Information to be retrieved via <code>options.onSelect()</code> of <code>TTB.getSponsors()</code>
-     * @param {String} sponsor.title - The <code>company_info.company_name</code> field value of sponsor object retrieved.
      * @param {String} sponsor.name - The <code>vertical_name</code> field value of sponsor object retrieved. (to be used in generating baseURL)
+     * @param {String} sponsor.title - The <code>company_info.company_name</code> field value of sponsor object retrieved.
      * @param {String} sponsor.site - The <code>site_url</code> field value of sponsor object retrieved.
      * @param {String} sponsor.logoURL - The <code>company_info.logo_url</code> field value of sponsor object retrieved.
      * @param {String} sponsor.TOSURL - The <code>TOS_content</code> field value of sponsor object retrieved.
@@ -1996,7 +2294,7 @@
      * ttb.setSponsor({
      *  name: 'direct',
      *  title: 'Benutech',
-     *  site: 'http://leads.titletoolbox.com',
+     *  site: 'http://direct.titletoolbox.com',
      *  logoURL: 'https://s3-us-west-1.amazonaws.com/titletoolbox/company+logos/Benutech/Benute+Logo.png',
      *  TOSURL: 'https://direct.api.titletoolbox.com/pages/tos/direct_tos'
      * });
@@ -2128,7 +2426,9 @@
      * @return {Object} promise - Jquery AJAX deferred promise is returned which on-success returns the required info.
      * */
     loginRemote: function (payload) {
+      var _self;
 
+      _self = this;
       payload.sso = false;
 
       var request = {
@@ -2138,13 +2438,15 @@
 
       return this._ajax(request, methodsMapping.AUTH__LOGIN_REMOTE)
         .then(function (res) {
-          var sessionId;
+          var sessionToken;
 
           // if user is successfully logged-in !!
           if (res.response.status === 'OK') {
-            // store sessionId in local-storage for later usage against each API key
-            sessionId = res.response.data[defaults.sessionKeyName];
-            TTB._setLocal(defaults.sessionKeyName, sessionId);
+            // store sessionToken (vertical-stk)  in local-storage for later usage against each API key
+            sessionToken = res.response.data[defaults.sessionKeyName];
+            TTB._setLocal(defaults.sessionKeyName, sessionToken);
+
+            _self._log(['loginRemote:', defaults.sessionKeyName, 'updated in localStorage.', TTB._getLocal(defaults.sessionKeyName)]);
           }
 
           return res;
@@ -2197,13 +2499,13 @@
 
       return this._ajax(request, methodsMapping.AUTH__LOGIN)
         .then(function (res) {
-          var sessionId;
+          var sessionToken;
 
           // if user is successfully logged-in !!
           if (res.response.status === 'OK') {
-            // store sessionId in local-storage for later usage against each API key
-            sessionId = res.response.data[defaults.sessionKeyName];
-            TTB._setLocal(defaults.sessionKeyName, sessionId);
+            // store sessionToken in local-storage for later usage against each API key
+            sessionToken = res.response.data[defaults.sessionKeyName];
+            TTB._setLocal(defaults.sessionKeyName, sessionToken);
           }
 
           return res;
