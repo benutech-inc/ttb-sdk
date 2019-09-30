@@ -232,7 +232,8 @@
    * whenever an API receives <code>401 - UNAUTHENTICATED</code> (session expired) from server.
    * This can be used to get a new valid "stk" from vendor site, via a login prompt or a direct ajax request to vendor server, to renew user login session from TTB server.
    * Method should return a promise, which should be resolved with a loginRemotePayload object. (Check loginRemotePayload details from loginRemote() method.)
-   * @param {Object} [config.onSessionExpireV2.info] - Contains details on the failed request. This can be used for advanced handling.
+   * @param {Object} [config.onSessionExpireV2.info] - Contains details against the failed request. This can be used for advanced handling. <br>
+   * <code>info</code> object will contain <code>requestError</code>, <code>requestConfig</code>, <code>methodName</code> and <code>endpoint</code>.
    *
    * @param {String} [config.autoFillAttr="data-ttb-field"] - The attribute to be used for auto-fill input fields when
    * <code>options.autoFillContext</code> specified in methods which support auto-fill.
@@ -321,8 +322,9 @@
    * // That's it! We are ready to shine!
    *
    * @example
+   * // DEPRECATED ! (Check above example on using onSessionExpireV2)
    * // optionally registering session-expired (401 status error) handler for ttb ajax requests.
-   * // check live working example at https://jsfiddle.net/shahzadns/rkw8v51y/
+   * // Live working example at https://jsfiddle.net/shahzadns/rkw8v51y/
    *
    * // your app store / constant having configuration
    * var ttbStore = {
