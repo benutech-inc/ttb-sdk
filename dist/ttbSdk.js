@@ -247,7 +247,8 @@
    * @param {String} [config.debug=true] - SDK debug mode flag useful for logs, etc.
    *
    * @param {Function} [config.onSessionExpire] - (DEPRECATED! Please check onSessionExpireV2() ) - The callback / handler to be called whenever an API receives <code>401 - UNAUTHENTICATED</code>
-   * (session expired) from server. (NOTE: This will be ignored when onSessionExpireV2() is provided)
+   * (session expired) from server. (NOTE: This will be ignored when onSessionExpireV2() is provided) <br>
+   * Check out live working example at https://jsfiddle.net/shahzadns/rkw8v51y/
    * @param {Object} config.onSessionExpire.info - The info object that SDK passes to the callback to provide more control to recover the request failure.
    * @param {String} config.onSessionExpire.info.requestError - The AJAX error object passed to the error-handler of the API method that was failed.
    * @param {String} config.onSessionExpire.info.requestConfig - The configuration object passed to the request that was failed.
@@ -321,78 +322,6 @@
    *
    * // That's it! We are ready to shine!
    *
-   * @example
-   * // DEPRECATED ! (Check above example on using onSessionExpireV2)
-   * // optionally registering session-expired (401 status error) handler for ttb ajax requests.
-   * // Live working example at https://jsfiddle.net/shahzadns/rkw8v51y/
-   *
-   * // your app store / constant having configuration
-   * var ttbStore = {
-   *   ttb: undefined,
-   *   partnerKey: '558b3e66-47b2-477d-a0d3-6d85db4c3148',
-   *   stk: '64on7i137ksveoa18os6i7g9a3', // assuming you maintain user valid stk in your store.
-   *   getuser_url: 'https://newlawyersie.api.titletoolbox.com/webservices/get_ttb_user.json',
-   * };
-   *
-   * // step#2 instantiate the TTB with your (vendor's) credentials. check full config from TTB instance section.
-   * ttbStore.ttb = new TTB({
-   *  partnerKey: ttbStore.partnerKey,
-   *  onSessionExpire: ttbOnSessionExpire
-   * });
-   *
-   * // step#3 set up a sessionExpire handler. following is just an example.
-   * // this callback gets called, whenever any ttb method Ajax call encounters 401.
-   * function ttbOnSessionExpire(info) {
-   *  console.log('ttbOnSessionExpire: No / Expired Session.', info); // check out "info" in console for more.
-   *
-   *  // step#3.1 - get the latest stk (some vendors has it in store, some gets latest from their server)
-   *  // your app's function.. assuming the getStk() fills in latest stk into the store.
-   *  return getStk()
-   *    .done(function() {
-   *      console.log('ttbOnSessionExpire: login: init');
-   *
-   *     // step#3.2 - call ttb.loginRemote() to renew the user session, using info from store.
-   *     var loginRemotePayload = {
-   *       stk: ttbStore.stk,
-   *       getuser_url: ttbStore.getuser_url
-   *     };
-   *      return ttbStore.ttb.loginRemote(loginRemotePayload)
-   *        .done(function() {
-   *          var successCb, failureCb;
-   *
-   *          // handle failure case.
-   *          if (res.response.status !== 'OK') {
-   *            console.log('ttbOnSessionExpire: login: error: ', res.response.data[0]);
-   *            console.log('TTB - this happens when stk and/or getuser_url. e.g. check "ttbStore" above.');
-   *            return;
-   *          }
-   *          console.log('ttbOnSessionExpire: login: success: ', res);
-   *
-   *          // step#3.3 - consume info object to do magic.
-   *          // re-call the last failed request. e.g. ttb.orderReport() was failed with 401
-   *          var promise = info.retry();
-   *
-   *          // map the success vs failure callbacks based on the method called.
-   *          switch (info.methodName) {
-   *            case 'orderReport':
-   *              successCb = ttbOrderReportSuccessCb; // you manage it on app level
-   *              failureCb = ttbOrderReportFailureCb; // you manage it on app level
-   *              break;
-   *            case 'searchByParcelNumber':
-   *              successCb = ttbSearchByParcelNumberSuccessCb; // you manage it on app level
-   *              failureCb = ttbSearchByParcelNumberFailureCb; // you manage it on app level
-   *              break;
-   *          }
-   *
-   *          // callbacks registered in promise chain, to be called on complete re-attempt. success or failure.
-   *          promise
-   *            .then(successCb, failureCb);
-   *
-   *          // That's it !
-   *          // ...
-   *        });
-   *    });
-   * }
    * */
   window.TTB = function (config) {
 
