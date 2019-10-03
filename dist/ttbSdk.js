@@ -1,7 +1,7 @@
 /**
  * Copyright © 2018 Benutech Inc. All rights reserved.
  * http://www.benutech.com - help@benutech.com
- * version: 1.16.0
+ * version: 1.17.0
  * https://github.com/benutech-inc/ttb-sdk
  * For latest release, please check - https://github.com/benutech-inc/ttb-sdk/releases
  * */
@@ -64,9 +64,11 @@
     enabledFeatures: 'iLookupWidget',
     baseURLPattern: 'https://{{sponsorName}}.api.titletoolbox.com/',
     scopedBootstrap: false,
+
     classScopedBootstrap: 'scoped-bootstrap',
     classScopedBootstrapHtml: 'scoped-bootstrap--html',
     classScopedBootstrapBody: 'scoped-bootstrap--body',
+
     debug: false,
     sdkPrefix: 'ttb-sdk',
     sessionKeyName: 'TTBSID',
@@ -78,6 +80,9 @@
         methodsMapping.SPONSOR__GET_SELECTION.methodName
     ],
     autoFillAttr: 'data-ttb-field',
+    localStorageNames: {
+      connect__selectedSponsor: 'connect--selected-sponsor'
+    },
     dataTableConfig: {
       CDNs: {
         CSS: 'https://ttb-export.herokuapp.com/libs/jquery-data-tables/jquery.dataTables.min.css',
@@ -193,7 +198,7 @@
    * <code> &lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> </code> <br/>
    * Scoped Bootstrap version: <br>
    * Having non-bootstrap based site ? please use the following scoped-bootstrap version to limit bootstrap styles to SDK widgets only. (bootstrap v3.3.7 used.)<br>
-   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.16.0/dist/scoped-bootstrap.min.css​"> </code>
+   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.17.0/dist/scoped-bootstrap.min.css​"> </code>
    * </p>
    *
    * <p>
@@ -205,8 +210,8 @@
    * <p>
    * <strong>TitleToolBox SDK </strong> files (1 script, and 1 style), can be pulled via our public repo link:
    * <i>(keep the [latest version]{@link https://github.com/benutech-inc/ttb-sdk/releases})</i><br>
-   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.16.0/dist/ttbSdk.min.css"> </code>
-   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.16.0/dist/ttbSdk.min.js​">&lt;/script> </code>
+   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.17.0/dist/ttbSdk.min.css"> </code>
+   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.17.0/dist/ttbSdk.min.js​">&lt;/script> </code>
    * <br><br>OR via<strong> Bower </strong> using <code>bower install ttb-sdk --save</code>
    * <br><br>
    *
@@ -332,10 +337,24 @@
      * */
     this.config = config;
 
+    // setup instance id for recognising relevant logs of specific instance.
+    window.TTB.instancesCount = window.TTB.instancesCount || 0;
+    window.TTB.instancesCount++;
+
+    /**
+     * @type {Number}
+     * @desc Instance Id to recognise instances and other usages. For example, Tracing relevant logs.
+     * */
+    this.instanceId = window.TTB.instancesCount;
+
     // setup default baseURL
     this.baseURLPattern = config.baseURLPattern || defaults.baseURLPattern;
-    this.sponsor = config.sponsor || window.TTB.utilCopy(defaults.sponsor);
-    this.baseURL = config.baseURL || this.setSponsor(this.sponsor);
+
+    // set sponsor via proper channel. (priority => config > previously selected > default)
+    var sponsor = config.sponsor || window.TTB._getLocal(defaults.localStorageNames.connect__selectedSponsor) || window.TTB.utilCopy(defaults.sponsor);
+    var baseURL = this.setSponsor(sponsor);
+
+    this.baseURL = config.baseURL || baseURL;
     this.autoFillAttr = config.autoFillAttr || defaults.autoFillAttr;
     this.scopedBootstrap = config.scopedBootstrap || defaults.scopedBootstrap;
     this.debug = config.debug || defaults.debug;
@@ -360,7 +379,17 @@
    * @description The version of the SDK being used.
    * @type String
    * */
-  window.TTB.version = '1.16.0';
+  window.TTB.version = '1.17.0';
+
+
+  /**
+   * @memberof TTB
+   * @alias version
+   * @static
+   * @description Total counts of TTB instances created.
+   * @type String
+   * */
+  window.TTB.instancesCount = 0;
 
   /**
    * @memberof TTB
@@ -382,7 +411,7 @@
    * @param {Array} args - list of values to be logged.
    * */
   window.TTB._log = function (args) {
-    window.TTB.debug && console.log.apply(console, [defaults.sdkPrefix + ' :'].concat(args));
+    window.TTB.debug && console.log.apply(console, [defaults.sdkPrefix + ' : static :'].concat(args));
   };
 
 
@@ -1910,7 +1939,7 @@
      * @param {Array} args - list of values to be logged.
      * */
     _log: function (args) {
-      this.config.debug && console.log.apply(console, [defaults.sdkPrefix + ' :'].concat(args));
+      this.config.debug && console.log.apply(console, [defaults.sdkPrefix + ' :', this.instanceId.toString(), ':'].concat(args));
     },
 
     /**
@@ -2017,6 +2046,13 @@
         }
       });
 
+      // custom data to attach with requests for internal additional logics.
+      request.customData = {
+
+        // keep original url for repeating requests (to avoid multiple times attaching query params)
+        originalUrl: request.url
+      };
+
       // proceed with the request using configuration
       return _self._ajaxProceed(request, mapping, queryParams);
     },
@@ -2045,6 +2081,9 @@
         // attach only when user is logged in. - most probably user would be logged in this scenario.
         queryParams = TTB._utilAddSessionToken(queryParams);
       }
+
+      // reset url to original Url (which is without query params)
+      request.url = request.customData.originalUrl;
 
       // append query params (if any)
       o.paramsString = queryParams ? $.param(queryParams) : '';
@@ -2207,7 +2246,7 @@
 
 
     /**
-     * This method is use to switch to a different sponsor (Title Company) and so generates a new <code>baseURL</code>
+     * This method is used to switch to a different sponsor (Title Company) and it generates a new <code>baseURL</code>
      * based on passed <code/>sponsor.name</code> with existing <code>baseURLPattern</code>.
      *
      * @param {Object} sponsor - Information to be retrieved via <code>options.onSelect()</code> of <code>TTB.getSponsors()</code>
@@ -2232,7 +2271,15 @@
      *
      * */
     setSponsor: function (sponsor) {
+      this._log(['setSponsor: existing:', this.sponsor && this.sponsor.name, '| new:', sponsor.name]);
+
+      // store in local storage for later use.
+      window.TTB._setLocal(defaults.localStorageNames.connect__selectedSponsor, sponsor);
+
+      // update sponsor in instance object
       this.sponsor = sponsor;
+
+      // generate baseURL based of newly selected sponsor.
       return this.baseURL = this.baseURLPattern.replace('{{sponsorName}}', sponsor.name);
     },
 
@@ -2290,7 +2337,7 @@
      *
      * */
     handleSponsorTOS: function (selectedSponsor) {
-      var modalId, $modal, modalTemplate, modalTitleTemplate;
+      var modalId, $modal, modalTemplate;
 
       modalId = 'ttb-sdk--handle-sponsor-tos';
 
@@ -3993,9 +4040,6 @@
      * @param {Function} [actions.onConnectSuccess] - To be invoked with <code>info</code> object,
      * which on successful "Connect", contains <code>selectedSponsor</code> object, and <code>loginPerformed</code> flag (to be "true" when user gets auto logged in from widget modal)
      * @param {Function} [actions.onConnectFailure] - To be invoked with <code>reason</code> {String} message on failing connecting.
-     * @param {Function} [actions.onDisconnectSuccess] - To be invoked with <code>info</code> object,
-     * which on successful "Disconnect", contains <code>selectedSponsor</code> object, and <code>loginPerformed</code> flag.
-     * @param {Function} [actions.onDisconnectFailure] - To be invoked with <code>reason</code> {String} message on failing disconnecting.
      *
      * @example
      *
@@ -4035,60 +4079,19 @@
      *     // optional callback - to be called when failed connecting.
      *    // passed argument will be:
      *    // reason {String} - Reason of the failure, e.g. "failed" if API did not connect.
-     *   },
-     *
-     *   onDisconnectSuccess: function(info) {
-     *     // optional callback - to be called when done.
-     *     // passed argument will be an "info" object which contains "selectedSponsor" which can be used to set instance sponsor.
-     *     // note: selectedSponsor details "ttb-sdk--connect--selected-sponsor" of localStorage gets destroyed by SDK.
-     *   },
-     *
-     *   onDisconnectFailure: function(reason) {
-     *     // optional callback - to be called when failed connecting.
-     *    // passed argument will be:
-     *    // reason {String} - Reason of the failure, e.g. "failed" if API did not connect.
-     *   },
+     *   }
      * };
      *
      * var $ttbConnect = ttb.connectWidget(options, actions);
      *
-     * @return {Object} $element - JQuery reference to the rendered widget container element.
+     * @return {Object | null} $element - JQuery reference to the rendered widget container element.
+     * OR null in case of any error in rendering widget. E.g. elementSelector did not found.
      *
      * */
     connectWidget: function (options, actions) {
-      var o, ttb, localName;
-
-      ttb = this;
-      localName = 'connect--selected-sponsor';
-      actions = actions || {};
+      var o, ttb;
 
       o = {};
-      o.userProfile = undefined; // later to be filled via getUserProfile( )
-      o.selectedSponsor = window.TTB._getLocal(localName);
-      o.widgetClass = 'ttb-sdk--connect--container';
-      o.widgetTemplate = [
-        '<div id="ttb-sdk--connect--connect-section" class="row">',
-        ' <div id="ttb-sdk--connect--alert" class="col-xs-9">',
-        defaults.errorMessages.CONNECT__NO_SPONSOR,
-        ' </div>',
-        ' <div id="ttb-sdk--connect--connect" class="col-xs-3">',
-        '  <button type="button" class="btn btn-primary pull-right">Connect</button>',
-        ' </div>',
-        '</div>',
-        '<!-- hidden by default -->',
-        '<div id="ttb-sdk--connect--disconnect-section" class="row" style="display: none;">',
-        ' <div class="col-xs-4">',
-        '  <strong>Title company</strong>',
-        ' </div>',
-        ' <!-- to be dynamically updated -->',
-        ' <div id="ttb-sdk--connect--company-name" class="col-xs-4">',
-        '  - ',
-        ' </div>',
-        ' <div id="ttb-sdk--connect--disconnect" class="col-xs-4">',
-        '  <button type="button" class="btn btn-primary pull-right">Change</button>',
-        ' </div>',
-        '</div>'
-      ].join('');
 
       o.$container = $(options.elementSelector);
 
@@ -4097,6 +4100,35 @@
         this._log(['connectWidget : abort : element not found - ', options.elementSelector]);
         return null;
       }
+
+      ttb = this;
+      actions = actions || {};
+
+      o.userProfile = undefined; // later to be filled via getUserProfile( )
+      o.widgetClass = 'ttb-sdk--connect--container';
+      o.widgetTemplate = [
+        '<div id="ttb-sdk--connect--select-section" class="row">',
+        ' <div id="ttb-sdk--connect--alert" class="col-xs-9">',
+        defaults.errorMessages.CONNECT__NO_SPONSOR,
+        ' </div>',
+        ' <div id="ttb-sdk--connect--connect" class="col-xs-3">',
+        '  <button type="button" class="btn btn-primary pull-right">Connect</button>',
+        ' </div>',
+        '</div>',
+        '<!-- hidden by default -->',
+        '<div id="ttb-sdk--connect--change-section" class="row" style="display: none;">',
+        ' <div class="col-xs-4">',
+        '  <strong>Title company</strong>',
+        ' </div>',
+        ' <!-- to be dynamically updated -->',
+        ' <div id="ttb-sdk--connect--company-name" class="col-xs-4">',
+        '  - ',
+        ' </div>',
+        ' <div id="ttb-sdk--connect--change" class="col-xs-4">',
+        '  <button type="button" class="btn btn-primary pull-right">Change</button>',
+        ' </div>',
+        '</div>'
+      ].join('');
 
       // add required class for CSS
       o.$container
@@ -4112,21 +4144,18 @@
           .addClass(defaults.classScopedBootstrapBody);
       }
 
-      // check for any existing connection - activate disconnect section UI.
-      //if (o.selectedSponsor) {
-      //  activateConnectedMode(o.selectedSponsor, false);
-      //}
+      // check for any existing connection - activate disconnected section UI.
       checkForExistingSponsor();
 
       // register handler of connect button to open up a connect modal
-      o.$container.find('#ttb-sdk--connect--connect-section button').on('click', onConnect);
-      o.$container.find('#ttb-sdk--connect--disconnect-section button').on('click', onDisconnect);
+      o.$container.find('#ttb-sdk--connect--select-section button').on('click', onSelectConnection);
+      o.$container.find('#ttb-sdk--connect--change-section button').on('click', onChangeConnection);
 
       // opens up the connect modal
-      function onConnect() {
+      function onSelectConnection() {
         var $connectModal, modalOptions, iframeOptions, origin;
 
-        ttb._log(['connectWidget: onConnect: init.']);
+        ttb._log(['connectWidget: onSelectConnection: init.']);
 
         modalOptions = {
           id: 'ttb-sdk--connect--modal',
@@ -4172,18 +4201,13 @@
             // failure - invoke given callbacks
             case 'TTB:SDK::CONNECT_WIDGET:ERROR':
 
-              // invoke the related action callback.
-              actions.onConnectFailure && actions.onConnectFailure(data.info.reason);
-
-              // leave wait/error msg for connect UI.
-              updateDisconnectedState(data.info.reason, false);
-
+              onConnectFailure(data.info.reason, false);
               break;
 
             // success - store sponsor, and update UI
             case 'TTB:SDK::CONNECT_WIDGET:SUCCESS':
 
-              onConnectSuccess(data);
+              onConnectSuccess(data.info, true);
               break;
 
             default:
@@ -4193,151 +4217,115 @@
         }
       }
 
-      // remove the stored sponsor connection.
-      function onDisconnect() {
-        ttb._log(['connectWidget: onDisconnect: called.']);
+      // alias to "select connection"
+      function onChangeConnection() {
+        ttb._log(['connectWidget: onChangeConnection: called.']);
 
-        // clear value from local storage.
-        window.TTB._setLocal(localName, null);
-
-        // update the state on disconnect UI
-        updateConnectedState('Disconnected.', false);
-
-        // activate connect section UI.
-        activateDisconnectedMode(ttb.sponsor);
-
-        // auto trigger the connect click
-        $('#ttb-sdk--connect--connect button').trigger('click');
+        // call same "select connection" method for here too.
+        onSelectConnection();
       }
 
       // pulls user profile, and checks for last selected sponsor.
       function checkForExistingSponsor() {
-        var utilHandleError;
 
-        // common handler for error scenarios
-        utilHandleError =  function (reason, disableConnect) {
-
-          // leave wait/error msg for connect UI.
-          updateDisconnectedState(reason, disableConnect);
-
-          // invoke the related action callback.
-          actions.onConnectFailure && actions.onConnectFailure(reason);
-        };
-
-        // leave wait msg for connect UI.
-        updateDisconnectedState('Pulling user profile...', true);
+        // leave wait msg for select-connection UI.
+        updateSelectConnectionMode('Pulling user profile...', true);
 
         // get user profile first.
         window.TTB.getUserProfile(options.loginRemotePayload, ttb.config.partnerKey)
           .then(function (res) {
             var payload;
 
-            // if it is successful response.
-            if (res.data && res.data.User) {
-
-              // keep the user profile cached for later connect modal box use.
-              o.userProfile = res.data.User;
-
-              // leave wait msg for connect UI.
-              updateDisconnectedState('Checking current partner selection...', true);
-
-              payload = {
-                email: o.userProfile.email
-              };
-              window.TTB.getSponsorSelection(ttb.config.partnerKey, payload)
-                .then(function (res) {
-                  var selectedSponsor, errorMessage;
-
-                  res = res.response;
-
-                  if (res.status === 'OK') {
-
-                    selectedSponsor = window.TTB.utilBuildSponsorInfo(res.data);
-
-                    // update state for connect UI.
-                    updateDisconnectedState('Partner selection found.', false);
-
-                    // activate disconnect section UI.
-                    activateConnectedMode(selectedSponsor, false);
-
-                  } else {
-
-                    // we keep "connect" enabled here.
-                    errorMessage = res.data[0].indexOf('RC_ERR_105') >= 0 ?
-                      defaults.errorMessages.CONNECT__NO_SPONSOR : res.data[0];
-                    
-                    utilHandleError(errorMessage, false);
-                  }
-
-                }, function (reason) {
-                  // we keep "connect" enabled here.
-                  utilHandleError(defaults.errorMessages.GENERAL__CONNECT_FAILED + ' for pulling partner selection.', false);
-                });
-
-            } else {
-              utilHandleError('Failed in pulling user profile.', true);
+            // catch error - report and exit.
+            if (!res.data || !res.data.User) {
+              onConnectFailure('Failed in pulling user profile.', true);
+              return;
             }
 
+            /* else - resume checking selected sponsor. */
+
+            // keep the user profile cached for later connect modal box use.
+            o.userProfile = res.data.User;
+
+            // leave wait msg for select-connection UI.
+            updateSelectConnectionMode('Checking current partner selection...', true);
+
+            payload = {
+              email: o.userProfile.email
+            };
+            window.TTB.getSponsorSelection(ttb.config.partnerKey, payload)
+              .then(function (res) {
+                var data, errorMessage;
+
+                res = res.response;
+
+                // catch error - report and exit.
+                if (res.status !== 'OK') {
+
+                  // we keep "connect" enabled here.
+                  errorMessage = res.data[0].indexOf('RC_ERR_105') >= 0 ?
+                    defaults.errorMessages.CONNECT__NO_SPONSOR : res.data[0];
+
+                  onConnectFailure(errorMessage, false);
+                  return;
+                }
+
+                /* else - resume setting selected sponsor */
+                data = {
+                  selectedSponsor: window.TTB.utilBuildSponsorInfo(res.data)
+                };
+                onConnectSuccess(data, false);
+
+              }, function (reason) {
+
+                // we keep "connect" enabled here.
+                onConnectFailure(defaults.errorMessages.GENERAL__CONNECT_FAILED + ' for pulling partner selection.', false);
+              });
+
           }, function (reason) {
-            utilHandleError(defaults.errorMessages.GENERAL__CONNECT_FAILED + ' for pulling user profile.', true);
+
+            onConnectFailure(defaults.errorMessages.GENERAL__CONNECT_FAILED + ' for pulling user profile.', true);
           });
       }
 
-      // saves the sponsor selection
-      function onConnectSuccess(data) {
+      // handles the connect failure
+      function onConnectFailure(reason, disableConnect) {
 
-        // leave success msg for connected.
-        //updateDisconnectedState('sponsor selection saved.', false);
-
-        // store selected sponsor
-        window.TTB._setLocal(localName, data.info.selectedSponsor);
-
-        // activate disconnect section UI.
-        activateConnectedMode(data.info.selectedSponsor, true);
-
-      }
-
-      // activate connect section UI.
-      function activateDisconnectedMode(selectedSponsor) {
-        o.$container
-          .find('#ttb-sdk--connect--connect-section').show()
-          .find('#ttb-sdk--connect--alert').text(defaults.errorMessages.CONNECT__NO_SPONSOR)
-          .end()
-          .next('#ttb-sdk--connect--disconnect-section').hide()
-          .find('#ttb-sdk--connect--company-name').text('');
+        // leave error msg for select-connection UI.
+        updateSelectConnectionMode(reason, disableConnect);
 
         // invoke the related action callback.
-        actions.onDisconnectSuccess && actions.onDisconnectSuccess({selectedSponsor: selectedSponsor});
+        actions.onConnectFailure && actions.onConnectFailure(reason);
       }
 
-      // activate disconnect section UI.
-      function activateConnectedMode(selectedSponsor, loginPerformed) {
+      // saves the sponsor selection
+      function onConnectSuccess(info, loginPerformed) {
+
+        // update instance's selected sponsor
+        ttb.setSponsor(info.selectedSponsor);
+
+        // show change-connection UI
         o.$container
-          .find('#ttb-sdk--connect--connect-section').hide()
-          .next('#ttb-sdk--connect--disconnect-section').show()
-          .find('#ttb-sdk--connect--company-name').text(selectedSponsor.title || '');
+          .find('#ttb-sdk--connect--select-section').hide()
+          .next('#ttb-sdk--connect--change-section').show()
+          .find('#ttb-sdk--connect--company-name').text(ttb.sponsor.title || '');
+
+        // leave success msg for select-connection UI.
+        updateSelectConnectionMode('Partner selected.', true);
 
         // invoke the related action callback.
         actions.onConnectSuccess && actions.onConnectSuccess({
-          selectedSponsor: selectedSponsor,
+          selectedSponsor: ttb.sponsor,
           loginPerformed: loginPerformed
         });
       }
 
-      // renders state related messages / errors on connect UI.
-      function updateDisconnectedState(text, disableConnect) {
+      // renders state related messages / errors on select-connection UI.
+      function updateSelectConnectionMode(text, disableConnect) {
         o.$container
           .find('#ttb-sdk--connect--alert').text(text || '')
           .next('#ttb-sdk--connect--connect')
           .find('button').prop('disabled', disableConnect);
-      }
-
-      // renders state related messages / errors on disconnect UI.
-      function updateConnectedState(text, disableDisconnect) {
-        o.$container
-          .find('#ttb-sdk--connect--company-name').text(text || '')
-          .next('#ttb-sdk--connect--disconnect')
-          .find('button').prop('disabled', disableDisconnect);
       }
     }
 

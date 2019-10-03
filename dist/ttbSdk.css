@@ -1,7 +1,7 @@
 /**
  * Copyright © 2018 Benutech Inc. All rights reserved.
  * http://www.benutech.com - help@benutech.com
- * version: 1.16.0
+ * version: 1.17.0
  * https://github.com/benutech-inc/ttb-sdk
  * For latest release, please check - https://github.com/benutech-inc/ttb-sdk/releases
  * */
@@ -154,8 +154,7 @@
 
 /* ilookup - netsheet widget - starts */
 #ttb-sdk--net-sheet--modal .modal-dialog {
-    max-width: 1200px;
-    width: 1200px !important;
+    width: 1075px;
     margin: 1.75rem auto;
 }
 /* ilookup - netsheet widget - ends */

@@ -50,7 +50,11 @@
             
                 <li data-name="TTB.version"><a href="TTB.html#.version">version</a></li>
             
+                <li data-name="TTB.version"><a href="TTB.html#.version">version</a></li>
+            
                 <li data-name="TTB#config"><a href="TTB.html#config">config</a></li>
+            
+                <li data-name="TTB#instanceId"><a href="TTB.html#instanceId">instanceId</a></li>
             
             </ul>
             <ul class="typedefs itemMembers">
@@ -166,7 +170,7 @@ Official CSS: <br>
 <code> &lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> </code> <br/>
 Scoped Bootstrap version: <br>
 Having non-bootstrap based site ? please use the following scoped-bootstrap version to limit bootstrap styles to SDK widgets only. (bootstrap v3.3.7 used.)<br>
-<code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.16.0/dist/scoped-bootstrap.min.css​"> </code>
+<code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.17.0/dist/scoped-bootstrap.min.css​"> </code>
 </p>
 
 <p>
@@ -178,8 +182,8 @@ Having non-bootstrap based site ? please use the following scoped-bootstrap vers
 <p>
 <strong>TitleToolBox SDK </strong> files (1 script, and 1 style), can be pulled via our public repo link:
 <i>(keep the <a target="_blank" href="https://github.com/benutech-inc/ttb-sdk/releases">latest version</a>)</i><br>
-<code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.16.0/dist/ttbSdk.min.css"> </code>
-<code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.16.0/dist/ttbSdk.min.js​">&lt;/script> </code>
+<code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.17.0/dist/ttbSdk.min.css"> </code>
+<code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.17.0/dist/ttbSdk.min.js​">&lt;/script> </code>
 <br><br>OR via<strong> Bower </strong> using <code>bower install ttb-sdk --save</code>
 <br><br>
 
@@ -203,7 +207,7 @@ Having non-bootstrap based site ? please use the following scoped-bootstrap vers
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line326">line 326</a>
+            <a href="s.html">s</a>, <a href="s.html#line331">line 331</a>
         </div>
         
     </div>
@@ -1030,6 +1034,51 @@ function ttbOnSessionExpireV2(info) {
 <dd>
     
     <div class="description">
+        Total counts of TTB instances created.
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id=".version"><span class="type-signature static">static</span>TTB.version<span class="type-signature type string">String</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
         The version of the SDK being used.
     </div>
     
@@ -1109,6 +1158,51 @@ For details, Please check documentation of <code> new TTB(...) </code> construct
     
 </dd>
 
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="instanceId">instanceId<span class="type-signature type number">Number</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        Instance Id to recognise instances and other usages. For example, Tracing relevant logs.
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
         </dl>
     
     
@@ -1126,7 +1220,7 @@ For details, Please check documentation of <code> new TTB(...) </code> construct
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1802">line 1802</a>
+            <a href="s.html">s</a>, <a href="s.html#line1831">line 1831</a>
         </div>
         
     </div>
@@ -1290,7 +1384,7 @@ var infoContainsSessionToken = TTB._utilAddSessionToken(queryParams);</code></pr
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1082">line 1082</a>
+            <a href="s.html">s</a>, <a href="s.html#line1111">line 1111</a>
         </div>
         
     </div>
@@ -1568,7 +1662,7 @@ TTB.getSponsors(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1712">line 1712</a>
+            <a href="s.html">s</a>, <a href="s.html#line1741">line 1741</a>
         </div>
         
     </div>
@@ -1755,7 +1849,7 @@ TTB.renderLogoWidget(elementSelector, vendorInfo);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1206">line 1206</a>
+            <a href="s.html">s</a>, <a href="s.html#line1235">line 1235</a>
         </div>
         
     </div>
@@ -2296,7 +2390,7 @@ TTB.showSelectSponsor(data, actions);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1484">line 1484</a>
+            <a href="s.html">s</a>, <a href="s.html#line1513">line 1513</a>
         </div>
         
     </div>
@@ -2798,7 +2892,7 @@ TTB.showSponsorTOSModal(selectedSponsor, actions, options);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line919">line 919</a>
+            <a href="s.html">s</a>, <a href="s.html#line948">line 948</a>
         </div>
         
     </div>
@@ -2943,7 +3037,7 @@ TTB.showSponsorTOSModal(selectedSponsor, actions, options);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1899">line 1899</a>
+            <a href="s.html">s</a>, <a href="s.html#line1928">line 1928</a>
         </div>
         
     </div>
@@ -3103,7 +3197,7 @@ var cloneOfDetail = TTB.utilCopy(detail);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1766">line 1766</a>
+            <a href="s.html">s</a>, <a href="s.html#line1795">line 1795</a>
         </div>
         
     </div>
@@ -3357,7 +3451,7 @@ console.log(TTBLandingPageUrl);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1842">line 1842</a>
+            <a href="s.html">s</a>, <a href="s.html#line1871">line 1871</a>
         </div>
         
     </div>
@@ -3520,7 +3614,7 @@ var rejectedPromise = TTB.utilPromiseReject({foo: 'Something useful as a detaile
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1872">line 1872</a>
+            <a href="s.html">s</a>, <a href="s.html#line1901">line 1901</a>
         </div>
         
     </div>
@@ -3683,7 +3777,7 @@ var resolvedPromise = TTB.utilPromiseResolve({foo: 'Something useful as a detail
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2831">line 2831</a>
+            <a href="s.html">s</a>, <a href="s.html#line2878">line 2878</a>
         </div>
         
     </div>
@@ -3860,7 +3954,7 @@ ttb.checkPEFarmStatus(farmId)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line3320">line 3320</a>
+            <a href="s.html">s</a>, <a href="s.html#line3367">line 3367</a>
         </div>
         
     </div>
@@ -4074,12 +4168,12 @@ ttb.clearSponsorSelection(payload)
     <div class="nameContainer">
         <h4 class="name" id="connectWidget">
             
-            connectWidget<span class="signature">(options, <span class="optional">actions</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
+            connectWidget<span class="signature">(options, <span class="optional">actions</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object|null}</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line4058">line 4058</a>
+            <a href="s.html">s</a>, <a href="s.html#line4091">line 4091</a>
         </div>
         
     </div>
@@ -4325,67 +4419,6 @@ which on successful "Connect", contains <code>selectedSponsor</code> object, and
         </tr>
 	
 	
-	
-        <tr>
-            
-                <td class="name"><code>onDisconnectSuccess</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                    
-                        <span class="optional">optional</span>
-                    
-                    
-                        
-                    
-                
-                To be invoked with <code>info</code> object,
-which on successful "Disconnect", contains <code>selectedSponsor</code> object, and <code>loginPerformed</code> flag.</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>onDisconnectFailure</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                    
-                        <span class="optional">optional</span>
-                    
-                    
-                        
-                    
-                
-                To be invoked with <code>reason</code> {String} message on failing disconnecting.</td>
-        </tr>
-	
-	
 	</tbody>
 </table>
             </td>
@@ -4450,10 +4483,14 @@ which on successful "Disconnect", contains <code>selectedSponsor</code> object, 
             <td class="type">
             
                         Object
+                         | 
+                    
+                        null
                         
                     
             </td>
-            <td class="description last">$element - JQuery reference to the rendered widget container element.</td>
+            <td class="description last">$element - JQuery reference to the rendered widget container element.
+OR null in case of any error in rendering widget. E.g. elementSelector did not found.</td>
         </tr>
     
     </tbody>
@@ -4503,19 +4540,7 @@ var actions = {
     // optional callback - to be called when failed connecting.
    // passed argument will be:
    // reason {String} - Reason of the failure, e.g. "failed" if API did not connect.
-  },
-
-  onDisconnectSuccess: function(info) {
-    // optional callback - to be called when done.
-    // passed argument will be an "info" object which contains "selectedSponsor" which can be used to set instance sponsor.
-    // note: selectedSponsor details "ttb-sdk--connect--selected-sponsor" of localStorage gets destroyed by SDK.
-  },
-
-  onDisconnectFailure: function(reason) {
-    // optional callback - to be called when failed connecting.
-   // passed argument will be:
-   // reason {String} - Reason of the failure, e.g. "failed" if API did not connect.
-  },
+  }
 };
 
 var $ttbConnect = ttb.connectWidget(options, actions);</code></pre>
@@ -4535,7 +4560,7 @@ var $ttbConnect = ttb.connectWidget(options, actions);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2873">line 2873</a>
+            <a href="s.html">s</a>, <a href="s.html#line2920">line 2920</a>
         </div>
         
     </div>
@@ -4709,7 +4734,7 @@ ttb.getFarmProperties(farmId)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2911">line 2911</a>
+            <a href="s.html">s</a>, <a href="s.html#line2958">line 2958</a>
         </div>
         
     </div>
@@ -4836,7 +4861,7 @@ ttb.getFarmsList()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line3222">line 3222</a>
+            <a href="s.html">s</a>, <a href="s.html#line3269">line 3269</a>
         </div>
         
     </div>
@@ -4966,7 +4991,7 @@ ttb.getSearchFields()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line3182">line 3182</a>
+            <a href="s.html">s</a>, <a href="s.html#line3229">line 3229</a>
         </div>
         
     </div>
@@ -5091,7 +5116,7 @@ ttb.getTypesReport()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line3005">line 3005</a>
+            <a href="s.html">s</a>, <a href="s.html#line3052">line 3052</a>
         </div>
         
     </div>
@@ -5742,7 +5767,7 @@ ttb.globalSearch(payload, queryParams)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line3066">line 3066</a>
+            <a href="s.html">s</a>, <a href="s.html#line3113">line 3113</a>
         </div>
         
     </div>
@@ -5935,7 +5960,7 @@ ttb.globalSearchCount(payload, params)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line3407">line 3407</a>
+            <a href="s.html">s</a>, <a href="s.html#line3454">line 3454</a>
         </div>
         
     </div>
@@ -6414,7 +6439,7 @@ autocomplete.addListener('place_changed', function () {
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2292">line 2292</a>
+            <a href="s.html">s</a>, <a href="s.html#line2339">line 2339</a>
         </div>
         
     </div>
@@ -6525,7 +6550,7 @@ ttb.handleSponsorTOS(selectedSponsor);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line3516">line 3516</a>
+            <a href="s.html">s</a>, <a href="s.html#line3563">line 3563</a>
         </div>
         
     </div>
@@ -6803,7 +6828,7 @@ window.googleInit = function () {
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2425">line 2425</a>
+            <a href="s.html">s</a>, <a href="s.html#line2472">line 2472</a>
         </div>
         
     </div>
@@ -7049,7 +7074,7 @@ ttb.login(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2359">line 2359</a>
+            <a href="s.html">s</a>, <a href="s.html#line2406">line 2406</a>
         </div>
         
     </div>
@@ -7292,7 +7317,7 @@ ttb.loginRemote(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2474">line 2474</a>
+            <a href="s.html">s</a>, <a href="s.html#line2521">line 2521</a>
         </div>
         
     </div>
@@ -7419,7 +7444,7 @@ ttb.logout()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line3115">line 3115</a>
+            <a href="s.html">s</a>, <a href="s.html#line3162">line 3162</a>
         </div>
         
     </div>
@@ -7634,7 +7659,7 @@ ttb.nearbySearch(payload, params)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2664">line 2664</a>
+            <a href="s.html">s</a>, <a href="s.html#line2711">line 2711</a>
         </div>
         
     </div>
@@ -7971,7 +7996,7 @@ ttb.orderReport(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2725">line 2725</a>
+            <a href="s.html">s</a>, <a href="s.html#line2772">line 2772</a>
         </div>
         
     </div>
@@ -8410,7 +8435,7 @@ ttb.propertyComps(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2779">line 2779</a>
+            <a href="s.html">s</a>, <a href="s.html#line2826">line 2826</a>
         </div>
         
     </div>
@@ -8823,7 +8848,7 @@ ttb.propertyDetails(payload, options)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line3272">line 3272</a>
+            <a href="s.html">s</a>, <a href="s.html#line3319">line 3319</a>
         </div>
         
     </div>
@@ -9128,7 +9153,7 @@ ttb.saveSponsorSelection(payload, performLogin)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2616">line 2616</a>
+            <a href="s.html">s</a>, <a href="s.html#line2663">line 2663</a>
         </div>
         
     </div>
@@ -9416,7 +9441,7 @@ ttb.searchByOwnerName(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2517">line 2517</a>
+            <a href="s.html">s</a>, <a href="s.html#line2564">line 2564</a>
         </div>
         
     </div>
@@ -9659,7 +9684,7 @@ ttb.searchByParcelNumber(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2570">line 2570</a>
+            <a href="s.html">s</a>, <a href="s.html#line2617">line 2617</a>
         </div>
         
     </div>
@@ -10041,7 +10066,7 @@ ttb.searchBySiteAddress(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2234">line 2234</a>
+            <a href="s.html">s</a>, <a href="s.html#line2273">line 2273</a>
         </div>
         
     </div>
@@ -10052,7 +10077,7 @@ ttb.searchBySiteAddress(payload)
     
     
     <div class="description">
-        This method is use to switch to a different sponsor (Title Company) and so generates a new <code>baseURL</code>
+        This method is used to switch to a different sponsor (Title Company) and it generates a new <code>baseURL</code>
 based on passed <code/>sponsor.name</code> with existing <code>baseURLPattern</code>.
     </div>
     
@@ -10340,7 +10365,7 @@ ttb.setSponsor({
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2250">line 2250</a>
+            <a href="s.html">s</a>, <a href="s.html#line2297">line 2297</a>
         </div>
         
     </div>
@@ -10457,7 +10482,7 @@ ttb.showTOS();</code></pre>
 
         <footer>
             Copyright © 2018 <a target="_blank" href="http://www.benutech.com/" target="_blank" title="Benutech official website">Benutech Inc.</a> All rights reserved.</a>
-           <!-- Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Sep 30 2019 17:44:06 GMT+0500 (PKT) -->
+           <!-- Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Oct 04 2019 01:36:55 GMT+0500 (PKT) -->
         </footer>
     </div>
 </div>
