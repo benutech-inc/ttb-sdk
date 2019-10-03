@@ -2271,7 +2271,7 @@
      *
      * */
     setSponsor: function (sponsor) {
-      this._log(['setSponsor: existing:', this.sponsor && this.sponsor.name, 'new:', sponsor.name]);
+      this._log(['setSponsor: existing:', this.sponsor && this.sponsor.name, '| new:', sponsor.name]);
 
       // store in local storage for later use.
       window.TTB._setLocal(defaults.localStorageNames.connect__selectedSponsor, sponsor);
