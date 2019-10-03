@@ -33,7 +33,7 @@ var payload = {
 
 // call one of the SDK ready methods "login" to get user logged in
 ttb.login(payload)
-.done(function(res) {
+.then(function(res) {
   if (res.response.status === 'OK') {
     // user is successfully logged-in !!
     // your success code here to consume res.response.data for logged-in user info
@@ -42,8 +42,7 @@ ttb.login(payload)
     // your failure code here to consume res.response.data for validation errors info
     console.log(res.response.data);
   }
-})
-.fail(function(err) {
+}, function(err) {
   // your failure code here
 })
 .always(function() {
