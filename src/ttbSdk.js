@@ -979,7 +979,7 @@
    * var partnerKey = 'xxxxxxxxxxxxxxxx';
    *
    * TTB.getUserProfile(payload, partnerKey)
-   * .done(function(res) {
+   * .then(function(res) {
    *   if (res.response.status === 'OK') {
    *     // your success code here to consume res.response.data
    *     console.log(res.response.data);
@@ -987,8 +987,7 @@
    *     // your failure code here to consume res.response.data
    *     console.log(res.response.data);
    *   }
-   * })
-   * .fail(function(err) {
+   * }, function(err) {
    *   // your failure code here
    * })
    * .always(function() {
@@ -1030,7 +1029,7 @@
    * var partnerKey = 'xxxxxxxxxxxxxxxxx';
    *
    * TTB.getVendorProfile(partnerKey)
-   * .done(function(res) {
+   * .then(function(res) {
    *   if (res.response.status === 'OK') {
    *     // your success code here to consume res.response.data
    *     console.log(res.response.data);
@@ -1038,8 +1037,7 @@
    *     // your failure code here to consume res.response.data
    *     console.log(res.response.data);
    *   }
-   * })
-   * .fail(function(err) {
+   * }, function(err) {
    *   // your failure code here
    * })
    * .always(function() {
@@ -1089,7 +1087,7 @@
    * };
    *
    * TTB.getSponsors(payload)
-   * .done(function(res) {
+   * .then(function(res) {
    *   if (res.response.status === 'OK') {
    *     // your success code here to consume res.response.data
    *     console.log(res.response.data);
@@ -1097,8 +1095,7 @@
    *     // your failure code here to consume res.response.data
    *     console.log(res.response.data);
    *   }
-   * })
-   * .fail(function(err) {
+   * }, function(err) {
    *   // your failure code here
    * })
    * .always(function() {
@@ -1143,7 +1140,7 @@
    * };
    *
    * TTB.getSponsorSelection(partnerKey, payload)
-   * .done(function(res) {
+   * .then(function(res) {
    *   if (res.response.status === 'OK') {
    *     // your success code here to consume res.response.data
    *     console.log(res.response.data);
@@ -1151,8 +1148,7 @@
    *     // your failure code here to consume res.response.data
    *     console.log(res.response.data);
    *   }
-   * })
-   * .fail(function(err) {
+   * }, function(err) {
    *   // your failure code here
    * })
    * .always(function() {
@@ -2384,7 +2380,7 @@
      * };
      *
      * ttb.loginRemote(payload)
-     * .done(function(res) {
+     * .then(function(res) {
      *   if (res.response.status === 'OK') {
      *     // user is successfully logged-in !!
      *     // your success code here to consume res.response.data for logged-in user info
@@ -2393,8 +2389,7 @@
      *     // your failure code here to consume res.response.data for validation errors info
      *     console.log(res.response.data);
      *   }
-     * })
-     * .fail(function(err) {
+     * }, function(err) {
      *   // your failure code here
      * })
      * .always(function() {
@@ -2450,7 +2445,7 @@
      * };
      *
      * ttb.login(payload)
-     * .done(function(res) {
+     * .then(function(res) {
      *   if (res.response.status === 'OK') {
      *     // user is successfully logged-in !!
      *     // your success code here to consume res.response.data for logged-in user info
@@ -2459,8 +2454,7 @@
      *     // your failure code here to consume res.response.data for validation errors info
      *     console.log(res.response.data);
      *   }
-     * })
-     * .fail(function(err) {
+     * }, function(err) {
      *   // your failure code here
      * })
      * .always(function() {
@@ -2498,7 +2492,7 @@
      * var ttb = new TTB({ ... }); // skip if already instantiated.
      *
      * ttb.logout()
-     * .done(function(res) {
+     * .then(function(res) {
      *   if (res.response.status === 'OK') {
      *    // user is successfully logged-out!!
      *    // your success code here to clear any cached info etc from the web page
@@ -2508,8 +2502,7 @@
      *     // your failure code here to consume res.response.data
      *     console.log(res.response.data);
      *   }
-     * })
-     * .fail(function(err) {
+     * }, function(err) {
      *   // your failure code here
      * })
      * .always(function() {
@@ -2543,7 +2536,7 @@
      * };
      *
      * ttb.searchByParcelNumber(payload)
-     * .done(function(res) {
+     * .then(function(res) {
      *   if (res.response.status === 'OK') {
      *     // your success code here to consume res.response.data
      *     console.log(res.response.data);
@@ -2551,8 +2544,7 @@
      *     // your failure code here to consume res.response.data
      *     console.log(res.response.data);
      *   }
-     * })
-     * .fail(function(err) {
+     * }, function(err) {
      *   // your failure code here
      * })
      * .always(function() {
@@ -2596,7 +2588,7 @@
      * };
      *
      * ttb.searchBySiteAddress(payload)
-     * .done(function(res) {
+     * .then(function(res) {
      *   if (res.response.status === 'OK') {
      *     // your success code here to consume res.response.data
      *     console.log(res.response.data);
@@ -2604,8 +2596,7 @@
      *     // your failure code here to consume res.response.data
      *     console.log(res.response.data);
      *   }
-     * })
-     * .fail(function(err) {
+     * }, function(err) {
      *   // your failure code here
      * })
      * .always(function() {
@@ -2642,7 +2633,7 @@
      * };
      *
      * ttb.searchByOwnerName(payload)
-     * .done(function(res) {
+     * .then(function(res) {
      *   if (res.response.status === 'OK') {
      *     // your success code here to consume res.response.data
      *     console.log(res.response.data);
@@ -2650,8 +2641,7 @@
      *     // your failure code here to consume res.response.data
      *     console.log(res.response.data);
      *   }
-     * })
-     * .fail(function(err) {
+     * }, function(err) {
      *   // your failure code here
      * })
      * .always(function() {
@@ -2690,7 +2680,7 @@
      * };
      *
      * ttb.orderReport(payload)
-     * .done(function(res) {
+     * .then(function(res) {
      *   if (res.response.status === 'OK') {
      *     // your success code here to consume res.response.data
      *     console.log(res.response.data);
@@ -2698,8 +2688,7 @@
      *     // your failure code here to consume res.response.data
      *     console.log(res.response.data);
      *   }
-     * })
-     * .fail(function(err) {
+     * }, function(err) {
      *   // your failure code here
      * })
      * .always(function() {
@@ -2751,7 +2740,7 @@
      * };
      *
      * ttb.propertyComps(payload)
-     * .done(function(res) {
+     * .then(function(res) {
      *   if (res.response.status === 'OK') {
      *     // your success code here to consume res.response.data
      *     console.log(res.response.data);
@@ -2759,8 +2748,7 @@
      *     // your failure code here to consume res.response.data
      *     console.log(res.response.data);
      *   }
-     * })
-     * .fail(function(err) {
+     * }, function(err) {
      *   // your failure code here
      * })
      * .always(function() {
@@ -2805,7 +2793,7 @@
      * };
      *
      * ttb.propertyDetails(payload, options)
-     * .done(function(res) {
+     * .then(function(res) {
      *   if (res.response.status === 'OK') {
      *     // your success code here to consume res.response.data for any extra effort other than the auto-fill
      *     console.log(res.response.data);
@@ -2813,8 +2801,7 @@
      *     // your failure code here to consume res.response.data
      *     console.log(res.response.data);
      *   }
-     * })
-     * .fail(function(err) {
+     * }, function(err) {
      *   // your failure code here
      * })
      * .always(function() {
@@ -2857,7 +2844,7 @@
      * var farmId = 123;
      *
      * ttb.checkPEFarmStatus(farmId)
-     * .done(function(res) {
+     * .then(function(res) {
      *   if (res.response.status === 'OK') {
      *     // your success code here to consume res.response.data
      *     console.log(res.response.data);
@@ -2865,8 +2852,7 @@
      *     // your failure code here to consume res.response.data
      *     console.log(res.response.data);
      *   }
-     * })
-     * .fail(function(err) {
+     * }, function(err) {
      *   // your failure code here
      * })
      * .always(function() {
@@ -2899,7 +2885,7 @@
      * var farmId = 123;
      *
      * ttb.getFarmProperties(farmId)
-     * .done(function(res) {
+     * .then(function(res) {
      *   if (res.response.status === 'OK') {
      *     // your success code here to consume res.response.data
      *     console.log(res.response.data);
@@ -2907,8 +2893,7 @@
      *     // your failure code here to consume res.response.data
      *     console.log(res.response.data);
      *   }
-     * })
-     * .fail(function(err) {
+     * }, function(err) {
      *   // your failure code here
      * })
      * .always(function() {
@@ -2937,7 +2922,7 @@
      * var ttb = new TTB({ ... }); // skip if already instantiated.
      *
      * ttb.getFarmsList()
-     * .done(function(res) {
+     * .then(function(res) {
      *   if (res.response.status === 'OK') {
      *     // your success code here to consume res.response.data
      *     console.log(res.response.data);
@@ -2945,8 +2930,7 @@
      *     // your failure code here to consume res.response.data
      *     console.log(res.response.data);
      *   }
-     * })
-     * .fail(function(err) {
+     * }, function(err) {
      *   // your failure code here
      * })
      * .always(function() {
@@ -3031,7 +3015,7 @@
      * };
      *
      * ttb.globalSearch(payload, queryParams)
-     * .done(function(res) {
+     * .then(function(res) {
      *   if (res.response.status === 'OK') {
      *     // your success code here to consume res.response.data
      *     console.log(res.response.data);
@@ -3039,8 +3023,7 @@
      *     // your failure code here to consume res.response.data
      *     console.log(res.response.data);
      *   }
-     * })
-     * .fail(function(err) {
+     * }, function(err) {
      *   // your failure code here
      * })
      * .always(function() {
@@ -3091,7 +3074,7 @@
      * };
      *
      * ttb.globalSearchCount(payload, params)
-     * .done(function(res) {
+     * .then(function(res) {
      *   if (res.response.status === 'OK') {
      *     // your success code here to consume res.response.data
      *     console.log(res.response.data);
@@ -3099,8 +3082,7 @@
      *     // your failure code here to consume res.response.data
      *     console.log(res.response.data);
      *   }
-     * })
-     * .fail(function(err) {
+     * }, function(err) {
      *   // your failure code here
      * })
      * .always(function() {
@@ -3140,7 +3122,7 @@
      * };
      *
      * ttb.nearbySearch(payload, params)
-     * .done(function(res) {
+     * .then(function(res) {
      *   if (res.response.status === 'OK') {
      *     // your success code here to consume res.response.data
      *     console.log(res.response.data);
@@ -3148,8 +3130,7 @@
      *     // your failure code here to consume res.response.data
      *     console.log(res.response.data);
      *   }
-     * })
-     * .fail(function(err) {
+     * }, function(err) {
      *   // your failure code here
      * })
      * .always(function() {
@@ -3206,7 +3187,7 @@
      * var ttb = new TTB({ ... }); // skip if already instantiated.
      *
      * ttb.getTypesReport()
-     * .done(function(res) {
+     * .then(function(res) {
      *   if (res.response.status === 'OK') {
      *     // your success code here to consume res.response.data
      *     console.log(res.response.data);
@@ -3214,8 +3195,7 @@
      *     // your failure code here to consume res.response.data
      *     console.log(res.response.data);
      *   }
-     * })
-     * .fail(function(err) {
+     * }, function(err) {
      *   // your failure code here
      * })
      * .always(function() {
@@ -3247,7 +3227,7 @@
      * var ttb = new TTB({ ... }); // skip if already instantiated.
      *
      * ttb.getSearchFields()
-     * .done(function(res) {
+     * .then(function(res) {
      *   if (res instanceof Array) {
      *     // your success code here to consume res as fields list. see example [< JSON here >]{@link http://jsoneditoronline.org/?id=ba6b41ee73822c653dae0e2cc8cf6351}
      *     console.log(res);
@@ -3255,8 +3235,7 @@
      *     // your failure code here to consume res
      *     console.log(res);
      *   }
-     * })
-     * .fail(function(err) {
+     * }, function(err) {
      *   // your failure code here
      * })
      * .always(function() {
@@ -3297,7 +3276,7 @@
      * var performLogin = true;
      *
      * ttb.saveSponsorSelection(payload, performLogin)
-     * .done(function(res) {
+     * .then(function(res) {
      *   if (res.response.status === 'OK') {
      *     // your success code here to consume res.response.data
      *     console.log(res.response.data);
@@ -3305,8 +3284,7 @@
      *     // your failure code here to consume res.response.data
      *     console.log(res.response.data);
      *   }
-     * })
-     * .fail(function(err) {
+     * }, function(err) {
      *   // your failure code here
      * })
      * .always(function() {
@@ -3345,7 +3323,7 @@
      * };
      *
      * ttb.clearSponsorSelection(payload)
-     * .done(function(res) {
+     * .then(function(res) {
      *   if (res.response.status === 'OK') {
      *     // your success code here to consume res.response.data
      *     console.log(res.response.data);
@@ -3353,8 +3331,7 @@
      *     // your failure code here to consume res.response.data
      *     console.log(res.response.data);
      *   }
-     * })
-     * .fail(function(err) {
+     * }, function(err) {
      *   // your failure code here
      * })
      * .always(function() {
@@ -3418,7 +3395,7 @@
      *   // approach # 02 - direct submission - build up the address by getting the payload and proceed with <code>searchBySiteAddress()</code> to retrieve the result.
      *   var payload = ttb.googleBuildAddress(autocomplete);
      *   ttb.searchBySiteAddress(payload)
-     *   .done(function(res) {
+     *   .then(function(res) {
      *     if (res.response.status === 'OK') {
      *       // your success code here to consume res.response.data for any extra effort other than the auto-fill
      *       console.log(res.response.data);
@@ -3426,8 +3403,7 @@
      *       // your failure code here to consume res.response.data
      *       console.log(res.response.data);
      *     }
-     *   })
-     *   .fail(function(err) {
+     *   }, function(err) {
      *     // your failure code here
      *   })
      *   .always(function() {
