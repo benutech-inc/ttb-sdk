@@ -1220,7 +1220,7 @@ For details, Please check documentation of <code> new TTB(...) </code> construct
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1831">line 1831</a>
+            <a href="s.html">s</a>, <a href="s.html#line1827">line 1827</a>
         </div>
         
     </div>
@@ -1384,7 +1384,7 @@ var infoContainsSessionToken = TTB._utilAddSessionToken(queryParams);</code></pr
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1111">line 1111</a>
+            <a href="s.html">s</a>, <a href="s.html#line1108">line 1108</a>
         </div>
         
     </div>
@@ -1631,7 +1631,7 @@ var infoContainsSessionToken = TTB._utilAddSessionToken(queryParams);</code></pr
 };
 
 TTB.getSponsors(payload)
-.done(function(res) {
+.then(function(res) {
   if (res.response.status === 'OK') {
     // your success code here to consume res.response.data
     console.log(res.response.data);
@@ -1639,8 +1639,7 @@ TTB.getSponsors(payload)
     // your failure code here to consume res.response.data
     console.log(res.response.data);
   }
-})
-.fail(function(err) {
+}, function(err) {
   // your failure code here
 })
 .always(function() {
@@ -1662,7 +1661,7 @@ TTB.getSponsors(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1741">line 1741</a>
+            <a href="s.html">s</a>, <a href="s.html#line1737">line 1737</a>
         </div>
         
     </div>
@@ -1849,7 +1848,7 @@ TTB.renderLogoWidget(elementSelector, vendorInfo);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1235">line 1235</a>
+            <a href="s.html">s</a>, <a href="s.html#line1231">line 1231</a>
         </div>
         
     </div>
@@ -2390,7 +2389,7 @@ TTB.showSelectSponsor(data, actions);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1513">line 1513</a>
+            <a href="s.html">s</a>, <a href="s.html#line1509">line 1509</a>
         </div>
         
     </div>
@@ -3037,7 +3036,7 @@ TTB.showSponsorTOSModal(selectedSponsor, actions, options);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1928">line 1928</a>
+            <a href="s.html">s</a>, <a href="s.html#line1924">line 1924</a>
         </div>
         
     </div>
@@ -3197,7 +3196,7 @@ var cloneOfDetail = TTB.utilCopy(detail);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1795">line 1795</a>
+            <a href="s.html">s</a>, <a href="s.html#line1791">line 1791</a>
         </div>
         
     </div>
@@ -3451,7 +3450,7 @@ console.log(TTBLandingPageUrl);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1871">line 1871</a>
+            <a href="s.html">s</a>, <a href="s.html#line1867">line 1867</a>
         </div>
         
     </div>
@@ -3614,7 +3613,7 @@ var rejectedPromise = TTB.utilPromiseReject({foo: 'Something useful as a detaile
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1901">line 1901</a>
+            <a href="s.html">s</a>, <a href="s.html#line1897">line 1897</a>
         </div>
         
     </div>
@@ -3777,7 +3776,7 @@ var resolvedPromise = TTB.utilPromiseResolve({foo: 'Something useful as a detail
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2878">line 2878</a>
+            <a href="s.html">s</a>, <a href="s.html#line2864">line 2864</a>
         </div>
         
     </div>
@@ -3923,7 +3922,7 @@ Note: The farm is supposed to be ordered/made via .globalSearch() method.
 var farmId = 123;
 
 ttb.checkPEFarmStatus(farmId)
-.done(function(res) {
+.then(function(res) {
   if (res.response.status === 'OK') {
     // your success code here to consume res.response.data
     console.log(res.response.data);
@@ -3931,8 +3930,7 @@ ttb.checkPEFarmStatus(farmId)
     // your failure code here to consume res.response.data
     console.log(res.response.data);
   }
-})
-.fail(function(err) {
+}, function(err) {
   // your failure code here
 })
 .always(function() {
@@ -3954,7 +3952,7 @@ ttb.checkPEFarmStatus(farmId)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line3367">line 3367</a>
+            <a href="s.html">s</a>, <a href="s.html#line3344">line 3344</a>
         </div>
         
     </div>
@@ -4142,7 +4140,7 @@ var payload = {
 };
 
 ttb.clearSponsorSelection(payload)
-.done(function(res) {
+.then(function(res) {
   if (res.response.status === 'OK') {
     // your success code here to consume res.response.data
     console.log(res.response.data);
@@ -4150,8 +4148,7 @@ ttb.clearSponsorSelection(payload)
     // your failure code here to consume res.response.data
     console.log(res.response.data);
   }
-})
-.fail(function(err) {
+}, function(err) {
   // your failure code here
 })
 .always(function() {
@@ -4173,7 +4170,7 @@ ttb.clearSponsorSelection(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line4091">line 4091</a>
+            <a href="s.html">s</a>, <a href="s.html#line4067">line 4067</a>
         </div>
         
     </div>
@@ -4560,7 +4557,7 @@ var $ttbConnect = ttb.connectWidget(options, actions);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2920">line 2920</a>
+            <a href="s.html">s</a>, <a href="s.html#line2905">line 2905</a>
         </div>
         
     </div>
@@ -4703,7 +4700,7 @@ Note: The farm is supposed to be ordered/made via .globalSearch() method.
 var farmId = 123;
 
 ttb.getFarmProperties(farmId)
-.done(function(res) {
+.then(function(res) {
   if (res.response.status === 'OK') {
     // your success code here to consume res.response.data
     console.log(res.response.data);
@@ -4711,8 +4708,7 @@ ttb.getFarmProperties(farmId)
     // your failure code here to consume res.response.data
     console.log(res.response.data);
   }
-})
-.fail(function(err) {
+}, function(err) {
   // your failure code here
 })
 .always(function() {
@@ -4734,7 +4730,7 @@ ttb.getFarmProperties(farmId)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2958">line 2958</a>
+            <a href="s.html">s</a>, <a href="s.html#line2942">line 2942</a>
         </div>
         
     </div>
@@ -4830,7 +4826,7 @@ Note: The farm is supposed to be ordered/made via .globalSearch() method.
     <pre class="prettyprint"><code>var ttb = new TTB({ ... }); // skip if already instantiated.
 
 ttb.getFarmsList()
-.done(function(res) {
+.then(function(res) {
   if (res.response.status === 'OK') {
     // your success code here to consume res.response.data
     console.log(res.response.data);
@@ -4838,8 +4834,7 @@ ttb.getFarmsList()
     // your failure code here to consume res.response.data
     console.log(res.response.data);
   }
-})
-.fail(function(err) {
+}, function(err) {
   // your failure code here
 })
 .always(function() {
@@ -4861,7 +4856,7 @@ ttb.getFarmsList()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line3269">line 3269</a>
+            <a href="s.html">s</a>, <a href="s.html#line3248">line 3248</a>
         </div>
         
     </div>
@@ -4960,7 +4955,7 @@ The key info you should look for is the <code>field_name</code>, <code>search_ty
     <pre class="prettyprint"><code>var ttb = new TTB({ ... }); // skip if already instantiated.
 
 ttb.getSearchFields()
-.done(function(res) {
+.then(function(res) {
   if (res instanceof Array) {
     // your success code here to consume res as fields list. see example <a target="_blank" href="http://jsoneditoronline.org/?id=ba6b41ee73822c653dae0e2cc8cf6351">< JSON here ></a>
     console.log(res);
@@ -4968,8 +4963,7 @@ ttb.getSearchFields()
     // your failure code here to consume res
     console.log(res);
   }
-})
-.fail(function(err) {
+}, function(err) {
   // your failure code here
 })
 .always(function() {
@@ -4991,7 +4985,7 @@ ttb.getSearchFields()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line3229">line 3229</a>
+            <a href="s.html">s</a>, <a href="s.html#line3209">line 3209</a>
         </div>
         
     </div>
@@ -5085,7 +5079,7 @@ ttb.getSearchFields()
     <pre class="prettyprint"><code>var ttb = new TTB({ ... }); // skip if already instantiated.
 
 ttb.getTypesReport()
-.done(function(res) {
+.then(function(res) {
   if (res.response.status === 'OK') {
     // your success code here to consume res.response.data
     console.log(res.response.data);
@@ -5093,8 +5087,7 @@ ttb.getTypesReport()
     // your failure code here to consume res.response.data
     console.log(res.response.data);
   }
-})
-.fail(function(err) {
+}, function(err) {
   // your failure code here
 })
 .always(function() {
@@ -5116,7 +5109,7 @@ ttb.getTypesReport()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line3052">line 3052</a>
+            <a href="s.html">s</a>, <a href="s.html#line3035">line 3035</a>
         </div>
         
     </div>
@@ -5736,7 +5729,7 @@ var payload = {
 };
 
 ttb.globalSearch(payload, queryParams)
-.done(function(res) {
+.then(function(res) {
   if (res.response.status === 'OK') {
     // your success code here to consume res.response.data
     console.log(res.response.data);
@@ -5744,8 +5737,7 @@ ttb.globalSearch(payload, queryParams)
     // your failure code here to consume res.response.data
     console.log(res.response.data);
   }
-})
-.fail(function(err) {
+}, function(err) {
   // your failure code here
 })
 .always(function() {
@@ -5767,7 +5759,7 @@ ttb.globalSearch(payload, queryParams)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line3113">line 3113</a>
+            <a href="s.html">s</a>, <a href="s.html#line3095">line 3095</a>
         </div>
         
     </div>
@@ -5929,7 +5921,7 @@ var payload = {
 };
 
 ttb.globalSearchCount(payload, params)
-.done(function(res) {
+.then(function(res) {
   if (res.response.status === 'OK') {
     // your success code here to consume res.response.data
     console.log(res.response.data);
@@ -5937,8 +5929,7 @@ ttb.globalSearchCount(payload, params)
     // your failure code here to consume res.response.data
     console.log(res.response.data);
   }
-})
-.fail(function(err) {
+}, function(err) {
   // your failure code here
 })
 .always(function() {
@@ -5960,7 +5951,7 @@ ttb.globalSearchCount(payload, params)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line3454">line 3454</a>
+            <a href="s.html">s</a>, <a href="s.html#line3430">line 3430</a>
         </div>
         
     </div>
@@ -6405,7 +6396,7 @@ autocomplete.addListener('place_changed', function () {
   // approach # 02 - direct submission - build up the address by getting the payload and proceed with <code>searchBySiteAddress()</code> to retrieve the result.
   var payload = ttb.googleBuildAddress(autocomplete);
   ttb.searchBySiteAddress(payload)
-  .done(function(res) {
+  .then(function(res) {
     if (res.response.status === 'OK') {
       // your success code here to consume res.response.data for any extra effort other than the auto-fill
       console.log(res.response.data);
@@ -6413,8 +6404,7 @@ autocomplete.addListener('place_changed', function () {
       // your failure code here to consume res.response.data
       console.log(res.response.data);
     }
-  })
-  .fail(function(err) {
+  }, function(err) {
     // your failure code here
   })
   .always(function() {
@@ -6439,7 +6429,7 @@ autocomplete.addListener('place_changed', function () {
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2339">line 2339</a>
+            <a href="s.html">s</a>, <a href="s.html#line2335">line 2335</a>
         </div>
         
     </div>
@@ -6550,7 +6540,7 @@ ttb.handleSponsorTOS(selectedSponsor);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line3563">line 3563</a>
+            <a href="s.html">s</a>, <a href="s.html#line3539">line 3539</a>
         </div>
         
     </div>
@@ -6828,7 +6818,7 @@ window.googleInit = function () {
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2472">line 2472</a>
+            <a href="s.html">s</a>, <a href="s.html#line2466">line 2466</a>
         </div>
         
     </div>
@@ -7042,7 +7032,7 @@ var payload = {
 };
 
 ttb.login(payload)
-.done(function(res) {
+.then(function(res) {
   if (res.response.status === 'OK') {
     // user is successfully logged-in !!
     // your success code here to consume res.response.data for logged-in user info
@@ -7051,8 +7041,7 @@ ttb.login(payload)
     // your failure code here to consume res.response.data for validation errors info
     console.log(res.response.data);
   }
-})
-.fail(function(err) {
+}, function(err) {
   // your failure code here
 })
 .always(function() {
@@ -7074,7 +7063,7 @@ ttb.login(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2406">line 2406</a>
+            <a href="s.html">s</a>, <a href="s.html#line2401">line 2401</a>
         </div>
         
     </div>
@@ -7285,7 +7274,7 @@ var payload = {
 };
 
 ttb.loginRemote(payload)
-.done(function(res) {
+.then(function(res) {
   if (res.response.status === 'OK') {
     // user is successfully logged-in !!
     // your success code here to consume res.response.data for logged-in user info
@@ -7294,8 +7283,7 @@ ttb.loginRemote(payload)
     // your failure code here to consume res.response.data for validation errors info
     console.log(res.response.data);
   }
-})
-.fail(function(err) {
+}, function(err) {
   // your failure code here
 })
 .always(function() {
@@ -7317,7 +7305,7 @@ ttb.loginRemote(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2521">line 2521</a>
+            <a href="s.html">s</a>, <a href="s.html#line2514">line 2514</a>
         </div>
         
     </div>
@@ -7411,7 +7399,7 @@ ttb.loginRemote(payload)
     <pre class="prettyprint"><code>var ttb = new TTB({ ... }); // skip if already instantiated.
 
 ttb.logout()
-.done(function(res) {
+.then(function(res) {
   if (res.response.status === 'OK') {
    // user is successfully logged-out!!
    // your success code here to clear any cached info etc from the web page
@@ -7421,8 +7409,7 @@ ttb.logout()
     // your failure code here to consume res.response.data
     console.log(res.response.data);
   }
-})
-.fail(function(err) {
+}, function(err) {
   // your failure code here
 })
 .always(function() {
@@ -7444,7 +7431,7 @@ ttb.logout()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line3162">line 3162</a>
+            <a href="s.html">s</a>, <a href="s.html#line3143">line 3143</a>
         </div>
         
     </div>
@@ -7628,7 +7615,7 @@ var payload = {
 };
 
 ttb.nearbySearch(payload, params)
-.done(function(res) {
+.then(function(res) {
   if (res.response.status === 'OK') {
     // your success code here to consume res.response.data
     console.log(res.response.data);
@@ -7636,8 +7623,7 @@ ttb.nearbySearch(payload, params)
     // your failure code here to consume res.response.data
     console.log(res.response.data);
   }
-})
-.fail(function(err) {
+}, function(err) {
   // your failure code here
 })
 .always(function() {
@@ -7659,7 +7645,7 @@ ttb.nearbySearch(payload, params)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2711">line 2711</a>
+            <a href="s.html">s</a>, <a href="s.html#line2700">line 2700</a>
         </div>
         
     </div>
@@ -7965,7 +7951,7 @@ var payload = {
 };
 
 ttb.orderReport(payload)
-.done(function(res) {
+.then(function(res) {
   if (res.response.status === 'OK') {
     // your success code here to consume res.response.data
     console.log(res.response.data);
@@ -7973,8 +7959,7 @@ ttb.orderReport(payload)
     // your failure code here to consume res.response.data
     console.log(res.response.data);
   }
-})
-.fail(function(err) {
+}, function(err) {
   // your failure code here
 })
 .always(function() {
@@ -7996,7 +7981,7 @@ ttb.orderReport(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2772">line 2772</a>
+            <a href="s.html">s</a>, <a href="s.html#line2760">line 2760</a>
         </div>
         
     </div>
@@ -8404,7 +8389,7 @@ var payload = {
 };
 
 ttb.propertyComps(payload)
-.done(function(res) {
+.then(function(res) {
   if (res.response.status === 'OK') {
     // your success code here to consume res.response.data
     console.log(res.response.data);
@@ -8412,8 +8397,7 @@ ttb.propertyComps(payload)
     // your failure code here to consume res.response.data
     console.log(res.response.data);
   }
-})
-.fail(function(err) {
+}, function(err) {
   // your failure code here
 })
 .always(function() {
@@ -8435,7 +8419,7 @@ ttb.propertyComps(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2826">line 2826</a>
+            <a href="s.html">s</a>, <a href="s.html#line2813">line 2813</a>
         </div>
         
     </div>
@@ -8817,7 +8801,7 @@ var options = {
 };
 
 ttb.propertyDetails(payload, options)
-.done(function(res) {
+.then(function(res) {
   if (res.response.status === 'OK') {
     // your success code here to consume res.response.data for any extra effort other than the auto-fill
     console.log(res.response.data);
@@ -8825,8 +8809,7 @@ ttb.propertyDetails(payload, options)
     // your failure code here to consume res.response.data
     console.log(res.response.data);
   }
-})
-.fail(function(err) {
+}, function(err) {
   // your failure code here
 })
 .always(function() {
@@ -8848,7 +8831,7 @@ ttb.propertyDetails(payload, options)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line3319">line 3319</a>
+            <a href="s.html">s</a>, <a href="s.html#line3297">line 3297</a>
         </div>
         
     </div>
@@ -9122,7 +9105,7 @@ var payload = {
 var performLogin = true;
 
 ttb.saveSponsorSelection(payload, performLogin)
-.done(function(res) {
+.then(function(res) {
   if (res.response.status === 'OK') {
     // your success code here to consume res.response.data
     console.log(res.response.data);
@@ -9130,8 +9113,7 @@ ttb.saveSponsorSelection(payload, performLogin)
     // your failure code here to consume res.response.data
     console.log(res.response.data);
   }
-})
-.fail(function(err) {
+}, function(err) {
   // your failure code here
 })
 .always(function() {
@@ -9153,7 +9135,7 @@ ttb.saveSponsorSelection(payload, performLogin)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2663">line 2663</a>
+            <a href="s.html">s</a>, <a href="s.html#line2653">line 2653</a>
         </div>
         
     </div>
@@ -9410,7 +9392,7 @@ var payload = {
 };
 
 ttb.searchByOwnerName(payload)
-.done(function(res) {
+.then(function(res) {
   if (res.response.status === 'OK') {
     // your success code here to consume res.response.data
     console.log(res.response.data);
@@ -9418,8 +9400,7 @@ ttb.searchByOwnerName(payload)
     // your failure code here to consume res.response.data
     console.log(res.response.data);
   }
-})
-.fail(function(err) {
+}, function(err) {
   // your failure code here
 })
 .always(function() {
@@ -9441,7 +9422,7 @@ ttb.searchByOwnerName(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2564">line 2564</a>
+            <a href="s.html">s</a>, <a href="s.html#line2556">line 2556</a>
         </div>
         
     </div>
@@ -9653,7 +9634,7 @@ var payload = {
 };
 
 ttb.searchByParcelNumber(payload)
-.done(function(res) {
+.then(function(res) {
   if (res.response.status === 'OK') {
     // your success code here to consume res.response.data
     console.log(res.response.data);
@@ -9661,8 +9642,7 @@ ttb.searchByParcelNumber(payload)
     // your failure code here to consume res.response.data
     console.log(res.response.data);
   }
-})
-.fail(function(err) {
+}, function(err) {
   // your failure code here
 })
 .always(function() {
@@ -9684,7 +9664,7 @@ ttb.searchByParcelNumber(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2617">line 2617</a>
+            <a href="s.html">s</a>, <a href="s.html#line2608">line 2608</a>
         </div>
         
     </div>
@@ -10035,7 +10015,7 @@ var payload = {
 };
 
 ttb.searchBySiteAddress(payload)
-.done(function(res) {
+.then(function(res) {
   if (res.response.status === 'OK') {
     // your success code here to consume res.response.data
     console.log(res.response.data);
@@ -10043,8 +10023,7 @@ ttb.searchBySiteAddress(payload)
     // your failure code here to consume res.response.data
     console.log(res.response.data);
   }
-})
-.fail(function(err) {
+}, function(err) {
   // your failure code here
 })
 .always(function() {
@@ -10066,7 +10045,7 @@ ttb.searchBySiteAddress(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2273">line 2273</a>
+            <a href="s.html">s</a>, <a href="s.html#line2269">line 2269</a>
         </div>
         
     </div>
@@ -10365,7 +10344,7 @@ ttb.setSponsor({
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2297">line 2297</a>
+            <a href="s.html">s</a>, <a href="s.html#line2293">line 2293</a>
         </div>
         
     </div>
@@ -10482,7 +10461,7 @@ ttb.showTOS();</code></pre>
 
         <footer>
             Copyright © 2018 <a target="_blank" href="http://www.benutech.com/" target="_blank" title="Benutech official website">Benutech Inc.</a> All rights reserved.</a>
-           <!-- Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Oct 04 2019 01:36:55 GMT+0500 (PKT) -->
+           <!-- Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Oct 10 2019 19:39:49 GMT+0500 (PKT) -->
         </footer>
     </div>
 </div>
