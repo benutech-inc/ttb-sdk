@@ -23,8 +23,13 @@
   "scripts": {
     "serve": "node index.js",
     "serve-dev": "supervisor -w index.js index.js",
-    "doc": "rm -R docs & jsdoc -c jsdoc.json",
-    "doc2": "rm -R docs & jsdoc lib/ttbsdk.js -r -c jsdoc.json -d docs",
+
+    "doc:create": "jsdoc -c jsdoc.json",
+    "doc:create2": "jsdoc src/ttbSdk.js -r -c jsdoc.json -d docs",
+    "doc:remove": "rm -R docs",
+    "doc:update": "npm run doc:remove & npm run doc:create",
+    "doc:update2": "npm run doc:remove & npm run doc:create2",
+
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -44,5 +49,8 @@
   "bugs": {
     "url": "https://github.com/benutech-inc/ttb-sdk/issues"
   },
-  "homepage": "https://github.com/benutech-inc/ttb-sdk#readme"
+  "homepage": "https://github.com/benutech-inc/ttb-sdk#readme",
+  "engines": {
+    "node": "14.x"
+  }
 }
