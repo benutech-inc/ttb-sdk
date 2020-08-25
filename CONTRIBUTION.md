@@ -1,3 +1,17 @@
+
+### Setting up DEV environment
+- use node 10.x
+- run `npm install`
+- (no need of bower install)
+- run `gulp doc-dev` and that's it !!
+
+You are ready to make changes to src/ttbSdk.js and .css as well. The "dist" and "docs" directories will automatically be generated/updated on each change. 
+
+### Serve Docs locally
+- run `npm run serve`
+
+This would serve the "docs" directory over `localhost:8000`, and so you can keep looking at it while you have above "dev env" running.
+
 ### Tagging
 
 #### Add a Tag
