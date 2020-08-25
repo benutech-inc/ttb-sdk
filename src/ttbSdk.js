@@ -3994,15 +3994,12 @@
       }
     },
 
-    /***
-     *
-     * It uses <strong>localStorage</strong> of the host origin, to store the selected sponsor info as <code>ttb-sdk--connect--selected-sponsor</code>,
-     * It is a good gate for host sites to persist the user's sponsor selection over their servers, by reading/writing from/to it.
-     * Widget will pick it up whenever gets rendered.<br>
-     * <br>*/
-
     /**
      * This method renders a widget includes a connect button to open up the TTB integration modal which contains an <code>iframe</code> controlled by TTB. <br>
+     * <br>
+     * It uses <strong>localStorage</strong> of the host origin, to store the selected sponsor info as <code>ttb-sdk--connect--selected-sponsor</code>,
+     * It is a good gate for host sites to persist the user's sponsor selection over their servers, by reading/writing from/to it.
+     * Widget will pick it up whenever gets rendered.
      * <br>
      * (Make sure <strong>ttbSdk.min.css</strong> file is injected for proper style and look for the widgets.
      * You can even check out working example over https://jsfiddle.net/benutech/qr7ykw9L/)
