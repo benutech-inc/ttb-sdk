@@ -957,6 +957,30 @@
 
   /**
    * @memberof TTB
+   * @alias utilBuildFullAddress
+   * @static
+   * @description Builds up the full address using various address fields, usually helpful to build full address for
+   * target property to open it's net sheet. <br>
+   * It uses this pattern: [h#] [streetName] [suf], [city], [state] [zip] to build address as
+   * e.g. "1234 Collins Ave, Miami Beach, FL 33140"
+   *
+   * @param {Object} property - result record retrieved via either from global search, search by address/owner/APN, nearby search, etc.
+   *
+   * @return {String} propertyFullAddress - complete address string built using each available field.
+   * */
+  window.TTB.utilBuildFullAddress = function (property) {
+    // e.g. 1234 Collins Ave, Miami Beach, FL 33140
+    // pattern: [h#] [streetName] [suf], [city], [state] [zip]
+    return (property.sa_site_house_nbr ? (property.sa_site_house_nbr + ' ') : '') +        // 1234
+        (property.sa_site_street_name ? (property.sa_site_street_name + ' ') : '') +    // Collins
+        (property.sa_site_suf ? (property.sa_site_suf + ', ') : '') +                   // Ave,
+        (property.sa_site_city ? (property.sa_site_city + ', ') : '') +                 // Miami Beach,
+        (property.sa_site_state ? (property.sa_site_state + ' ') : '') +                // FL
+        (property.sa_site_zip ? (property.sa_site_zip) : '');                           // 33140
+  };
+
+  /**
+   * @memberof TTB
    * @alias getUserProfile
    * @static
    * @private
@@ -3355,6 +3379,67 @@
       return this._ajax(request, methodsMapping.SPONSOR__CLEAR_SELECTION);
     },
 
+    /**
+     * This method opens up a Net Sheet modal against target property. The modal contains an iframe to TTB's official Net Sheet version.
+     * <br>
+     * This same method is being used inside from instantLookupWidget() for the "Net Sheet" Action.
+     * @param {string} propertyId - The "sa_property_id" field value from the target property object. This exists in each
+     * property object retrieved either from global search, search by address/owner/APN, nearbySearch, etc.
+     * @param {string} propertyFullAddress - The full address to be shown inside Net Sheet.
+     * This can be build using static util method TTB.utilBuildFullAddress(), for more check method's documentation.
+     *
+     * @example
+     * var ttb = new TTB({ ... }); // skip if already instantiated.
+     *
+     * var selectedProperty = { ... }; // can come from whatever your feature logic is.
+     *
+     * // build parameters.
+     * var propertyId = selectedProperty.sa_property_id;
+     * var propertyFullAddress = TTB.utilBuildFullAddress(selectedProperty);
+     *
+     * // open net sheet against the target property.
+     * ttb.openNetSheet(propertyId, propertyFullAddress);
+     *
+     * @return {String} $modal - A JQuery reference to the modal DOMNode Element, of opened Net Sheet.
+     *
+     * */
+    openNetSheet: function (propertyId, propertyFullAddress) {
+      var modalOptions, iframeOptions, origin;
+
+      modalOptions = {
+        id: 'ttb-sdk--net-sheet--modal',
+        title: 'Net Sheet'
+      };
+
+      // destination - dynamic - dev vs prod.
+      origin = [defaults.devPortSandbox, defaults.devPortLanding].indexOf(window.location.port) >= 0
+          ? ('http://localhost:' + defaults.devPortExport) : 'https://ttb-export.herokuapp.com';
+
+      // comment after using.
+      // destination - prod
+      origin = 'https://ttb-export.herokuapp.com';
+
+      iframeOptions = {
+        id: 'ttb-sdk--net-sheet--iframe',
+        height: '635px',
+        origin: origin,
+        pathname: '/netsheet',
+        params: {
+          partnerKey: this.config.partnerKey,
+          verticalName: this.sponsor.name,
+          verticalTitle: this.sponsor.title,
+          propertyId: propertyId,
+          propertyAddress: propertyFullAddress,
+          debug: this.debug,
+          TTBSID: TTB._getLocal(defaults.sessionKeyName)
+        }
+      };
+
+      this._log(['openNetSheet : options built :', iframeOptions, modalOptions]);
+
+      // return the reference of the modal instance.
+      return window.TTB.utilIframeModal(modalOptions, iframeOptions);
+    },
 
     /**
      * This method builds the address payload using the google  <code>autocomplete</code> instance once it's
@@ -3865,15 +3950,7 @@
         //property.custom_google_formatted_address = o.selectedAddressInfo.custom_google_formatted_address;
 
         // generate formatted full address
-        // e.g. 6039 Collins Ave, Miami Beach, FL 33140
-        // pattern: [h#] [streetName] [suf], [city], [state] [zip]
-        property.customFullAddress =
-          (property.sa_site_house_nbr ? (property.sa_site_house_nbr + ' ') : '') +        // 6039
-          (property.sa_site_street_name ? (property.sa_site_street_name + ' ') : '') +    // Collins
-          (property.sa_site_suf ? (property.sa_site_suf + ', ') : '') +                   // Ave,
-          (property.sa_site_city ? (property.sa_site_city + ', ') : '') +                 // Miami Beach,
-          (property.sa_site_state ? (property.sa_site_state + ' ') : '') +                // FL
-          (property.sa_site_zip ? (property.sa_site_zip) : '');                           // 33140
+        property.customFullAddress = window.TTB.utilBuildFullAddress(property);
 
         switch (o.selectedAction.name) {
 
@@ -3908,34 +3985,9 @@
 
       // opens up a net sheet modal against the selected property
       function actionOpenNetSheet(property, enableControls) {
-        var $modal, modalOptions, iframeOptions, origin;
 
-        modalOptions = {
-          id: 'ttb-sdk--net-sheet--modal',
-          title: 'Net Sheet'
-        };
-
-        // dev vs prod destination.
-        origin = [defaults.devPortSandbox, defaults.devPortLanding].indexOf(window.location.port) >= 0
-          ? ('http://localhost:' + defaults.devPortExport) : 'https://ttb-export.herokuapp.com';
-
-        iframeOptions = {
-          id: 'ttb-sdk--net-sheet--iframe',
-          height: '635px',
-          origin: origin,
-          pathname: '/netsheet',
-          params: {
-            partnerKey: _self.config.partnerKey,
-            verticalName: _self.sponsor.name,
-            verticalTitle: _self.sponsor.title,
-            propertyId: property.sa_property_id,
-            propertyAddress: property.customFullAddress,
-            debug: _self.debug,
-            TTBSID: TTB._getLocal(defaults.sessionKeyName)
-          }
-        };
-
-        $modal = window.TTB.utilIframeModal(modalOptions, iframeOptions);
+        // calls SDK's openNetSheet method for the target property.
+        _self.openNetSheet(property.sa_property_id, property.customFullAddress);
 
         // enable the controls back.
         enableControls();
