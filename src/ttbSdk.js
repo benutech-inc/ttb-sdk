@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 Benutech Inc. All rights reserved.
+ * Copyright © 2022 Benutech Inc. All rights reserved.
  * http://www.benutech.com - help@benutech.com
  * version: 1.18.0
  * https://github.com/benutech-inc/ttb-sdk
@@ -15,6 +15,7 @@
   methodsMapping = {
     AUTH__LOGIN: {methodName: 'login', endpoint: 'webservices/login.json'},
     AUTH__LOGIN_REMOTE: {methodName: 'loginRemote', endpoint: 'webservices/remote_login.json'},
+    AUTH__LOGIN_UUID: {methodName: 'loginUUID', endpoint: 'webservices/uuid_login.json'},
     AUTH__LOGOUT: {methodName: 'logout', endpoint: 'webservices/logout.json'},
 
     VENDOR__GET_PROFILE__USER: {methodName: 'TTB.getUserProfile', endpoint: 'webservices/get_vendor_user.json'},
@@ -2388,9 +2389,70 @@
       });
     },
 
+    /**
+     * This method is used to authenticate the vendor site using one uuid (that was provided for their specified sites only),
+     * and to maintain a session for their users. <br>
+     * It is similar to loginRemote(), but this one is generic i.e. not user specific authentication. rather authenticating their sites.
+     *
+     * @param {Object} payload - The payload object containing required info
+     * @param {String} payload.uuid - The uuid string provided to vendor to use from their specified sites.
+     *
+     * @example
+     * var ttb = new TTB({ ... }); // skip if already instantiated.
+     *
+     * var payload = {
+     *   uuid: "xxxxxxxxxxxxxxx"
+     * };
+     *
+     * ttb.loginUUID(payload)
+     * .then(function(res) {
+     *   if (res.response.status === 'OK') {
+     *     // user is successfully logged-in !!
+     *     // your success code here to consume res.response.data for logged-in user info
+     *     console.log(res.response.data);
+     *   } else {
+     *     // your failure code here to consume res.response.data for validation errors info
+     *     console.log(res.response.data);
+     *   }
+     * }, function(err) {
+     *   // your failure code here
+     * })
+     * .always(function() {
+     *  // your on-complete code here as common for both success and failure
+     * });
+     *
+     * @return {Object} promise - Jquery AJAX deferred promise is returned which on-success returns the required info.
+     * */
+    loginUUID: function (payload) {
+      var _self;
+
+      _self = this;
+
+      var request = {
+        method: 'POST',
+        data: JSON.stringify(payload)
+      };
+
+      return this._ajax(request, methodsMapping.AUTH__LOGIN_UUID)
+        .then(function (res) {
+          var sessionToken;
+
+          // if user is successfully logged-in !!
+          if (res.response.status === 'OK') {
+            // store sessionToken (vertical-stk)  in local-storage for later usage against each API key
+            sessionToken = res.response.data[defaults.sessionKeyName];
+            TTB._setLocal(defaults.sessionKeyName, sessionToken);
+
+            _self._log(['loginUUID:', defaults.sessionKeyName, 'updated in localStorage.', TTB._getLocal(defaults.sessionKeyName)]);
+          }
+
+          return res;
+        });
+    },
+
 
     /**
-     * This method is used to log the user in from 3rd-party site, and maintain a session for the user throughout the App.
+     * This method is used to log the user in from a 3rd-party site, and maintain a session for the user throughout the App.
      *
      * @param {Object} payload - The payload object containing required info
      * @param {String} payload.stk - The session token from existing login at 3rd-party app.
