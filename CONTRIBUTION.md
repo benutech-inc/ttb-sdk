@@ -8,7 +8,7 @@
 You are ready to make changes to src/ttbSdk.js and .css as well. The "dist" and "docs" directories will automatically be generated/updated on each change. 
 
 ### Serve Docs locally
-- run `npm run serve`
+- run `npm run serve:docs`
 
 This would serve the "docs" directory over `localhost:8000`, and so you can keep looking at it while you have above "dev env" running.
 

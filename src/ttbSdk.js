@@ -199,7 +199,7 @@
    * <code> &lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> </code> <br/>
    * Scoped Bootstrap version: <br>
    * Having non-bootstrap based site ? please use the following scoped-bootstrap version to limit bootstrap styles to SDK widgets only. (bootstrap v3.3.7 used.)<br>
-   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.19.0/dist/scoped-bootstrap.min.css​"> </code>
+   * <code> &lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/benutech-inc/ttb-sdk@1.19.0/dist/scoped-bootstrap.min.css"> </code>
    * </p>
    *
    * <p>
@@ -211,8 +211,8 @@
    * <p>
    * <strong>TitleToolBox SDK </strong> files (1 script, and 1 style), can be pulled via our public repo link:
    * <i>(keep the [latest version]{@link https://github.com/benutech-inc/ttb-sdk/releases})</i><br>
-   * <code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.19.0/dist/ttbSdk.min.css"> </code>
-   * <code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.19.0/dist/ttbSdk.min.js​">&lt;/script> </code>
+   * <code> &lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/benutech-inc/ttb-sdk@1.19.0/dist/ttbSdk.min.css"> </code>
+   * <code> &lt;script src="https://cdn.jsdelivr.net/gh/benutech-inc/ttb-sdk@1.19.0/dist/ttbSdk.min.js">&lt;/script> </code>
    * <br><br>OR via<strong> Bower </strong> using <code>bower install ttb-sdk --save</code>
    * <br><br>
    *
@@ -2959,7 +2959,7 @@
     },
 
     /**
-     * This method is used to fetch the given farm. i.e. to fetch all the properties/records​ of the given farm.
+     * This method is used to fetch the given farm. i.e. to fetch all the properties/records of the given farm.
      * <br><br>
      * Note: The farm is supposed to be ordered/made via .globalSearch() method.
      *
