@@ -176,7 +176,7 @@ Official CSS: <br>
 <code> &lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> </code> <br/>
 Scoped Bootstrap version: <br>
 Having non-bootstrap based site ? please use the following scoped-bootstrap version to limit bootstrap styles to SDK widgets only. (bootstrap v3.3.7 used.)<br>
-<code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.19.0/dist/scoped-bootstrap.min.css​"> </code>
+<code> &lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/benutech-inc/ttb-sdk@1.20.0/dist/scoped-bootstrap.min.css"> </code>
 </p>
 
 <p>
@@ -188,8 +188,8 @@ Having non-bootstrap based site ? please use the following scoped-bootstrap vers
 <p>
 <strong>TitleToolBox SDK </strong> files (1 script, and 1 style), can be pulled via our public repo link:
 <i>(keep the <a target="_blank" href="https://github.com/benutech-inc/ttb-sdk/releases">latest version</a>)</i><br>
-<code> &lt;link rel="stylesheet" href="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.19.0/dist/ttbSdk.min.css"> </code>
-<code> &lt;script src="https://cdn.rawgit.com/benutech-inc/ttb-sdk/1.19.0/dist/ttbSdk.min.js​">&lt;/script> </code>
+<code> &lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/benutech-inc/ttb-sdk@1.20.0/dist/ttbSdk.min.css"> </code>
+<code> &lt;script src="https://cdn.jsdelivr.net/gh/benutech-inc/ttb-sdk@1.20.0/dist/ttbSdk.min.js">&lt;/script> </code>
 <br><br>OR via<strong> Bower </strong> using <code>bower install ttb-sdk --save</code>
 <br><br>
 
@@ -213,7 +213,7 @@ Having non-bootstrap based site ? please use the following scoped-bootstrap vers
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line332">line 332</a>
+            <a href="s.html">s</a>, <a href="s.html#line380">line 380</a>
         </div>
         
     </div>
@@ -439,7 +439,7 @@ to generate the baseURL which includes the <code>sponsor.name</code> provided. M
 	
         <tr>
             
-                <td class="name"><code>onSessionExpireV2</code></td>
+                <td class="name"><code>onSessionExpireV3</code></td>
             
             
             <td class="type">
@@ -466,10 +466,14 @@ to generate the baseURL which includes the <code>sponsor.name</code> provided. M
                         
                     
                 
-                [Recommended over deprecated onSessionExpire()] - The callback / handler to be called
-whenever an API receives <code>401 - UNAUTHENTICATED</code> (session expired) from server.
-This can be used to get a new valid "stk" from vendor site, via a login prompt or a direct ajax request to vendor server, to renew user login session from TTB server.
-Method should return a promise, which should be resolved with a loginRemotePayload object. (Check loginRemotePayload details from loginRemote() method.)
+                [Recommended over deprecated onSessionExpireV2()] - The callback / handler to be called
+whenever an API receives <code>401 - UNAUTHENTICATED</code> (session expired) from server, to renew the session on the fly and resume with
+widgets or API methods calls internally.
+This can be used to get a new valid "stk" (or "uuid" for loginUUID() case) from vendor site, via an ajax request to vendor server,
+or via in-memory store on FE, to renew user login session from TTB server.
+Method should return a promise, which should be resolved with an "authConfig" object as
+{authMethod: "loginRemote", // or "loginUUID", payload: loginRemotePayload // or {uuid: "xxxxxx"} }.
+(For payload details, check loginRemote() method or loginUUID() method whichever is involved for the target vendor authentication. )
                 
 
 <table class="params">
@@ -508,15 +512,7 @@ Method should return a promise, which should be resolved with a loginRemotePaylo
             
             <td class="description last">
                 
-                    
-                        <span class="optional">optional</span>
-                    
-                    
-                        
-                    
-                
-                Contains details against the failed request. This can be used for advanced handling. <br>
-<code>info</code> object will contain <code>requestError</code>, <code>requestConfig</code>, <code>methodName</code> and <code>endpoint</code>.</td>
+                Similar to deprecated <code>onSessionExpireV2</code>'s "info" parameter.</td>
         </tr>
 	
 	
@@ -642,7 +638,7 @@ or &lt;input type="text" <code>data-ttb-field="GeneralInfo['Year Built']"</code>
 	
         <tr>
             
-                <td class="name"><code>onSessionExpire</code></td>
+                <td class="name"><code>onSessionExpireV2</code></td>
             
             
             <td class="type">
@@ -669,9 +665,12 @@ or &lt;input type="text" <code>data-ttb-field="GeneralInfo['Year Built']"</code>
                         
                     
                 
-                (DEPRECATED! Please check onSessionExpireV2() ) - The callback / handler to be called whenever an API receives <code>401 - UNAUTHENTICATED</code>
-(session expired) from server. (NOTE: This will be ignored when onSessionExpireV2() is provided) <br>
-Check out live working example at https://jsfiddle.net/shahzadns/rkw8v51y/
+                (DEPRECATED! Please check onSessionExpireV2() ) - The callback / handler to be called
+whenever an API receives <code>401 - UNAUTHENTICATED</code> (session expired) from server, to renew the session on the fly and resume with
+widgets or API methods calls internally.
+This can be used to get a new valid "stk" from vendor site, via an ajax request to vendor server,
+or via in-memory store on FE, to renew user login session from TTB server.
+Method should return a promise, which should be resolved with a loginRemotePayload object. (Check loginRemotePayload details from loginRemote() method.)
                 
 
 <table class="params">
@@ -710,99 +709,8 @@ Check out live working example at https://jsfiddle.net/shahzadns/rkw8v51y/
             
             <td class="description last">
                 
-                The info object that SDK passes to the callback to provide more control to recover the request failure.
-                
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>requestError</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                The AJAX error object passed to the error-handler of the API method that was failed.</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>requestConfig</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                The configuration object passed to the request that was failed.</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>retry</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                retry the failed call, while auto-passing exactly all the info e.g. payload (if any), and query params (if any)
-Returns the AJAX promise. - very useful to call and ready-up the feature once user logs-in back.</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-            </td>
+                Contains details against the failed request. This can be used for advanced handling. <br>
+<code>info</code> object will contain <code>methodName</code>, <code>endpoint</code>, <code>requestConfig</code>, and <code>requestError</code>.</td>
         </tr>
 	
 	
@@ -922,7 +830,8 @@ var ttb = new TTB({
 
 
     
-    <pre class="prettyprint"><code>// (Optional but Recommended !) registering session-expired (401 status error) handler for ttb ajax requests.
+    <pre class="prettyprint"><code>// (Optional but Recommended !)  (for auth method: remoteLogin()) - registering session-expired (401 status error) handler for ttb ajax requests.
+// This example is for those vendors who use loginRemote() method for authentication.
 // live working example will be provided soon.
 
 // your app store / constant having configuration
@@ -936,28 +845,74 @@ var ttbStore = {
 // step#2 instantiate the TTB with your (vendor's) credentials. check full config from TTB instance section.
 ttbStore.ttb = new TTB({
  partnerKey: ttbStore.partnerKey,
- onSessionExpireV2: ttbOnSessionExpireV2 // note suffix "V2" in "onSessionExpireV2"
+ onSessionExpireV3: ttbOnSessionExpireV3 // note suffix "V3" in "onSessionExpireV3"
 });
 
 // step#3 set up a sessionExpire handler. following is just an example.
 // this callback gets called, whenever any ttb method Ajax call encounters 401.
-function ttbOnSessionExpireV2(info) {
- console.log('ttbOnSessionExpireV2: No / Expired Session.', info); // check out "info" in console for any advanced handling.
+function ttbOnSessionExpireV3(info) {
+ console.log('ttbOnSessionExpireV3: No / Expired Session.', info); // check out "info" in console for any advanced handling.
 
  // step#3.1 build required info by getting the latest / valid stk (depends on vendor site's login system.)
  // option 1 - Some vendors have it in store on Frontend.
  // option 2 - Some vendors get latest stk from their server via ajax call.
  // option 3 - Some vendors perform a login prompt modal to renew user session on their login system to get latest stk for TTB.
 
- // for example vendor has option 2 case.
+ // for example vendor has option 2 (or even option 1) case.
  // build required info
- var loginRemotePayload = {
-   stk: ttbStore.stk,
-   getuser_url: ttbStore.getuser_url
+ var authConfig = {
+   authMethod: 'loginRemote',
+   payload: {
+     stk: ttbStore.stk,
+     getuser_url: ttbStore.getuser_url
+   }
  };
 
  // step#3.2 Simply return the resolved promise containing this info, leave the rest on SDK to perform TTB system login, and retry the failed requests, like nothing happened. ^ _ ^
- return TTB.utilPromiseResolve(loginRemotePayload);
+ return TTB.utilPromiseResolve(authConfig);
+}</code></pre>
+    
+
+
+    
+    <pre class="prettyprint"><code>// (Alternate) (for auth method: remoteUUID()) - registering session-expired (401 status error) handler for ttb ajax requests.
+// This example is for those vendors who use loginUUID() method for authentication.
+// live working example will be provided soon.
+
+// your app store / constant having configuration
+var ttbStore = {
+  ttb: undefined,
+  partnerKey: '558b3e66-47b2-477d-a0d3-6d85db4c3148',
+  uuid: '123b3e66-47b2-477d-a0d3-6d85db4c3456',
+};
+
+// step#2 instantiate the TTB with your (vendor's) credentials. check full config from TTB instance section.
+ttbStore.ttb = new TTB({
+ partnerKey: ttbStore.partnerKey,
+ onSessionExpireV3: ttbOnSessionExpireV3 // note suffix "V3" in "onSessionExpireV3"
+});
+
+// step#3 set up a sessionExpire handler. following is just an example.
+// this callback gets called, whenever any ttb method Ajax call encounters 401.
+function ttbOnSessionExpireV3(info) {
+ console.log('ttbOnSessionExpireV3: No / Expired Session.', info); // check out "info" in console for any advanced handling.
+
+ // step#3.1 build required info by getting the latest / valid UUID (depends on vendor site's login system.)
+ // option 1 - Some vendors have it in store on Frontend.
+ // option 2 - Some vendors get latest UUID from their server via ajax call.
+ // option 3 - Some vendors perform a login prompt modal to renew user session on their login system to get latest UUID for TTB.
+
+ // for example vendor has option 2 (or even option 1) case.
+ // build required info
+ var authConfig = {
+   authMethod: 'loginUUID',
+   payload: {
+     uuid: ttbStore.uuid,
+   }
+ };
+
+ // step#3.2 Simply return the resolved promise containing this info, leave the rest on SDK to perform TTB system login, and retry the failed requests, like nothing happened. ^ _ ^
+ return TTB.utilPromiseResolve(authConfig);
 }
 
 // That's it! We are ready to shine!</code></pre>
@@ -1226,7 +1181,7 @@ For details, Please check documentation of <code> new TTB(...) </code> construct
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1852">line 1852</a>
+            <a href="s.html">s</a>, <a href="s.html#line1900">line 1900</a>
         </div>
         
     </div>
@@ -1390,7 +1345,7 @@ var infoContainsSessionToken = TTB._utilAddSessionToken(queryParams);</code></pr
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1133">line 1133</a>
+            <a href="s.html">s</a>, <a href="s.html#line1181">line 1181</a>
         </div>
         
     </div>
@@ -1667,7 +1622,7 @@ TTB.getSponsors(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1762">line 1762</a>
+            <a href="s.html">s</a>, <a href="s.html#line1810">line 1810</a>
         </div>
         
     </div>
@@ -1854,7 +1809,7 @@ TTB.renderLogoWidget(elementSelector, vendorInfo);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1256">line 1256</a>
+            <a href="s.html">s</a>, <a href="s.html#line1304">line 1304</a>
         </div>
         
     </div>
@@ -2395,7 +2350,7 @@ TTB.showSelectSponsor(data, actions);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1534">line 1534</a>
+            <a href="s.html">s</a>, <a href="s.html#line1582">line 1582</a>
         </div>
         
     </div>
@@ -2897,7 +2852,7 @@ TTB.showSponsorTOSModal(selectedSponsor, actions, options);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line972">line 972</a>
+            <a href="s.html">s</a>, <a href="s.html#line1020">line 1020</a>
         </div>
         
     </div>
@@ -3045,7 +3000,7 @@ e.g. "1234 Collins Ave, Miami Beach, FL 33140"
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line949">line 949</a>
+            <a href="s.html">s</a>, <a href="s.html#line997">line 997</a>
         </div>
         
     </div>
@@ -3190,7 +3145,7 @@ e.g. "1234 Collins Ave, Miami Beach, FL 33140"
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1949">line 1949</a>
+            <a href="s.html">s</a>, <a href="s.html#line1997">line 1997</a>
         </div>
         
     </div>
@@ -3350,7 +3305,7 @@ var cloneOfDetail = TTB.utilCopy(detail);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1816">line 1816</a>
+            <a href="s.html">s</a>, <a href="s.html#line1864">line 1864</a>
         </div>
         
     </div>
@@ -3604,7 +3559,7 @@ console.log(TTBLandingPageUrl);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1892">line 1892</a>
+            <a href="s.html">s</a>, <a href="s.html#line1940">line 1940</a>
         </div>
         
     </div>
@@ -3767,7 +3722,7 @@ var rejectedPromise = TTB.utilPromiseReject({foo: 'Something useful as a detaile
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line1922">line 1922</a>
+            <a href="s.html">s</a>, <a href="s.html#line1970">line 1970</a>
         </div>
         
     </div>
@@ -3930,7 +3885,7 @@ var resolvedPromise = TTB.utilPromiseResolve({foo: 'Something useful as a detail
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2950">line 2950</a>
+            <a href="s.html">s</a>, <a href="s.html#line3004">line 3004</a>
         </div>
         
     </div>
@@ -4106,7 +4061,7 @@ ttb.checkPEFarmStatus(farmId)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line3430">line 3430</a>
+            <a href="s.html">s</a>, <a href="s.html#line3484">line 3484</a>
         </div>
         
     </div>
@@ -4324,7 +4279,7 @@ ttb.clearSponsorSelection(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line4178">line 4178</a>
+            <a href="s.html">s</a>, <a href="s.html#line4232">line 4232</a>
         </div>
         
     </div>
@@ -4715,7 +4670,7 @@ var $ttbConnect = ttb.connectWidget(options, actions);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2991">line 2991</a>
+            <a href="s.html">s</a>, <a href="s.html#line3045">line 3045</a>
         </div>
         
     </div>
@@ -4726,7 +4681,7 @@ var $ttbConnect = ttb.connectWidget(options, actions);</code></pre>
     
     
     <div class="description">
-        This method is used to fetch the given farm. i.e. to fetch all the properties/records​ of the given farm.
+        This method is used to fetch the given farm. i.e. to fetch all the properties/records of the given farm.
 <br><br>
 Note: The farm is supposed to be ordered/made via .globalSearch() method.
     </div>
@@ -4888,7 +4843,7 @@ ttb.getFarmProperties(farmId)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line3028">line 3028</a>
+            <a href="s.html">s</a>, <a href="s.html#line3082">line 3082</a>
         </div>
         
     </div>
@@ -5014,7 +4969,7 @@ ttb.getFarmsList()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line3334">line 3334</a>
+            <a href="s.html">s</a>, <a href="s.html#line3388">line 3388</a>
         </div>
         
     </div>
@@ -5143,7 +5098,7 @@ ttb.getSearchFields()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line3295">line 3295</a>
+            <a href="s.html">s</a>, <a href="s.html#line3349">line 3349</a>
         </div>
         
     </div>
@@ -5267,7 +5222,7 @@ ttb.getTypesReport()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line3121">line 3121</a>
+            <a href="s.html">s</a>, <a href="s.html#line3175">line 3175</a>
         </div>
         
     </div>
@@ -5917,7 +5872,7 @@ ttb.globalSearch(payload, queryParams)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line3181">line 3181</a>
+            <a href="s.html">s</a>, <a href="s.html#line3235">line 3235</a>
         </div>
         
     </div>
@@ -6109,7 +6064,7 @@ ttb.globalSearchCount(payload, params)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line3577">line 3577</a>
+            <a href="s.html">s</a>, <a href="s.html#line3631">line 3631</a>
         </div>
         
     </div>
@@ -6587,7 +6542,7 @@ autocomplete.addListener('place_changed', function () {
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2360">line 2360</a>
+            <a href="s.html">s</a>, <a href="s.html#line2414">line 2414</a>
         </div>
         
     </div>
@@ -6698,7 +6653,7 @@ ttb.handleSponsorTOS(selectedSponsor);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line3686">line 3686</a>
+            <a href="s.html">s</a>, <a href="s.html#line3740">line 3740</a>
         </div>
         
     </div>
@@ -6976,7 +6931,7 @@ window.googleInit = function () {
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2552">line 2552</a>
+            <a href="s.html">s</a>, <a href="s.html#line2606">line 2606</a>
         </div>
         
     </div>
@@ -7221,7 +7176,7 @@ ttb.login(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2487">line 2487</a>
+            <a href="s.html">s</a>, <a href="s.html#line2541">line 2541</a>
         </div>
         
     </div>
@@ -7463,7 +7418,7 @@ ttb.loginRemote(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2426">line 2426</a>
+            <a href="s.html">s</a>, <a href="s.html#line2480">line 2480</a>
         </div>
         
     </div>
@@ -7684,7 +7639,7 @@ ttb.loginUUID(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2600">line 2600</a>
+            <a href="s.html">s</a>, <a href="s.html#line2654">line 2654</a>
         </div>
         
     </div>
@@ -7810,7 +7765,7 @@ ttb.logout()
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line3229">line 3229</a>
+            <a href="s.html">s</a>, <a href="s.html#line3283">line 3283</a>
         </div>
         
     </div>
@@ -8024,7 +7979,7 @@ ttb.nearbySearch(payload, params)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line3468">line 3468</a>
+            <a href="s.html">s</a>, <a href="s.html#line3522">line 3522</a>
         </div>
         
     </div>
@@ -8213,7 +8168,7 @@ ttb.openNetSheet(propertyId, propertyFullAddress);</code></pre>
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2786">line 2786</a>
+            <a href="s.html">s</a>, <a href="s.html#line2840">line 2840</a>
         </div>
         
     </div>
@@ -8549,7 +8504,7 @@ ttb.orderReport(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2846">line 2846</a>
+            <a href="s.html">s</a>, <a href="s.html#line2900">line 2900</a>
         </div>
         
     </div>
@@ -8987,7 +8942,7 @@ ttb.propertyComps(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2899">line 2899</a>
+            <a href="s.html">s</a>, <a href="s.html#line2953">line 2953</a>
         </div>
         
     </div>
@@ -9399,7 +9354,7 @@ ttb.propertyDetails(payload, options)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line3383">line 3383</a>
+            <a href="s.html">s</a>, <a href="s.html#line3437">line 3437</a>
         </div>
         
     </div>
@@ -9703,7 +9658,7 @@ ttb.saveSponsorSelection(payload, performLogin)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2739">line 2739</a>
+            <a href="s.html">s</a>, <a href="s.html#line2793">line 2793</a>
         </div>
         
     </div>
@@ -9990,7 +9945,7 @@ ttb.searchByOwnerName(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2642">line 2642</a>
+            <a href="s.html">s</a>, <a href="s.html#line2696">line 2696</a>
         </div>
         
     </div>
@@ -10232,7 +10187,7 @@ ttb.searchByParcelNumber(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2694">line 2694</a>
+            <a href="s.html">s</a>, <a href="s.html#line2748">line 2748</a>
         </div>
         
     </div>
@@ -10613,7 +10568,7 @@ ttb.searchBySiteAddress(payload)
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2294">line 2294</a>
+            <a href="s.html">s</a>, <a href="s.html#line2348">line 2348</a>
         </div>
         
     </div>
@@ -10912,7 +10867,7 @@ ttb.setSponsor({
     
         
         <div class="tag-source">
-            <a href="s.html">s</a>, <a href="s.html#line2318">line 2318</a>
+            <a href="s.html">s</a>, <a href="s.html#line2372">line 2372</a>
         </div>
         
     </div>
@@ -11029,7 +10984,7 @@ ttb.showTOS();</code></pre>
 
         <footer>
             Copyright © 2018 <a target="_blank" href="http://www.benutech.com/" target="_blank" title="Benutech official website">Benutech Inc.</a> All rights reserved.</a>
-           <!-- Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.5</a> on Thu Nov 17 2022 21:50:44 GMT+0500 (Pakistan Standard Time) -->
+           <!-- Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.5</a> on Thu Nov 17 2022 21:56:44 GMT+0500 (Pakistan Standard Time) -->
         </footer>
     </div>
 </div>
