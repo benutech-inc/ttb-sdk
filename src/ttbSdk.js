@@ -234,12 +234,15 @@
    * to generate the baseURL which includes the <code>sponsor.name</code> provided. Must contain {{sponsorName}} at least once.
    * (Note - It will be ignored if <code>baseURL</code> is already passed.)
    *
-   * @param {Function} [config.onSessionExpireV2] - [Recommended over deprecated onSessionExpire()] - The callback / handler to be called
-   * whenever an API receives <code>401 - UNAUTHENTICATED</code> (session expired) from server.
-   * This can be used to get a new valid "stk" from vendor site, via a login prompt or a direct ajax request to vendor server, to renew user login session from TTB server.
-   * Method should return a promise, which should be resolved with a loginRemotePayload object. (Check loginRemotePayload details from loginRemote() method.)
-   * @param {Object} [config.onSessionExpireV2.info] - Contains details against the failed request. This can be used for advanced handling. <br>
-   * <code>info</code> object will contain <code>requestError</code>, <code>requestConfig</code>, <code>methodName</code> and <code>endpoint</code>.
+   * @param {Function} [config.onSessionExpireV3] - [Recommended over deprecated onSessionExpireV2()] - The callback / handler to be called
+   * whenever an API receives <code>401 - UNAUTHENTICATED</code> (session expired) from server, to renew the session on the fly and resume with
+   * widgets or API methods calls internally.
+   * This can be used to get a new valid "stk" (or "uuid" for loginUUID() case) from vendor site, via an ajax request to vendor server,
+   * or via in-memory store on FE, to renew user login session from TTB server.
+   * Method should return a promise, which should be resolved with an "authConfig" object as
+   * {authMethod: "loginRemote", // or "loginUUID", payload: loginRemotePayload // or {uuid: "xxxxxx"} }.
+   * (For payload details, check loginRemote() method or loginUUID() method whichever is involved for the target vendor authentication. )
+   * @param {Object} config.onSessionExpireV3.info - Similar to deprecated <code>onSessionExpireV2</code>'s "info" parameter.
    *
    * @param {String} [config.autoFillAttr="data-ttb-field"] - The attribute to be used for auto-fill input fields when
    * <code>options.autoFillContext</code> specified in methods which support auto-fill.
@@ -252,14 +255,14 @@
    *
    * @param {String} [config.debug=true] - SDK debug mode flag useful for logs, etc.
    *
-   * @param {Function} [config.onSessionExpire] - (DEPRECATED! Please check onSessionExpireV2() ) - The callback / handler to be called whenever an API receives <code>401 - UNAUTHENTICATED</code>
-   * (session expired) from server. (NOTE: This will be ignored when onSessionExpireV2() is provided) <br>
-   * Check out live working example at https://jsfiddle.net/shahzadns/rkw8v51y/
-   * @param {Object} config.onSessionExpire.info - The info object that SDK passes to the callback to provide more control to recover the request failure.
-   * @param {String} config.onSessionExpire.info.requestError - The AJAX error object passed to the error-handler of the API method that was failed.
-   * @param {String} config.onSessionExpire.info.requestConfig - The configuration object passed to the request that was failed.
-   * @param {Function} config.onSessionExpire.info.retry - retry the failed call, while auto-passing exactly all the info e.g. payload (if any), and query params (if any)
-   * Returns the AJAX promise. - very useful to call and ready-up the feature once user logs-in back.
+   * @param {Function} [config.onSessionExpireV2] - (DEPRECATED! Please check onSessionExpireV2() ) - The callback / handler to be called
+   * whenever an API receives <code>401 - UNAUTHENTICATED</code> (session expired) from server, to renew the session on the fly and resume with
+   * widgets or API methods calls internally.
+   * This can be used to get a new valid "stk" from vendor site, via an ajax request to vendor server,
+   * or via in-memory store on FE, to renew user login session from TTB server.
+   * Method should return a promise, which should be resolved with a loginRemotePayload object. (Check loginRemotePayload details from loginRemote() method.)
+   * @param {Object} config.onSessionExpireV2.info - Contains details against the failed request. This can be used for advanced handling. <br>
+   * <code>info</code> object will contain <code>methodName</code>, <code>endpoint</code>, <code>requestConfig</code>, and <code>requestError</code>.
    *
    * @return {Object} ttb - The instance associated with the provided configuration.
    *
@@ -288,7 +291,8 @@
    * });
    *
    * @example
-   * // (Optional but Recommended !) registering session-expired (401 status error) handler for ttb ajax requests.
+   * // (Optional but Recommended !)  (for auth method: remoteLogin()) - registering session-expired (401 status error) handler for ttb ajax requests.
+   * // This example is for those vendors who use loginRemote() method for authentication.
    * // live working example will be provided soon.
    *
    * // your app store / constant having configuration
@@ -302,28 +306,72 @@
    * // step#2 instantiate the TTB with your (vendor's) credentials. check full config from TTB instance section.
    * ttbStore.ttb = new TTB({
    *  partnerKey: ttbStore.partnerKey,
-   *  onSessionExpireV2: ttbOnSessionExpireV2 // note suffix "V2" in "onSessionExpireV2"
+   *  onSessionExpireV3: ttbOnSessionExpireV3 // note suffix "V3" in "onSessionExpireV3"
    * });
    *
    * // step#3 set up a sessionExpire handler. following is just an example.
    * // this callback gets called, whenever any ttb method Ajax call encounters 401.
-   * function ttbOnSessionExpireV2(info) {
-   *  console.log('ttbOnSessionExpireV2: No / Expired Session.', info); // check out "info" in console for any advanced handling.
+   * function ttbOnSessionExpireV3(info) {
+   *  console.log('ttbOnSessionExpireV3: No / Expired Session.', info); // check out "info" in console for any advanced handling.
    *
    *  // step#3.1 build required info by getting the latest / valid stk (depends on vendor site's login system.)
    *  // option 1 - Some vendors have it in store on Frontend.
    *  // option 2 - Some vendors get latest stk from their server via ajax call.
    *  // option 3 - Some vendors perform a login prompt modal to renew user session on their login system to get latest stk for TTB.
    *
-   *  // for example vendor has option 2 case.
+   *  // for example vendor has option 2 (or even option 1) case.
    *  // build required info
-   *  var loginRemotePayload = {
-   *    stk: ttbStore.stk,
-   *    getuser_url: ttbStore.getuser_url
+   *  var authConfig = {
+   *    authMethod: 'loginRemote',
+   *    payload: {
+   *      stk: ttbStore.stk,
+   *      getuser_url: ttbStore.getuser_url
+   *    }
    *  };
    *
    *  // step#3.2 Simply return the resolved promise containing this info, leave the rest on SDK to perform TTB system login, and retry the failed requests, like nothing happened. ^ _ ^
-   *  return TTB.utilPromiseResolve(loginRemotePayload);
+   *  return TTB.utilPromiseResolve(authConfig);
+   * }
+   *
+   * @example
+   * // (Alternate) (for auth method: remoteUUID()) - registering session-expired (401 status error) handler for ttb ajax requests.
+   * // This example is for those vendors who use loginUUID() method for authentication.
+   * // live working example will be provided soon.
+   *
+   * // your app store / constant having configuration
+   * var ttbStore = {
+   *   ttb: undefined,
+   *   partnerKey: '558b3e66-47b2-477d-a0d3-6d85db4c3148',
+   *   uuid: '123b3e66-47b2-477d-a0d3-6d85db4c3456',
+   * };
+   *
+   * // step#2 instantiate the TTB with your (vendor's) credentials. check full config from TTB instance section.
+   * ttbStore.ttb = new TTB({
+   *  partnerKey: ttbStore.partnerKey,
+   *  onSessionExpireV3: ttbOnSessionExpireV3 // note suffix "V3" in "onSessionExpireV3"
+   * });
+   *
+   * // step#3 set up a sessionExpire handler. following is just an example.
+   * // this callback gets called, whenever any ttb method Ajax call encounters 401.
+   * function ttbOnSessionExpireV3(info) {
+   *  console.log('ttbOnSessionExpireV3: No / Expired Session.', info); // check out "info" in console for any advanced handling.
+   *
+   *  // step#3.1 build required info by getting the latest / valid UUID (depends on vendor site's login system.)
+   *  // option 1 - Some vendors have it in store on Frontend.
+   *  // option 2 - Some vendors get latest UUID from their server via ajax call.
+   *  // option 3 - Some vendors perform a login prompt modal to renew user session on their login system to get latest UUID for TTB.
+   *
+   *  // for example vendor has option 2 (or even option 1) case.
+   *  // build required info
+   *  var authConfig = {
+   *    authMethod: 'loginUUID',
+   *    payload: {
+   *      uuid: ttbStore.uuid,
+   *    }
+   *  };
+   *
+   *  // step#3.2 Simply return the resolved promise containing this info, leave the rest on SDK to perform TTB system login, and retry the failed requests, like nothing happened. ^ _ ^
+   *  return TTB.utilPromiseResolve(authConfig);
    * }
    *
    * // That's it! We are ready to shine!
@@ -2148,7 +2196,7 @@
      *
      * */
     _handleSessionExpire: function (error, request, mapping) {
-      var _self, sessionExpireInfo, renewSessionPromise, messages;
+      var _self, sessionExpireInfo, renewSessionPromise, messages, sessionExpiredHandler;
 
       _self = this;
 
@@ -2160,31 +2208,24 @@
       };
 
       // DEPRECATED !
-      // case: handle with old onSessionExpire() - when onSessionExpireV2() was not provided
-      if (_self.config.onSessionExpire && !_self.config.onSessionExpireV2) {
-
-        _self._log(['_handleSessionExpire:', mapping.methodName + '() [', mapping.endpoint , ']: handling with config.onSessionExpire()']);
-
-        sessionExpireInfo.retry = function () {
-          return $.ajax(request);
-        };
-
-        _self.config.onSessionExpire(sessionExpireInfo);
-
-        // exist with error
-        return error;
+      // case: deprecated and removed onSessionExpire() provided.
+      if (_self.config.onSessionExpire) {
+        _self._log(['_handleSessionExpire: Support for onSessionExpire() has been removed after deprecating it in various past versions. ' +
+        'Ignoring the passage.']);
       }
+
+      sessionExpiredHandler = _self.config.onSessionExpireV3 || _self.config.onSessionExpireV2;
 
       messages = {
         couldNotHandle: '_handleSessionExpire: ERROR - Could not handle.',
         checkDocs: 'Please check documentation for more details.',
       };
 
-      // case: no config.onSessionExpireV2() was provided even.
-      if (!_self.config.onSessionExpireV2) {
+      // case: No sessionExpiredHandler was provided -  Exit.
+      if (!sessionExpiredHandler) {
         _self._log([
           messages.couldNotHandle,
-          'Neither config.onSessionExpire() nor config.onSessionExpireV2() was provided.',
+          'Neither config.onSessionExpireV3() nor config.onSessionExpireV2() was provided.',
           messages.checkDocs
         ]);
 
@@ -2193,9 +2234,10 @@
       }
 
       // case: config.onSessionExpireV2() was provided - handle with it.
-      _self._log(['_handleSessionExpire:', mapping.methodName + '() [', mapping.endpoint , ']: handling with config.onSessionExpireV2()']);
+      _self._log(['_handleSessionExpire:', mapping.methodName + '() [', mapping.endpoint , ']: handling with provided onSessionExpire handler.']);
 
-      // call to let host app return a new/valid STK (e.g. host app prompt user for a login, OR return immediately a new STK)
+      // TODO enhance to use call once sessionExpire handler only once, until promise get fulfilled.
+      // call to let host app return a new/valid STK (e.g. host app prompt user for a login, OR return immediately a new STK, or uuid)
       renewSessionPromise = _self.config.onSessionExpireV2(sessionExpireInfo);
 
       // case: no promise returned from the onSessionExpireV2() of the host app
@@ -2212,14 +2254,26 @@
       }
 
       return renewSessionPromise
-        .then(function(loginRemotePayload) {
+        .then(function(authConfig) {
+          var _authConfig;
 
-          // case: promise resolved with invalid loginRemotePayload info.
-          if (!loginRemotePayload || !loginRemotePayload.stk || !loginRemotePayload.getuser_url) {
+          // case: onSessionExpireV2 was provided. auto perform the adjustments.
+          if (_self.config.onSessionExpireV2) {
+            _authConfig = {};
+            _authConfig.authMethod = 'loginRemote';
+            _authConfig.payload = authConfig; // it is loginRemotePayload in this case.
+
+            // case: for onSessionExpireV3
+          } else {
+            _authConfig = authConfig;
+          }
+
+          // case: promise resolved with invalid authConfig or loginRemotePayload info.
+          if (!_authConfig || !_authConfig.authMethod || !_authConfig.payload || !(_authConfig.payload.uuid || (_authConfig.payload.stk && _authConfig.payload.getuser_url))) {
 
             _self._log([
               messages.couldNotHandle,
-              'onSessionExpireV2(): Returned promise resolved with invalid loginRemotePayload info.',
+              'onSessionExpire: Returned promise resolved with invalid authConfig or loginRemotePayload info.',
               messages.checkDocs
             ]);
 
@@ -2227,9 +2281,9 @@
             return window.TTB.utilPromiseReject(error);
           }
 
-          // case: promise resolved with valid loginRemotePayload info
-          // perform a login
-          return _self.loginRemote(loginRemotePayload)
+          // case: promise resolved with valid authConfig info
+          // perform a login. e.g. using loginRemote() or loginUUID()
+          return _self[_authConfig.authMethod](_authConfig.payload)
             .then(function (res) {
 
               _self._log(['_handleSessionExpire: loginRemote: success:']);
@@ -2255,7 +2309,7 @@
 
           _self._log([
             messages.couldNotHandle,
-            'onSessionExpireV2(): returned Promise rejected.',
+            'onSessionExpire: returned Promise rejected.',
             messages.checkDocs,
             reason
           ]);
