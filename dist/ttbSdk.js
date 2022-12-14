@@ -54,6 +54,8 @@
     devPortLanding: '9001',
     devPortExport: '9002', // SERVE mode
     // devPortExport: '9003', // PROD mode
+    exportAppBaseURL: 'https://ttb-export.herokuapp.com', // prod
+    // exportAppBaseURL: 'http://ttb-export-dev.herokuapp.com', // dev build
     //partnerKey: '1-234-567-890', // no key by default.
     sponsor: {
       name: 'direct',
@@ -85,9 +87,13 @@
       connect__selectedSponsor: 'connect--selected-sponsor'
     },
     dataTableConfig: {
-      CDNs: {
-        CSS: 'https://ttb-export.herokuapp.com/libs/jquery-data-tables/jquery.dataTables.min.css',
-        JS: 'https://ttb-export.herokuapp.com/libs/jquery-data-tables/jquery.dataTables.min.js'
+      // CDNs: {
+      //   CSS: 'https://ttb-export.herokuapp.com/libs/jquery-data-tables/jquery.dataTables.min.css',
+      //   JS: 'https://ttb-export.herokuapp.com/libs/jquery-data-tables/jquery.dataTables.min.js'
+      // },
+      resources: {
+        CSS: '/libs/jquery-data-tables/jquery.dataTables.min.css',
+        JS: '/libs/jquery-data-tables/jquery.dataTables.min.js',
       },
       options: {}
     },
@@ -776,6 +782,26 @@
     return input.split(' ').map(capWord).join(' ');
   };
 
+  /**
+   * @memberof TTB
+   * @alias getTTBExportAppBaseURL
+   * @static
+   *
+   * Generates baseURL of the ttb-export app, based on the environment. i.e. local development vs production.
+   * @private
+   *
+   * @return {String} ttbExportAppBaseURL - the baseURL of the ttb-export app.
+   *
+   * */
+  window.TTB.getTTBExportAppBaseURL = function() {
+
+    // for testing only - serve PROD url to test locally.
+    // return defaults.exportAppBaseURL;
+
+    // check environment to serve relevant base url
+    return [defaults.devPortSandbox, defaults.devPortLanding].indexOf(window.location.port) >= 0
+        ? ('http://localhost:' + defaults.devPortExport) : defaults.exportAppBaseURL;
+  }
 
   /**
    * @memberof TTB
@@ -791,6 +817,7 @@
    *
    * */
   window.TTB.utilLoadDataTable = function(onLoad) {
+    var baseURL, cssFilePath, jsFilePath;
 
     // check if lib has already been async loaded - initialize right away
     if (!!$(document).DataTable) {
@@ -801,14 +828,20 @@
 
       window.TTB._log(['utilLoadDataTable: data-table: not available yet: loading files:  CSS added.']);
 
+      // destination - dynamic - dev vs prod.
+      baseURL = window.TTB.getTTBExportAppBaseURL();
+
+      cssFilePath = baseURL + defaults.dataTableConfig.resources.CSS;
+      jsFilePath = baseURL + defaults.dataTableConfig.resources.JS;
+
       // load styles
       $(document.head)
-        .append('<link type="text/css" rel="stylesheet" href="'+ defaults.dataTableConfig.CDNs.CSS + '"/>');
+        .append('<link type="text/css" rel="stylesheet" href="'+ cssFilePath + '"/>');
 
       // load script
       $.ajax({
         method: 'GET',
-        url: defaults.dataTableConfig.CDNs.JS,
+        url: jsFilePath,
         dataType: 'script',
         cache: true,
         success: function (content) {
@@ -3520,25 +3553,20 @@
      *
      * */
     openNetSheet: function (propertyId, propertyFullAddress) {
-      var modalOptions, iframeOptions, origin;
+      var modalOptions, iframeOptions, ttbExportAppBaseURL;
 
       modalOptions = {
         id: 'ttb-sdk--net-sheet--modal',
         title: 'Net Sheet'
       };
 
-      // destination - dynamic - dev vs prod.
-      origin = [defaults.devPortSandbox, defaults.devPortLanding].indexOf(window.location.port) >= 0
-          ? ('http://localhost:' + defaults.devPortExport) : 'https://ttb-export.herokuapp.com';
-
-      // comment after using.
-      // destination - prod
-      origin = 'https://ttb-export.herokuapp.com';
+      // export-app baseURL - dynamic - dev vs prod. - check inside to serve only prod url.
+      ttbExportAppBaseURL = window.TTB.getTTBExportAppBaseURL();
 
       iframeOptions = {
         id: 'ttb-sdk--net-sheet--iframe',
         height: '635px',
-        origin: origin,
+        origin: ttbExportAppBaseURL,
         pathname: '/netsheet',
         params: {
           partnerKey: this.config.partnerKey,
