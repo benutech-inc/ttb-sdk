@@ -15,12 +15,14 @@ This would serve the "docs" directory over `localhost:8000`, and so you can keep
 ### Tagging
 
 #### Add a Tag
+Make sure to rename all the mentions of current version with the new version. 
+E.g. The ttbSdk.js, and ttbSdk.css files inside Src.
 
 ###### 1. Commit your changes
-`git commit -m "Made some awesome new changes, now its even more awesome."`
+`git commit -m "Release version 1.20.0"`
 
-###### 2. Tag the commit - e.g. '0.3.0'
-`git tag -a 0.3.0 -m "Release version 0.3.0"`
+###### 2. Tag the commit - e.g. '1.20.0'
+`git tag -a 1.20.0 -m "Release version 1.20.0"`
 
 ###### 3. Push to GitHub
 `git push origin master --tags`
