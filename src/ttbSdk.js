@@ -3721,10 +3721,14 @@
      * @param {String} elementSelector - DOM element selector where the widget needs to be rendered.
      * <code>#lorem</code> or <code>.ipsum</code> etc.
      *
-     * @param {Object} [actions] - The actions object contains mapping callbacks to be consumed when any action is clicked.
-     * (only one action available currently.)
+     * @param {Object} [actions] - An object contains mapping callbacks to be consumed when any action is clicked.
      * @param {Function} [actions.fullProfileReport] - To be invoked with an info object (info.success, info.data) as argument, when user selects an address
      * from the autocomplete and then clicks the action "Full Profile Report". This info can be used for handling success and failure.
+     *
+     * @param {Object} [visibility] - An object contains mapping of actions mentioning their visibility.
+     * @param {Function} [visibility.fullProfileReport=true] - A flag to show/visible the "Full Report Profile" action.
+     * (By Default, its shown. To hide it, just pass it with value as false)
+     * @param {Function} [visibility.netSheet=true] - A flag to show/visible the "Net Sheet" action.
      *
      * @example
      *
@@ -3740,7 +3744,25 @@
      *
      * @example
      *
+     * // Sample to suppress/hide a certain action, by using optional visibility param.
+     * var ttb = new TTB({ ... }); // skip if already instantiated.
+     *
+     * // define googleInit() if it is not already created.
+     * window.googleInit = function () {
+     *
+     *  var visibility = {
+     *   fullProfileReport: false, // to suppress this action
+     *   netSheet: true, // if value is same as its default visibility. then it is equivalent to just not passing it.
+     *  };
+     *
+     *  var elementSelector = '#ttb-instant-lookup-wrapper';
+     *  var $instantLookup = ttb.instantLookupWidget(elementSelector, undefined, visibility);
+     * };
+     *
+     * @example
+     *
      * // with advanced configuration for handling success, and failure of the actions results.
+     * // this sample can be joined to above "visibility" param example.
      * var ttb = new TTB({ ... }); // skip if already instantiated.
      *
      * // define googleInit() if it is not already created.
@@ -3765,7 +3787,7 @@
      * @return {Object} $element - JQuery reference to the rendered widget container element.
      *
      * */
-    instantLookupWidget: function (elementSelector, actions) {
+    instantLookupWidget: function (elementSelector, actions, visibility) {
       var o, autoComplete, _self, refs;
 
       _self = this;
@@ -3802,9 +3824,46 @@
           }
         ]
       };
+
+      /* allowed actions - starts -
+      check visibility and build the allowed actions list */
+      o.allowedActionsMarkup = [];
+      (function () {
+        var allActions;
+
+        visibility = visibility || {};
+
+        allActions = [
+          {name: 'netSheet', label: 'Net Sheet', defaultVisibility: true},
+          {name: 'fullProfileReport', label: 'Full Profile Report', defaultVisibility: true},
+          // {name: 'generateReport', label: 'Generate Report', defaultVisibility: true},
+        ];
+
+        allActions.forEach(function (action) {
+
+          // build each action visibility. first look into visibility param, if not provided then use default visibility of the action.
+          visibility[action.name] = visibility[action.name] !== undefined ? visibility[action.name] : action.defaultVisibility;
+
+          // if action to be made visible - build markup and add it into allowed actions markup list.
+          if (visibility[action.name]) {
+            o.allowedActionsMarkup.push(
+                '  <li><a data-action-name="{{name}}" href="javascript:">{{label}}</a></li>'
+                    .replace('{{name}}', action.name)
+                    .replace('{{label}}', action.label)
+            );
+          }
+        });
+
+        // flat the list into one string
+        o.allowedActionsMarkup = o.allowedActionsMarkup.join('');
+
+        _self._log(['instantLookupWidget: allowedActionsMarkup:', visibility, o.allowedActionsMarkup]);
+      })();
+
+      /* allowed actions - ends */
+
       o.selectedAction = window.TTB._getLocal('selectedAction', o.selectedAction) || {
           name: 'fullProfileReport',
-          label: 'Full Profile Report'
         };
 
       o.widgetClass = 'ttb-sdk--instant-lookup--container';
@@ -3832,12 +3891,7 @@
 
         ' <!-- split button -->',
         ' <div class="btn-group col-xs-12">',
-        '  <ul>',
-        '  <li><a data-action-name="netSheet" href="javascript:">NetSheet</a></li>',
-        //'  <li><a data-action-name="generateReport" href="javascript:">Generate Report</a></li>',
-        //'  <li role="separator" class="divider"></li>',
-        '  <li><a data-action-name="fullProfileReport" href="javascript:">Full Profile Report</a></li>',
-        '  </ul>',
+        '  <ul> {{allowedActionsMarkup}} </ul>',
         ' </div>',
         '</div>',
 
@@ -3858,7 +3912,8 @@
         ' Your report will automatically be created and displayed for you.',
         '</div>'
       ].join('')
-        .replace('{{selectedActionLabel}}', o.selectedAction.label);
+        // .replace('{{selectedActionLabel}}', o.selectedAction.label);
+        .replace('{{allowedActionsMarkup}}', o.allowedActionsMarkup);
 
       o.$container = $(elementSelector);
 
