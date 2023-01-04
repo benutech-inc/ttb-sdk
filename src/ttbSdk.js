@@ -3854,10 +3854,10 @@
           }
         });
 
-        // flat the list into one string
+        // flatten the list into one string
         o.allowedActionsMarkup = o.allowedActionsMarkup.join('');
 
-        _self._log(['instantLookupWidget: allowedActionsMarkup:', visibility, o.allowedActionsMarkup]);
+        // _self._log(['instantLookupWidget: allowedActionsMarkup:', visibility, o.allowedActionsMarkup]);
       })();
 
       /* allowed actions - ends */
