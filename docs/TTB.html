@@ -75,7 +75,9 @@
                 <li data-name="TTB.showSponsorTOSModal"><a href="TTB.html#.showSponsorTOSModal">showSponsorTOSModal</a></li>
             
                 <li data-name="TTB.utilBuildFullAddress"><a href="TTB.html#.utilBuildFullAddress">utilBuildFullAddress</a></li>
-            
+
+                <li data-name="TTB.utilBuildFullAddressFromGoogle"><a href="TTB.html#.utilBuildFullAddressFromGoogle">utilBuildFullAddressFromGoogle</a></li>
+
                 <li data-name="TTB.utilBuildSponsorInfo"><a href="TTB.html#.utilBuildSponsorInfo">utilBuildSponsorInfo</a></li>
             
                 <li data-name="TTB.utilCopy"><a href="TTB.html#.utilCopy">utilCopy</a></li>
@@ -2989,7 +2991,156 @@ e.g. "1234 Collins Ave, Miami Beach, FL 33140"
     
 </dd>
 
-        
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id=".utilBuildFullAddressFromGoogle">
+            <span class="type-signature static">static</span>
+            TTB.utilBuildFullAddressFromGoogle
+            <span class="signature">(place)</span>
+            <span class="glyphicon glyphicon-circle-arrow-right"></span>
+            <span class="type-signature returnType">{String}</span>
+        </h4>
+        <div class="tag-source">
+            <a href="s.html">s</a>, <a href="s.html#line1064">line 1064</a>
+        </div>
+    </div>
+</dt>
+<dd>
+    <div class="description">
+        Builds up the site full address using various address fields, usually helpful to build site full address for
+        target property. <br>
+        It uses this pattern: [h#] [streetName] [route], [city], [state] [zip] [country] to build address as
+        e.g. "1234 Collins Ave, Miami Beach, FL 33140, USA"
+        <br>
+        This method builds the address payload using the google  <code>autocomplete</code> getPlace() once it's
+        <code>"place_changed"</code> event fires.
+    </div>
+
+    <table class="params">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class="name"><code>place</code></td>
+            <td class="type">
+                <span class="param-type">object</span>
+            </td>
+            <td class="description last">
+                The google autocomplete getPlace() event used on your site, consuming it's <code>"place_changed"</code> event.</td>
+        </tr>
+        </tbody>
+    </table>
+    <dl class="details">
+    </dl>
+    <h5>Returns:</h5>
+    <table class="params">
+        <thead>
+        <tr>
+            <th>Type</th>
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class="type">
+                String
+            </td>
+            <td class="description last">
+                site_full_address - complete site full address string built using each available address components property.
+                <table class="params">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th class="last">Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <tr>
+                        <td class="name">
+                            <code>site_street_number</code>
+                        </td>
+                        <td class="type">
+                            Object
+                        </td>
+                        <td class="description last">
+                            Component Type: <code>"street_number"</code> | Name Type: <code>"short_name"</code>.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="name">
+                            <code>site_route</code>
+                        </td>
+                        <td class="type">
+                            Object
+                        </td>
+                        <td class="description last">
+                            Component Type: <code>"route"</code> | Name Type: <code>"short_name"</code>.
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="name">
+                            <code>site_city</code>
+                        </td>
+                        <td class="type">
+                            Object
+                        </td>
+                        <td class="description last">
+                            Component Type: <code>"locality"</code> | Name Type: <code>"long_name"</code>.
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="name">
+                            <code>site_state</code>
+                        </td>
+                        <td class="type">
+                            Object
+                        </td>
+                        <td class="description last">
+                            Component Type: <code>"administrative_area_level_1"</code> | Name Type: <code>"short_name"</code>.
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="name">
+                            <code>site_zip</code>
+                        </td>
+                        <td class="type">
+                            Object
+                        </td>
+                        <td class="description last">
+                            Component Type: <code>"postal_code"</code> | Name Type: <code>"short_name"</code>.
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="name">
+                            <code>country</code>
+                        </td>
+                        <td class="type">
+                            Object
+                        </td>
+                        <td class="description last">
+                            Component Type: <code>"country"</code> | Name Type: <code>"long_name"</code>.
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+</dd>
             
 <dt>
     <div class="nameContainer">

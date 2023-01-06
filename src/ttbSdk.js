@@ -1063,6 +1063,68 @@
 
   /**
    * @memberof TTB
+   * @alias utilBuildFullAddressFromGoogle
+   * @static
+   * @description Builds up the site full address using various address fields, usually helpful to build full address for
+   * target property <br>
+   * It uses this pattern: [h#] [streetName] [route], [city], [state] [zip], [country] to build address as
+   * e.g. "1234 Collins Ave, Miami Beach, FL 33140, USA"
+   *
+   * This method builds the address payload using the google <code>autocomplete</code> getPlace() once it's
+   * <code>"place_changed"</code> event fires.
+   *
+   * @param {object} place - The google autocomplete getPlace() event used on your site, consuming it's <code>"place_changed"</code> event.
+   *
+   * @return {String} siteFullAddress - complete site full address string built using each available address components property.
+   * */
+  window.TTB.utilBuildFullAddressFromGoogle = function (place) {
+    var addressInfo, addressComp, addressType, addressValue, componentForm;
+    // our details object can be used for payload
+    addressInfo = {};
+
+    if (!place || !place.address_components) {
+      console.log('Google place service components are getting issue.', place);
+      return
+    }
+
+    // place-components vs form-fields mapping
+    componentForm = {
+      street_number: {field_name: 'site_street_number', name_type: 'short_name'},
+      route: {field_name: 'site_route', name_type: 'short_name'},
+      locality: {field_name: 'site_city', name_type: 'long_name'},
+      administrative_area_level_1: {field_name: 'site_state', name_type: 'short_name'},
+      postal_code: {field_name: 'site_zip', name_type: 'short_name'},
+      country: {field_name: 'country', name_type: 'long_name'}
+    };
+
+    // iterate over each component available in selected place
+    for (var i = 0, len = place.address_components.length; i < len; i++) {
+      addressComp = place.address_components[i];
+      addressType = addressComp.types[0];
+
+      // check if the component is of our use e.g. "administrative_area_level_1"
+      if (componentForm[addressType]) {
+        addressValue = addressComp[componentForm[addressType].name_type];
+
+        // fill the address info object
+        addressInfo[componentForm[addressType].field_name] = addressValue;
+      }
+    }
+
+    // e.g. 1234 Collins Ave, Miami Beach, FL 33140, USA
+    // pattern: [h#] [streetName] [suf], [city], [state] [zip], [country]
+
+    return (addressInfo.site_street_number ? (addressInfo.site_street_number + ' ') : '') +       // 1234
+        (addressInfo.site_route ? (addressInfo.site_route + ', ') : '') +                         // Collins Ave
+        (addressInfo.site_city ? (addressInfo.site_city + ', ') : '') +                           // Miami Beach,
+        (addressInfo.site_state ? (addressInfo.site_state + ' ') : '') +                          // FL
+        (addressInfo.site_zip ? (addressInfo.site_zip) : '') +                                    // 33140
+        (addressInfo.country ? (', ' + (addressInfo.country === 'United States' ? 'USA': addressInfo.country)) : ''); //USA
+
+  };
+
+  /**
+   * @memberof TTB
    * @alias getUserProfile
    * @static
    * @private
@@ -3920,6 +3982,7 @@
 
         // fill the address form fields
         o.selectedAddressInfo = _self.googleBuildAddress(autoComplete.instance);
+        o.selectedAddressInfo.site_full_address = window.TTB.utilBuildFullAddressFromGoogle(autoComplete.instance.getPlace());
       });
 
       o.$actions = o.$container.find('#ttb-sdk--instant-lookup--actions li');
