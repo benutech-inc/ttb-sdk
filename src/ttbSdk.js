@@ -2262,7 +2262,7 @@
           messages.checkDocs
         ]);
 
-        // exist with error
+        // exit with error
         return error;
       }
 
@@ -2271,18 +2271,19 @@
 
       // TODO enhance to use call once sessionExpire handler only once, until promise get fulfilled.
       // call to let host app return a new/valid STK (e.g. host app prompt user for a login, OR return immediately a new STK, or uuid)
-      renewSessionPromise = _self.config.onSessionExpireV2(sessionExpireInfo);
+      renewSessionPromise = sessionExpiredHandler(sessionExpireInfo);
 
       // case: no promise returned from the onSessionExpireV2() of the host app
       if (!renewSessionPromise) {
 
         _self._log([
           messages.couldNotHandle,
-          'Expected a promise in return from onSessionExpireV2()',
+          'Expected a promise in return from ',
+          sessionExpiredHandler.name + '()',
           messages.checkDocs
         ]);
 
-        // exist with error
+        // exit with error
         return error;
       }
 
@@ -2310,7 +2311,7 @@
               messages.checkDocs
             ]);
 
-            // reject and exist with error
+            // reject and exit with error
             return window.TTB.utilPromiseReject(error);
           }
 
@@ -2319,7 +2320,7 @@
           return _self[_authConfig.authMethod](_authConfig.payload)
             .then(function (res) {
 
-              _self._log(['_handleSessionExpire: loginRemote: success:']);
+              _self._log(['_handleSessionExpire:', _authConfig.authMethod, ': success:']);
 
               // retry the failed request now
               return _self._ajaxProceed(request, mapping);
@@ -2328,12 +2329,12 @@
 
               _self._log([
                 messages.couldNotHandle,
-                'Could not perform login using provided loginRemotePayload info.',
+                'Could not perform login using provided payload info.',
                 messages.checkDocs,
                 reason
               ]);
 
-              // exist with error
+              // exit with error
               return error;
             });
 
@@ -2347,7 +2348,7 @@
             reason
           ]);
 
-          // exist with error
+          // exit with error
           return error;
         });
     },
@@ -2531,9 +2532,10 @@
             TTB._setLocal(defaults.sessionKeyName, sessionToken);
 
             _self._log(['loginUUID:', defaults.sessionKeyName, 'updated in localStorage.', TTB._getLocal(defaults.sessionKeyName)]);
+            return res;
           }
 
-          return res;
+          return TTB.utilPromiseReject(res.response);
         });
     },
 
@@ -2593,9 +2595,10 @@
             TTB._setLocal(defaults.sessionKeyName, sessionToken);
 
             _self._log(['loginRemote:', defaults.sessionKeyName, 'updated in localStorage.', TTB._getLocal(defaults.sessionKeyName)]);
+            return res;
           }
-
-          return res;
+          
+          return TTB.utilPromiseReject(res.response);
         });
     },
 
@@ -2651,9 +2654,10 @@
             // store sessionToken in local-storage for later usage against each API key
             sessionToken = res.response.data[defaults.sessionKeyName];
             TTB._setLocal(defaults.sessionKeyName, sessionToken);
+            return res;
           }
-
-          return res;
+          
+          return TTB.utilPromiseReject(res.response);
         });
     },
 
