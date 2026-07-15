@@ -9,19 +9,22 @@
     "express": "^4.11.0"
   },
   "devDependencies": {
-    "bootstrap": "3.4.1",
-    "del": "^3.0.0",
-    "gulp": "^3.9.1",
-    "gulp-csso": "^3.0.1",
-    "gulp-jsdoc3": "^1.0.1",
-    "gulp-load-plugins": "^1.5.0",
-    "gulp-rename": "^1.2.2",
-    "gulp-uglify": "^3.0.0",
-    "jsdoc": "^3.5.5",
+    "bootstrap": "^3.4.1",
+    "del": "^6.0.0",
+    "gulp": "^4.0.2",
+    "gulp-csso": "^4.0.1",
+    "gulp-jsdoc3": "^3.0.0",
+    "gulp-load-plugins": "^2.0.8",
+    "gulp-rename": "^2.1.0",
+    "gulp-uglify": "^3.0.2",
+    "jsdoc": "^3.6.3",
     "supervisor": "^0.12.0"
   },
   "scripts": {
-    "start": "gulp doc-dev",
+    "start": "gulp",
+    "build": "gulp build",
+    "docs": "gulp docs",
+    "watch": "gulp watch",
     "serve:docs": "supervisor -w index.js index.js"
   },
   "repository": {
@@ -43,6 +46,10 @@
   },
   "homepage": "https://github.com/benutech-inc/ttb-sdk#readme",
   "engines": {
-    "node": "10.x"
+    "node": "^24"
+  },
+  "allowScripts": {
+    "es5-ext@0.10.64": true,
+    "fsevents@1.2.13": true
   }
 }

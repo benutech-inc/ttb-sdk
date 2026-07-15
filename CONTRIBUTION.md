@@ -1,7 +1,8 @@
 
 ### Setting up DEV environment
-- use node 10.x
+- use node 24.x
 - run `npm install`
+- run `npm approve-scripts --all`
 - (no need of bower install)
 - run `npm start` and that's it !!
 
@@ -35,4 +36,3 @@ E.g. The ttbSdk.js, and ttbSdk.css files inside Src.
 
 ###### 2. Delete remote tag - e.g. '0.3.0'
 `git push origin :refs/tags/0.3.0`
-

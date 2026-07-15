@@ -1,65 +1,84 @@
+const gulp = require('gulp');
 
-var gulp = require('gulp');
-var $ = require('gulp-load-plugins')({
+const $ = require('gulp-load-plugins')({
   pattern: ['gulp-*', 'del']
 });
 
-var jsdocConfig = require('./jsdoc.json');
+const jsdocConfig = require('./jsdoc.json');
 
-var settings = {
+const settings = {
   PATH_DOCS: './docs',
   PATH_BUILD: './dist'
 };
 
-gulp.task('del', function () {
-  //console.log('task: del');
-  return $.del([settings.PATH_DOCS, settings.PATH_BUILD]);
-});
+function clean() {
+  return $.del([
+    settings.PATH_DOCS,
+    settings.PATH_BUILD
+  ]);
+}
 
-gulp.task('copy-scoped-bootstrap', ['del'], function () {
-  //console.log('task: copy-scoped-bootstrap');
-  return gulp.src(['src/scoped-bootstrap/*.css'])
-    .pipe(gulp.dest(settings.PATH_BUILD));
-});
+function copyScopedBootstrap() {
+  return gulp.src('src/scoped-bootstrap/*.css')
+  .pipe(gulp.dest(settings.PATH_BUILD));
+}
 
-gulp.task('copy-docs-assets', ['del'], function () {
-  //console.log('task: copy-docs-assets');
-  return gulp.src(['src/docs-assets/**/*.*'])
-    .pipe(gulp.dest(settings.PATH_DOCS));
-});
+function copyDocsAssets() {
+  return gulp.src('src/docs-assets/**/*.*')
+  .pipe(gulp.dest(settings.PATH_DOCS));
+}
 
-gulp.task('docs', ['copy-docs-assets', 'copy-scoped-bootstrap'], function () {
-  //console.log('task: doc');
-  return gulp.src(['something-ignored.source'])
-    .pipe($.jsdoc3(jsdocConfig));
-});
+const docsAssets = gulp.parallel(
+  copyDocsAssets,
+  copyScopedBootstrap
+);
 
-gulp.task('build:js', ['del'], function () {
-  //console.log('task: build:js');
-  return gulp.src(['src/ttbSdk.js'])
-    .pipe(gulp.dest(settings.PATH_BUILD))
-    .pipe($.uglify())
-    //.on('error', function (err) { console.log(err.toString());})
-    .pipe($.rename('ttbSdk.min.js'))
-    .pipe(gulp.dest(settings.PATH_BUILD))
-});
+function docs() {
+  return gulp.src('something-ignored.source', { allowEmpty: true })
+  .pipe($.jsdoc3(jsdocConfig));
+}
 
-gulp.task('build:css', ['del'], function () {
-  //console.log('task: build:css');
-    return gulp.src(['src/ttbSdk.css'])
-    .pipe(gulp.dest(settings.PATH_BUILD))
-    .pipe($.csso())
-    .pipe($.rename('ttbSdk.min.css'))
-    .pipe(gulp.dest(settings.PATH_BUILD))
-});
+const docsTask = gulp.series(
+  clean,
+  docsAssets,
+  docs
+);
 
-gulp.task('build', ['build:js', 'build:css'], function () {
-  //console.log('task: build');
-});
+function buildJs() {
+  return gulp.src('src/ttbSdk.js')
+  .pipe(gulp.dest(settings.PATH_BUILD))
+  .pipe($.uglify())
+  .pipe($.rename('ttbSdk.min.js'))
+  .pipe(gulp.dest(settings.PATH_BUILD));
+}
 
-gulp.task('watch', ['docs', 'build'], function () {
-  //console.log('task: watch');
-  gulp.watch(['jsdoc.json', 'src/**/*.*'], ['docs', 'build']);
-});
+function buildCss() {
+  return gulp.src('src/ttbSdk.css')
+  .pipe(gulp.dest(settings.PATH_BUILD))
+  .pipe($.csso())
+  .pipe($.rename('ttbSdk.min.css'))
+  .pipe(gulp.dest(settings.PATH_BUILD));
+}
 
-gulp.task('doc-dev', ['watch']);
+const build = gulp.series(
+  clean,
+  gulp.parallel(buildJs, buildCss)
+);
+
+function watchFiles() {
+  gulp.watch(
+    ['jsdoc.json', 'src/**/*.*'],
+    gulp.series(docsTask, build)
+  );
+}
+
+exports.clean = clean;
+exports.docs = docsTask;
+exports.build = build;
+exports.watch = gulp.series(
+  docsTask,
+  build,
+  watchFiles
+);
+
+exports.default = exports.watch;

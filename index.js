@@ -9,7 +9,7 @@ var CONFIG = {
   PORT: 8000,
   SERVE_DIR: '/docs',
   HOME_PAGE: 'TTB.html',
-  APP_NAME: 'TTBSandbox'
+  APP_NAME: 'SDK Docs App'
 };
 // --- App specific --- //
 
