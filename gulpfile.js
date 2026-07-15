@@ -28,19 +28,13 @@ function copyDocsAssets() {
   .pipe(gulp.dest(settings.PATH_DOCS));
 }
 
-const docsAssets = gulp.parallel(
-  copyDocsAssets,
-  copyScopedBootstrap
-);
-
 function docs() {
   return gulp.src('something-ignored.source', { allowEmpty: true })
   .pipe($.jsdoc3(jsdocConfig));
 }
 
 const docsTask = gulp.series(
-  clean,
-  docsAssets,
+  gulp.parallel(copyDocsAssets, copyScopedBootstrap),
   docs
 );
 
@@ -60,24 +54,52 @@ function buildCss() {
   .pipe(gulp.dest(settings.PATH_BUILD));
 }
 
-const build = gulp.series(
-  clean,
-  gulp.parallel(buildJs, buildCss)
+const build = gulp.parallel(
+  buildJs,
+  buildCss
 );
 
 function watchFiles() {
+  
   gulp.watch(
-    ['jsdoc.json', 'src/**/*.*'],
-    gulp.series(docsTask, build)
+    ['src/ttbSdk.js'],
+    buildJs
+  );
+  
+  gulp.watch(
+    ['src/ttbSdk.css'],
+    buildCss
+  );
+  
+  gulp.watch(
+    ['jsdoc.json', 'src/docs-assets/**/*.*'],
+    docsTask
+  );
+  
+  gulp.watch(
+    ['src/**/*.js'],
+    docs
+  );
+  
+  gulp.watch(
+    ['src/scoped-bootstrap/*.less'],
+    copyScopedBootstrap
   );
 }
 
+const init = gulp.series(
+  clean,
+  gulp.parallel(
+    build,
+    docsTask
+  )
+);
+
 exports.clean = clean;
-exports.docs = docsTask;
 exports.build = build;
+exports.docs = docsTask;
 exports.watch = gulp.series(
-  docsTask,
-  build,
+  init,
   watchFiles
 );
 
